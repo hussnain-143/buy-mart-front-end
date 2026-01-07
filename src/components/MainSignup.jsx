@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import Button from "./common/button";
 import Toast from "./common/Toast";
 import { SigninUser } from "../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 const TOTAL_STEPS = 3;
 
 const MainSignup = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [preview, setPreview] = useState(null);
   const [toast, setToast] = useState({
@@ -80,40 +82,30 @@ const MainSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
+    // Basic Validation
+    if (
+      !form.email ||
+      !form.userName ||
+      !form.password ||
+      !form.city ||
+      !form.street ||
+      !form.houseNo
+    ) {
+      showToast("Please fill all required fields", "error");
       return;
     }
 
-    const payload = new FormData();
-    payload.append("firstName", form.firstName);
-    payload.append("lastName", form.lastName);
-    payload.append("userName", form.userName);
-    payload.append("email", form.email);
-    payload.append("password", form.password);
-    payload.append("role", form.role);
-    payload.append("profile", form.profile);
+        try {
+          const res = await SigninUser(form);
+          console.log("Signup Success:", res);
 
-    payload.append(
-      "address",
-      JSON.stringify([
-        {
-          city: form.city,
-          street: form.street,
-          houseNo: form.houseNo,
-        },
-      ])
-    );
+          showToast("Signup successful!", "success");
 
-    try {
-      const res = await SigninUser(payload);
-
-      showToast("Account created successfully!", "success");
-      console.log("user created", res);
-    } catch (error) {
-      showToast(error.message, "error");
-    }
-  };
+          setTimeout(() => navigate("/login"), 1000);
+        } catch (error) {
+          showToast(error.message || "Signup failed", "error");
+        }
+  }
 
   return (
     <div className="font-[var(--font-montserrat)] min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary/10 via-white to-accent/20 px-4">

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import Button from "./common/button";
 import Toast from "./common/Toast";
 import { LoginUser } from "../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 const MainLogin = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     userName: "",
     password: "",
@@ -45,7 +48,7 @@ const MainLogin = () => {
 
       showToast("Login successful!", "success");
 
-      // setTimeout(() => navigate("/dashboard"), 1000);
+      setTimeout(() => navigate("/home"), 1000);
     } catch (error) {
       showToast(error.message || "Invalid credentials", "error");
     }
