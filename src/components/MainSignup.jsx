@@ -79,33 +79,39 @@ const MainSignup = () => {
 
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Basic Validation
-    if (
-      !form.email ||
-      !form.userName ||
-      !form.password ||
-      !form.city ||
-      !form.street ||
-      !form.houseNo
-    ) {
-      showToast("Please fill all required fields", "error");
-      return;
+  // Basic validation
+  if (
+    !form.email ||
+    !form.userName ||
+    !form.password ||
+    !form.city ||
+    !form.street ||
+    !form.houseNo
+  ) {
+    showToast("Please fill all required fields", "error");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    for (const key in form) {
+      if (form[key] !== null) {
+        formData.append(key, form[key]);
+      }
     }
 
-        try {
-          const res = await SigninUser(form);
-          console.log("Signup Success:", res);
+    const res = await SigninUser(formData, true); // pass FormData
+    console.log("Signup Success:", res);
 
-          showToast("Signup successful!", "success");
-
-          setTimeout(() => navigate("/login"), 1000);
-        } catch (error) {
-          showToast(error.message || "Signup failed", "error");
-        }
+    showToast("Signup successful!", "success");
+    setTimeout(() => navigate("/login"), 1000);
+  } catch (error) {
+    showToast(error.message || "Signup failed", "error");
   }
+};
 
   return (
     <div className="font-[var(--font-montserrat)] min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary/10 via-white to-accent/20 px-4">
@@ -139,7 +145,7 @@ const MainSignup = () => {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4" encType="multipart/form-data">
           {/* STEP 1 — Personal + Profile */}
           {step === 1 && (
             <>
