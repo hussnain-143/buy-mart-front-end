@@ -11,7 +11,7 @@ export const LoginUser = (data) => {
 export const SigninUser = (formData) => {
     return apiRequest("/user/signup", {
         method: "POST",
-        body: formData,          // ✅ FormData
+        body: formData, 
         credentials: "include",
     });
 }
