@@ -44,7 +44,12 @@ const MainLogin = () => {
 
     try {
       const res = await LoginUser(form);
+      
       console.log("Login Success:", res);
+      console.log("User Data:", res.user);
+
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("user", JSON.stringify(res.user));
 
       showToast("Login successful!", "success");
 

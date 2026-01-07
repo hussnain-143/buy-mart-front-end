@@ -8,10 +8,12 @@ export const LoginUser = (data) => {
 };
 
 
-export const SigninUser = (formData) => {
-    return apiRequest("/user/signup", {
-        method: "POST",
-        body: formData, 
-        credentials: "include",
-    });
-}
+export const SigninUser = (data, isFormData = false) => {
+  return apiRequest("/user/signup", {
+    method: "POST",
+    body: data, 
+    credentials: "include",
+    // DON'T set "Content-Type" header for FormData — browser handles it automatically
+    headers: isFormData ? {} : { "Content-Type": "application/json" },
+  });
+};
