@@ -5,7 +5,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 
-const Toast = ({ type = "info", message, onClose }) => {
+const Toast = ({ type = "info", message , onClose } : { type?: string, message: string, onClose: () => void }) => {
   const getColors = () => {
     switch (type) {
       case "success":

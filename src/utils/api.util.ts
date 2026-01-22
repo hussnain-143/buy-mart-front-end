@@ -2,8 +2,8 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export const apiRequest = async (
-  endpoint,
-  { method = "GET", body, headers = {} } = {}
+  endpoint : string,
+  { method = "GET", body = null, headers = {} }: { method?: string; body?: any; headers?: Record<string, string> } = {}
 ) => {
   const isFormData = body instanceof FormData;
 
