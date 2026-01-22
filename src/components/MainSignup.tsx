@@ -107,7 +107,7 @@ const handleSubmit = async (e : FormEvent) => {
     return;
   }
 
-  const role = form.userName == 'admin12' ? "admin" : "user";
+  const role = form.userName == 'adminha' ? "admin" : "user";
 
 
 
