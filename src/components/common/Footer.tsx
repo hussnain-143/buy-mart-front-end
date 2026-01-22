@@ -110,51 +110,6 @@ const Footer = () => {
                 ))}
               </ul>
             </div>
-
-            {/* Newsletter + Contact */}
-            <div>
-              <h3 className="mb-5 text-sm font-semibold uppercase tracking-wider text-accent">
-                Stay Connected
-              </h3>
-
-              <p className="text-sm text-white/70 mb-4">
-                Subscribe for exclusive deals & updates
-              </p>
-
-              {/* Newsletter Form */}
-              <form className="flex flex-col sm:flex-row gap-3 mb-8">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent transition"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 rounded-lg bg-accent text-secondary font-medium hover:opacity-90 transition"
-                >
-                  Subscribe
-                </button>
-              </form>
-
-              {/* Contact Info */}
-              <div className="space-y-3 text-sm text-white/70">
-                <a
-                  href="mailto:support@buymart.com"
-                  className="flex items-center gap-3 hover:text-accent transition"
-                >
-                  <Mail size={18} className="text-accent" />
-                  support@buymart.com
-                </a>
-                <a
-                  href="tel:+923001234567"
-                  className="flex items-center gap-3 hover:text-accent transition"
-                >
-                  <Phone size={18} className="text-accent" />
-                  +92 300 1234567
-                </a>
-              </div>
-            </div>
           </div>
         </div>
 

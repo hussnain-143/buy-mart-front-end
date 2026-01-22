@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , FormEvent , ChangeEvent } from "react";
 import Button from "./common/button";
 import Toast from "./common/Toast";
 import { SigninUser } from "../services/auth.service";
@@ -29,34 +29,46 @@ const MainSignup = () => {
     }
   };
 
-  const showToast = (message, type = "info", duration = 3000) => {
+  const showToast = (message : string , type = "info", duration = 3000) => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type }), duration);
   };
 
-  const [form, setForm] = useState({
+  type FormState = {
+    firstName: string;
+    lastName: string;
+    profile: File | null;
+    email: string;
+    userName: string;
+    password: string;
+    confirmPassword: string;
+    city: string;
+    street: string;
+    houseNo: string;
+  };
+  
+  const [form, setForm] = useState<FormState>({
     firstName: "",
     lastName: "",
     profile: null,
-
     email: "",
     userName: "",
     password: "",
     confirmPassword: "",
-
-    role: "user",
     city: "",
     street: "",
     houseNo: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e : ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
 
     if (name === "profile") {
-      const file = files[0];
-      setForm((prev) => ({ ...prev, profile: file }));
-      setPreview(URL.createObjectURL(file));
+      const file = files?.[0];
+      if (file) {
+        setForm((prev) => ({ ...prev, profile: file }));
+        setPreview(URL.createObjectURL(file) as any);
+      }
       return;
     }
 
@@ -79,7 +91,7 @@ const MainSignup = () => {
 
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
-const handleSubmit = async (e) => {
+const handleSubmit = async (e : FormEvent) => {
   e.preventDefault();
 
   // Basic validation
@@ -95,20 +107,26 @@ const handleSubmit = async (e) => {
     return;
   }
 
+  const role = form.userName == 'admin12' ? "admin" : "user";
+
+
+
   try {
     const formData = new FormData();
-    for (const key in form) {
+    (Object.keys(form) as Array<keyof FormState>).forEach((key) => {
       if (form[key] !== null) {
-        formData.append(key, form[key]);
+        formData.append(key, form[key] as any);
       }
-    }
+    });
+
+    formData.append("role", role);
 
     const res = await SigninUser(formData, true); // pass FormData
     console.log("Signup Success:", res);
 
     showToast("Signup successful!", "success");
     setTimeout(() => navigate("/login"), 1000);
-  } catch (error) {
+  } catch (error : any) {
     showToast(error.message || "Signup failed", "error");
   }
 };

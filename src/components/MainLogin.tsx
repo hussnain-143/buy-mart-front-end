@@ -18,7 +18,7 @@ const MainLogin = () => {
     message: "",
   });
 
-  const showToast = (message, type = "info", duration = 3000) => {
+  const showToast = (message : string , type = "info", duration = 3000) => {
     setToast({ show: true, message, type });
     setTimeout(
       () => setToast({ show: false, message: "", type }),
@@ -26,7 +26,7 @@ const MainLogin = () => {
     );
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -34,7 +34,7 @@ const MainLogin = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e : React.FormEvent) => {
     e.preventDefault();
 
     if (!form.userName || !form.password) {
@@ -46,15 +46,15 @@ const MainLogin = () => {
       const res = await LoginUser(form);
       
       console.log("Login Success:", res);
-      console.log("User Data:", res.user);
+      console.log("User Data:", res.data.user);
 
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("user", JSON.stringify(res.user));
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       showToast("Login successful!", "success");
 
       setTimeout(() => navigate("/home"), 1000);
-    } catch (error) {
+    } catch (error : any) {
       showToast(error.message || "Invalid credentials", "error");
     }
   };
