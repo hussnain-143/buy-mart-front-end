@@ -15,10 +15,8 @@ const AppRoutes = () => {
 
       {/* Routes WITH Header + Footer */}
       <Route element={<MainLayout />}>
-      <Suspense fallback={<Loader />}>
-        <Route index element={<Home />} />
-        <Route path="/home" element={<Home />} />
-      </Suspense>
+        <Route index element={<Suspense fallback={<Loader />}><Home /></Suspense>} />
+        <Route path="/home" element={<Suspense fallback={<Loader />}><Home /></Suspense>} />
       </Route>
 
 
