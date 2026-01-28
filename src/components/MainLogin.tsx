@@ -48,7 +48,8 @@ const MainLogin = () => {
       console.log("Login Success:", res);
       console.log("User Data:", res.data.user);
 
-      localStorage.setItem("token", res.data.token);
+      // Store accessToken in localStorage for client-side checks (cookies are primary auth method)
+      localStorage.setItem("token", res.data.accessToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       showToast("Login successful!", "success");

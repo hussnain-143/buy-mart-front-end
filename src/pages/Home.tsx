@@ -60,6 +60,12 @@ const Home = () => {
             >
               <Zap size={24} /> View Deals
             </NavLink>
+            <NavLink
+              to="/subscription"
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full border-2 border-accent text-accent text-lg font-semibold backdrop-blur-sm hover:bg-accent/10 transition"
+            >
+              Become a Seller <ArrowRight size={24} />
+            </NavLink>
           </div>
         </div>
       </section>
