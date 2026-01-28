@@ -33,3 +33,51 @@ export const GetUserProfile = () => {
   } as any);
 };
 
+/**
+ * Update basic profile information
+ * - firstName, lastName, userName, email, profile (image)
+ */
+export const UpdateProfile = <T>(data: T, isFormData = false) => {
+  return apiRequest("/user/update-profile", {
+    method: "PUT",
+    body: data,
+    credentials: "include",
+    headers: isFormData ? {} : { "Content-Type": "application/json" },
+  } as any);
+};
+
+/**
+ * Update user password
+ * - Requires old password
+ * - Sets new password securely
+ */
+export const UpdatePassword = <T>(data: T) => {
+  return apiRequest("/user/update-password", {
+    method: "PUT",
+    body: data,
+    credentials: "include",
+  } as any);
+};
+
+/**
+ * Update user address
+ * - Updates shipping / billing address
+ */
+export const UpdateAddress = <T>(data: T) => {
+  return apiRequest("/user/update-address", {
+    method: "PUT",
+    body: data,
+    credentials: "include",
+  } as any);
+};
+
+/**
+ * Refresh access token
+ * - Uses refresh token from cookies to get new access token
+ */
+export const RefreshAccessToken = () => {
+  return apiRequest("/user/refresh-token", {
+    method: "POST",
+    credentials: "include",
+  } as any);
+};

@@ -218,7 +218,7 @@ const Header = () => {
 
           <Button
             content="Become a Seller"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/subscription")}
             style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
           />
         </>
