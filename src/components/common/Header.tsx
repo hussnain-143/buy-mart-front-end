@@ -1,30 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import {
-  Menu,
-  ShoppingCart,
-  User,
-  LogOut,
-  Settings,
-  Package,
-} from "lucide-react";
+import { Menu, ShoppingCart, User, LogOut, Ban, Package } from "lucide-react";
 import Toast from "./Toast";
 import Button from "./button";
 import { LogoutUser } from "../../services/auth.service";
 
+// ================= TYPES =================
+type UserType = {
+  name?: string;
+  profileUrl?: string;
+  vendor_subscription?: SubscriptionStatus;
+  vendor?: VendorType;
+};
+
+type SubscriptionStatus = {
+  status: "active" | "inactive" | "canceled";
+};
+
+type VendorType = {
+  is_approved: boolean;
+};
+
+// ================= COMPONENT =================
 const Header = () => {
   const navigate = useNavigate();
 
   // ================= STATE =================
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
-  type User = {
-    name?: string;
-    profileUrl?: string;
-    // add other user properties as needed
-  };
-
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [subStatus, setSubStatus] = useState<SubscriptionStatus | null>(null);
+  const [vendor, setVendor] = useState<VendorType | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [toast, setToast] = useState({
@@ -36,7 +41,7 @@ const Header = () => {
   // ================= REFS =================
   const profileRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ================= AUTH INIT =================
   useEffect(() => {
@@ -44,7 +49,21 @@ const Header = () => {
     const storedUser = localStorage.getItem("user");
 
     setIsLoggedIn(!!token);
-    setUser(storedUser ? JSON.parse(storedUser) : null);
+
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setSubStatus(parsedUser.vendor_subscription || null);
+      setVendor(parsedUser.vendor || null);
+    }
+
+    if (!token) {
+      setUser(null);
+      setSubStatus(null);
+      setVendor(null);
+    }
+
+
   }, []);
 
   // ================= NAV ITEMS =================
@@ -55,13 +74,13 @@ const Header = () => {
     { to: "/deals", label: "Deals" },
   ];
 
-  const navLinkClass = ({ isActive } : { isActive: boolean }) =>
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `relative text-sm font-medium transition-colors duration-200 ${
       isActive ? "text-accent" : "text-white hover:text-accent"
     }`;
 
   // ================= TOAST =================
-  const showToast = (message : string , type = "info", duration = 3000) => {
+  const showToast = (message: string, type = "info", duration = 3000) => {
     if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
 
     setToast({ show: true, message, type });
@@ -73,38 +92,28 @@ const Header = () => {
 
   useEffect(() => {
     return () => {
-      if (toastTimeoutRef.current) {
-        clearTimeout(toastTimeoutRef.current);
-      }
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
     };
   }, []);
 
   // ================= CLICK OUTSIDE =================
   useEffect(() => {
-    const handleClickOutside = (event : MouseEvent) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
       }
-
-      if (
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node)
-      ) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // ================= ESC KEY =================
   useEffect(() => {
-    const handleEscape = (e : KeyboardEvent) => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMenuOpen(false);
         setProfileOpen(false);
@@ -125,14 +134,16 @@ const Header = () => {
 
       setIsLoggedIn(false);
       setUser(null);
+      setProfileOpen(false);
 
       showToast("Logged out successfully", "success");
       navigate("/login");
-    } catch (error : any) {
+    } catch (error: any) {
       showToast(error?.message || "Logout failed", "error");
     }
   };
 
+  // ================= CART COUNT =================
   const cartCount = 2; // Replace with real count later
 
   // ================= RIGHT AREA =================
@@ -165,16 +176,14 @@ const Header = () => {
                   }}
                 />
               ) : (
-                <span className="uppercase">
-                  {(user?.name || "U").charAt(0)}
-                </span>
+                <span className="uppercase">{(user?.name || "U").charAt(0)}</span>
               )}
             </button>
 
             {profileOpen && (
               <div
                 role="menu"
-                className="absolute right-0 mt-3 w-56 rounded-lg bg-background shadow-2xl ring-1 ring-black/5"
+                className="absolute right-0 mt-3 w-56 rounded-lg bg-background shadow-2xl ring-1 ring-black/5 overflow-hidden z-50"
               >
                 <NavLink
                   to="/profile"
@@ -192,15 +201,30 @@ const Header = () => {
                   <Package size={18} /> Orders
                 </NavLink>
 
-                <NavLink
-                  to="/settings"
-                  className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-accent/70"
-                  onClick={() => setProfileOpen(false)}
-                >
-                  <Settings size={18} /> Settings
-                </NavLink>
+                {vendor?.is_approved && (
+                  <NavLink
+                    to="/seller/dashboard"
+                    className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-accent/70"
+                    onClick={() => setProfileOpen(false)}
+                  >
+                    <Package size={18} /> Seller Dashboard
+                  </NavLink>
+                )}
 
                 <hr />
+
+                {subStatus?.status === "active" && (
+                  <Button
+                    content={
+                      <>
+                        <Ban size={18} className="mr-2 inline" />
+                        Cancel Subscription
+                      </>
+                    }
+                    onClick={() => showToast("Cancel subscription clicked", "info")}
+                    style="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
+                  />
+                )}
 
                 <Button
                   content={
@@ -216,11 +240,13 @@ const Header = () => {
             )}
           </div>
 
-          <Button
-            content="Become a Seller"
-            onClick={() => navigate("/subscription")}
-            style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
-          />
+          {!vendor?.is_approved && (
+            <Button
+              content="Become a Seller"
+              onClick={() => navigate("/subscription")}
+              style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
+            />
+          )}
         </>
       )}
     </>

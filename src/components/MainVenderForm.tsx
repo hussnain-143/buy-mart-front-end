@@ -69,7 +69,12 @@ const VendorRegisterForm = () => {
       showToast("Your store has been created successfully!", "success");
       setTimeout(() => navigate("/home"), 1000);
     } catch (error: any) {
-      showToast(error.message || "Something went wrong", "error");
+      if (error.response?.status === 403 && error.response?.data?.message?.includes("subscription")) {
+        showToast("Active subscription required. Redirecting...", "error");
+        setTimeout(() => navigate("/subscription"), 2000);
+      } else {
+        showToast(error.message || "Something went wrong", "error");
+      }
     }
   };
 
