@@ -1,4 +1,4 @@
-import React from "react";
+
 import { NavLink } from "react-router-dom";
 import {
   ShoppingCart,
@@ -102,7 +102,7 @@ const Subscription = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <NavLink
-              to="/vendor-form"
+              to="/checkout"
               className="flex-1 inline-flex items-center justify-center gap-3 px-10 py-4 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 shadow-lg transition"
             >
               Continue to Setup <ArrowRight size={20} />

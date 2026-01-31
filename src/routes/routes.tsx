@@ -11,6 +11,11 @@ const Profile = lazy(() => import("../pages/Profile"));
 const Loader = lazy(() => import("../components/common/Loader"));
 const Vendor = lazy(() => import("../pages/Vendor"));
 const Subscription = lazy(() => import("../pages/Subscription"));
+const Checkout = lazy(() => import("../pages/Checkout"));
+const Success = lazy(() => import("../pages/Success"));
+const Cancel = lazy(() => import("../pages/Cancel"));
+import ProtectedRoutes from "./Auth/ProtectedRoutes";
+import VendorProtectedRoutes from "./Auth/VendorProtectedRoutes";
 
 
 const AppRoutes = () => {
@@ -21,9 +26,18 @@ const AppRoutes = () => {
       <Route element={<MainLayout />}>
         <Route index element={<Suspense fallback={<Loader />}><Home /></Suspense>} />
         <Route path="/home" element={<Suspense fallback={<Loader />}><Home /></Suspense>} />
-        <Route path="/profile" element={<Suspense fallback={<Loader />}><Profile /></Suspense>} />
-        <Route path="/subscription" element={<Suspense fallback={<Loader />}><Subscription /></Suspense>} />
-        <Route path="/vendor-form" element={<Suspense fallback={<Loader />}><Vendor /></Suspense>} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/profile" element={<Suspense fallback={<Loader />}><Profile /></Suspense>} />
+          <Route path="/subscription" element={<Suspense fallback={<Loader />}><Subscription /></Suspense>} />
+          <Route path="/checkout" element={<Suspense fallback={<Loader />}><Checkout /></Suspense>} />
+          <Route path="/success" element={<Suspense fallback={<Loader />}><Success /></Suspense>} />
+          <Route path="/cancel" element={<Suspense fallback={<Loader />}><Cancel /></Suspense>} />
+
+          {/* Vendor Routes - Requires Auth AND Active Subscription */}
+          <Route element={<VendorProtectedRoutes />}>
+            <Route path="/vendor-form" element={<Suspense fallback={<Loader />}><Vendor /></Suspense>} />
+          </Route>
+        </Route>
       </Route>
 
 
