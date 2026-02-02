@@ -4,21 +4,22 @@ import { Menu, ShoppingCart, User, LogOut, Ban, Package } from "lucide-react";
 import Toast from "./Toast";
 import Button from "./button";
 import { LogoutUser } from "../../services/auth.service";
+import Vendor from "../../pages/Vendor";
 
 // ================= TYPES =================
 type UserType = {
   name?: string;
   profileUrl?: string;
   vendor_subscription?: SubscriptionStatus;
-  vendor?: VendorType;
 };
 
 type SubscriptionStatus = {
-  status: "active" | "inactive" | "canceled";
+  status: "active" | "inactive" | "canceled",
+  vendor?: VendorType;
 };
 
 type VendorType = {
-  is_approved: boolean;
+  is_active: boolean;
 };
 
 // ================= COMPONENT =================
@@ -54,7 +55,7 @@ const Header = () => {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       setSubStatus(parsedUser.vendor_subscription || null);
-      setVendor(parsedUser.vendor || null);
+      setVendor(parsedUser.vendor_subscription?.vendor || null);
     }
 
     if (!token) {
@@ -144,7 +145,7 @@ const Header = () => {
   };
 
   // ================= CART COUNT =================
-  const cartCount = 2; // Replace with real count later
+  const cartCount = 2; // Replace with actual cart count logic
 
   // ================= RIGHT AREA =================
   const RightArea = () => (
@@ -201,16 +202,6 @@ const Header = () => {
                   <Package size={18} /> Orders
                 </NavLink>
 
-                {vendor?.is_approved && (
-                  <NavLink
-                    to="/seller/dashboard"
-                    className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-accent/70"
-                    onClick={() => setProfileOpen(false)}
-                  >
-                    <Package size={18} /> Seller Dashboard
-                  </NavLink>
-                )}
-
                 <hr />
 
                 {subStatus?.status === "active" && (
@@ -239,14 +230,19 @@ const Header = () => {
               </div>
             )}
           </div>
-
-          {!vendor?.is_approved && (
-            <Button
-              content="Become a Seller"
-              onClick={() => navigate("/subscription")}
-              style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
-            />
-          )}
+            {vendor?.is_active ? (
+              <Button
+                content="Seller Dashboard"
+                onClick={() => navigate("/seller/dashboard")}
+                style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
+              />
+            ) : subStatus?.status !== "active" ? (
+              <Button
+                content="Become a Reseller"
+                onClick={() => navigate("/subscription")}
+                style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
+              />
+            ) : null}
         </>
       )}
     </>
