@@ -9,7 +9,7 @@ const NotFound = () => {
         {[...Array(60)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-70 animate-pulse"
+            className="absolute w-1 h-1 bg-accent rounded-full opacity-70 animate-pulse"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
@@ -25,7 +25,7 @@ const NotFound = () => {
           🧑‍🚀
         </div>
 
-        <h1 className="text-6xl md:text-8xl font-bold text-accent">404</h1>
+        <h1 className="text-6xl md:text-8xl font-bold text-primary">404</h1>
         <h2 className="text-4xl text-white">Mission Failed</h2>
         <p className="text-xl text-white/70 max-w-lg mx-auto">
           Our explorer couldn't locate this page in the vast universe of BuyMart.
@@ -33,21 +33,11 @@ const NotFound = () => {
 
         <NavLink
           to="/"
-          className="inline-block px-12 py-5 rounded-xl bg-accent text-secondary text-lg font-semibold hover:opacity-90 transition"
+          className="inline-block px-12 py-5 rounded-xl bg-primary text-secondary text-lg font-semibold hover:opacity-90 transition"
         >
           Return to Base (Home)
         </NavLink>
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };
