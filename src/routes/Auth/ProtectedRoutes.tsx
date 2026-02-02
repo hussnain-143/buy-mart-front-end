@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import GlobalSkeleton from '../../components/common/GlobalSkeleton';
 
 const ProtectedRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ const ProtectedRoutes = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Or your Loader component
+    return  <GlobalSkeleton/> // Or your Loader component
   }
 
   // Check if user is authenticated
