@@ -20,3 +20,17 @@
   @apply w-full rounded-xl border border-gray-300 bg-transparent px-4 py-3 text-sm
          focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition;
 }
+
+/* Float animation for 404 page */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-20px); 
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
