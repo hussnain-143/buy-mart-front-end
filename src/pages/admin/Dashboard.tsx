@@ -18,15 +18,11 @@ import {
   OrderTrendsChart,
   RevenueTrendChart,
 } from "../../components/admin/AnalyticsCharts";
-import DataTable from "../../components/admin/DataTable";
 import {
   TopSellingPanel,
   AlertPanel,
 } from "../../components/admin/ProductPanels";
-import AdminModal from "../../components/admin/AdminModal";
 import {
-  AdminInput,
-  AdminSelect,
   AdminButton,
 } from "../../components/admin/AdminForm";
 
@@ -157,13 +153,6 @@ const Dashboard: React.FC = () => {
             <AlertPanel />
           </div>
         </div>
-
-        {/* TABLE
-        <DataTable
-          title="Global Vendor Management"
-          columns={vendorColumns}
-          data={vendorData}
-        /> */}
       </div>
     </div>
   );

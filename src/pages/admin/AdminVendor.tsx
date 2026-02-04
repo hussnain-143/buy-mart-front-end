@@ -4,7 +4,6 @@ import { CheckCircle } from "lucide-react";
 import Toast from "../../components/common/Toast";
 import { GetAllVendors, updateVendor } from "../../services/vendor.service";
 
-import DataTable from "../../components/admin/DataTable";
 import { AdminButton } from "../../components/admin/AdminForm";
 import { useNavigate } from "react-router-dom";
 

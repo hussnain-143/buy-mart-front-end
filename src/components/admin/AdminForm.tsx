@@ -1,40 +1,5 @@
 import React from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    label: string;
-}
-
-export const AdminInput: React.FC<InputProps> = ({ label, ...props }) => (
-    <div className="mb-4">
-        <label className="block text-sm font-bold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
-        <input
-            {...props}
-            className="w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300 text-secondary placeholder:text-gray-400 font-medium"
-        />
-    </div>
-);
-
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-    label: string;
-    options: { value: string; label: string }[];
-}
-
-export const AdminSelect: React.FC<SelectProps> = ({ label, options, ...props }) => (
-    <div className="mb-4">
-        <label className="block text-sm font-bold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
-        <select
-            {...props}
-            className="w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-gray-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all duration-300 text-secondary font-medium cursor-pointer"
-        >
-            {options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                </option>
-            ))}
-        </select>
-    </div>
-);
-
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
     isLoading?: boolean;
