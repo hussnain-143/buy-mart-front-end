@@ -54,7 +54,7 @@ const AdminTable = <T extends Record<string, any>>({
     };
 
     return (
-        <div className="w-full bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl border border-white/40 overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl">
+        <div className="w-full max-w-full min-w-0 bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl border border-white/40 overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl">
 
             {/* HEADER TOOLBAR */}
             <div className="p-6 md:p-8 border-b border-gray-100/50 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-white/50 to-gray-50/30">
@@ -161,8 +161,8 @@ const AdminTable = <T extends Record<string, any>>({
                                 key={page}
                                 onClick={() => handlePageChange(page)}
                                 className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === page
-                                        ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                                        : 'text-gray-400 hover:bg-white hover:text-secondary'
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                                    : 'text-gray-400 hover:bg-white hover:text-secondary'
                                     }`}
                             >
                                 {page}
