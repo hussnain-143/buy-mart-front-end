@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* ANALYTICS */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-2 space-y-8 min-w-0">
             <OrderTrendsChart />
             <RevenueTrendChart />
@@ -146,17 +146,17 @@ const Dashboard: React.FC = () => {
           <div className="min-w-0">
             <CategoryDistributionChart />
           </div>
-        </div>
+        </div> */}
 
         {/* PANELS */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        {/* <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
           <div className="min-w-0">
             <TopSellingPanel />
           </div>
           <div className="min-w-0">
             <AlertPanel />
           </div>
-        </div>
+        </div> */}
 
         {/* TABLE */}
         {/* <div className="w-full min-w-0 overflow-hidden">
@@ -167,43 +167,6 @@ const Dashboard: React.FC = () => {
           />
         </div> */}
       </div>
-
-      {/* MODAL */}
-      <AdminModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Global Record Initiation"
-        footer={
-          <>
-            <AdminButton
-              variant="ghost"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </AdminButton>
-            <AdminButton onClick={() => setIsModalOpen(false)}>
-              Confirm Entry
-            </AdminButton>
-          </>
-        }
-      >
-        <div className="space-y-6">
-          <AdminInput label="Record Identifier" placeholder="SYS-REC-001" />
-          <AdminSelect
-            label="Record Category"
-            options={[
-              { value: "vendor", label: "Vendor" },
-              { value: "product", label: "Product" },
-              { value: "brand", label: "Brand" },
-            ]}
-          />
-          <AdminInput
-            label="Initial Valuation"
-            type="number"
-            placeholder="0.00"
-          />
-        </div>
-      </AdminModal>
     </div>
   );
 };
