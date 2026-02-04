@@ -165,21 +165,21 @@ const AdminVendor: React.FC = () => {
         {/* ================= TABLE ================= */}
         {activeTab === "all" && (
           <div className="w-full min-w-0 overflow-hidden">
-            <DataTable
+            {/* <DataTable
               title="All Registered Vendors"
               columns={vendorColumns}
               data={allVendors}
-            />
+            /> */}
           </div>
         )}
 
         {activeTab === "request" && requestVendors.length > 0 ? (
           <div className="w-full min-w-0 overflow-hidden">
-            <DataTable
+            {/* <DataTable
               title="Vendor Approval Requests"
               columns={vendorColumns}
               data={requestVendors}
-            />
+            /> */}
           </div>
         ) : (
           null
