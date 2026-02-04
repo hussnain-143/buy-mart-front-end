@@ -117,7 +117,7 @@ const AdminVendor: React.FC = () => {
     }));
 
   return (
-    <div className="relative space-y-10 font-montserrat">
+    <div className="relative space-y-10 font-montserrat min-w-0 w-full">
       {toast.show && (
         <Toast
           type={toast.type}
