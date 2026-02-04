@@ -148,4 +148,40 @@ const Dashboard: React.FC = () => {
           {coreStats.map((stat, i) => (
             <StatsCard key={i} {...stat} />
           ))}
+        </div>
+
+        {/* ANALYTICS */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-8 min-w-0">
+            <OrderTrendsChart />
+            <RevenueTrendChart />
+          </div>
+          <div className="min-w-0">
+            <CategoryDistributionChart />
+          </div>
+        </div>
+
+        {/* PANELS */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          <div className="min-w-0">
+            <TopSellingPanel />
+          </div>
+          <div className="min-w-0">
+            <AlertPanel />
+          </div>
+        </div>
+
+        {/* TABLE */}
+        <AdminTable
+          title="Global Vendor Management"
+          columns={vendorColumns}
+          data={vendorData}
+          searchPlaceholder="Search vendors..."
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
 
