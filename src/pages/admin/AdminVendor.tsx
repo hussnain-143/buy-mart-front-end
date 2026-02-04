@@ -4,6 +4,7 @@ import { CheckCircle } from "lucide-react";
 import Toast from "../../components/common/Toast";
 import { GetAllVendors, updateVendor } from "../../services/vendor.service";
 
+import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
 import { AdminButton } from "../../components/admin/AdminForm";
 import { useNavigate } from "react-router-dom";
 
@@ -11,17 +12,6 @@ const AdminVendor: React.FC = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<"all" | "request">("all");
-
-  /* ===================== TABLE CONFIG ===================== */
-  const vendorColumns = [
-    { key: "name", header: "Vendor Name" },
-    { key: "email", header: "Email Address" },
-    { key: "shop", header: "Shop Name" },
-    { key: "sales", header: "Total Sales" },
-    { key: "status", header: "Status" },
-    { key: "action", header: "Action" },
-  ];
-
   const [vendors, setVendors] = useState<any[]>([]);
 
   const [toast, setToast] = useState({
@@ -60,20 +50,9 @@ const AdminVendor: React.FC = () => {
     fetchVendors();
   }, [navigate, setVendors]);
 
-  const vendorData = vendors.map((vendor) => ({
-    _id: vendor._id,
-    name: vendor.owner?.firstName + " " + vendor.owner?.lastName || "N/A",
-    email: vendor.owner?.email || "N/A",
-    shop: vendor.shop_name || "N/A",
-    sales: vendor.total_sales || 0,
-    status: vendor.is_active ? "active" : "pending",
-  }));
-
-
-
   /* ===================== ACTION ===================== */
-  const approveVendor = async (id: string) => {
-
+  const approveVendor = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -94,26 +73,57 @@ const AdminVendor: React.FC = () => {
     }
   };
 
-  /* ===================== FILTERED DATA ===================== */
-  const allVendors = vendorData.map((v) => ({
-    ...v,
-    action: "-",
+  /* ===================== HELPERS ===================== */
+  const getStatusStyles = (status: string) => {
+    const s = String(status).toLowerCase();
+    if (s.includes('active')) return 'bg-emerald-100 text-emerald-600';
+    return 'bg-amber-100 text-amber-600';
+  };
+
+  const vendorData = vendors.map((vendor) => ({
+    _id: vendor._id,
+    name: vendor.owner?.firstName + " " + vendor.owner?.lastName || "N/A",
+    email: vendor.owner?.email || "N/A",
+    shop: vendor.shop_name || "N/A",
+    sales: vendor.total_sales || 0,
+    status: vendor.is_active ? "active" : "pending",
   }));
 
-  const requestVendors = vendorData
-    .filter((v) => v.status !== "active")
-    .map((v) => ({
-      ...v,
-      action: (
+  const filteredData = activeTab === "all"
+    ? vendorData
+    : vendorData.filter(v => v.status !== "active");
+
+  /* ===================== TABLE CONFIG ===================== */
+  const vendorColumns: TableColumn<any>[] = [
+    { header: "Vendor Name", accessorKey: "name" },
+    { header: "Email Address", accessorKey: "email" },
+    { header: "Shop Name", accessorKey: "shop" },
+    { header: "Total Sales", accessorKey: "sales" },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (row) => (
+        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest inline-flex items-center ${getStatusStyles(row.status)}`}>
+          {row.status}
+        </span>
+      )
+    },
+    {
+      header: "Action",
+      accessorKey: "_id", // Dummy key
+      cell: (row) => row.status !== "active" ? (
         <AdminButton
-          onClick={() => approveVendor(v._id)}
-          className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white"
+          onClick={(e) => approveVendor(row._id, e)}
+          className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 text-xs"
         >
-          <CheckCircle className="w-4 h-4" />
+          <CheckCircle className="w-3 h-3" />
           Approve
         </AdminButton>
-      ),
-    }));
+      ) : (
+        <span className="text-gray-400 text-xs">-</span>
+      )
+    }
+  ];
 
   return (
     <div className="relative space-y-10 font-montserrat min-w-0 w-full">
@@ -157,34 +167,16 @@ const AdminVendor: React.FC = () => {
             >
               {tab === "all" ? "All Vendors" : "Requests"}
             </button>
-
           ))}
         </div>
 
         {/* ================= TABLE ================= */}
-        {/* {activeTab === "all" && (
-          <DataTable
-            title="All Registered Vendors"
-            columns={vendorColumns}
-            data={allVendors}
-          />
-        )} */}
-
-        {/* {activeTab === "request" && requestVendors.length > 0 ? (
-          <DataTable
-            title="Vendor Approval Requests"
-            columns={vendorColumns}
-            data={requestVendors}
-          />
-        ) : (
-          null
-        )} */}
-
-        {activeTab === "request" && requestVendors.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            No pending vendor approval requests.
-          </p>
-        )}
+        <AdminTable
+          title={activeTab === 'all' ? "All Registered Vendors" : "Pending Approvals"}
+          columns={vendorColumns}
+          data={filteredData}
+          searchPlaceholder="Search vendors by name, shop or email..."
+        />
       </div>
     </div>
   );
