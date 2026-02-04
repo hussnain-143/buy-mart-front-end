@@ -163,15 +163,15 @@ const AdminVendor: React.FC = () => {
         </div>
 
         {/* ================= TABLE ================= */}
-        {activeTab === "all" && (
+        {/* {activeTab === "all" && (
           <DataTable
             title="All Registered Vendors"
             columns={vendorColumns}
             data={allVendors}
           />
-        )}
+        )} */}
 
-        {activeTab === "request" && requestVendors.length > 0 ? (
+        {/* {activeTab === "request" && requestVendors.length > 0 ? (
           <DataTable
             title="Vendor Approval Requests"
             columns={vendorColumns}
@@ -179,7 +179,7 @@ const AdminVendor: React.FC = () => {
           />
         ) : (
           null
-        )}
+        )} */}
 
         {activeTab === "request" && requestVendors.length === 0 && (
           <p className="text-center text-sm text-muted-foreground mt-6">

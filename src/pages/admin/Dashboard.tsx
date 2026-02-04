@@ -158,12 +158,12 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* TABLE */}
+        {/* TABLE
         <DataTable
           title="Global Vendor Management"
           columns={vendorColumns}
           data={vendorData}
-        />
+        /> */}
       </div>
     </div>
   );
