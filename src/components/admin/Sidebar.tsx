@@ -23,8 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon : Store , label: "Vendors", href: "/vendors" },
-    { icon: ShoppingCart, label: "Orders", href: "/orders" , badge: "5" },
+    { icon: Store, label: "Vendors", href: "/vendors" },
+    { icon: ShoppingCart, label: "Orders", href: "/orders", badge: "5" },
     { icon: Package, label: "Products", href: "/products" },
     { icon: Users, label: "Customers", href: "/customers" },
     { icon: Tag, label: "Categories", href: "/categories" },
@@ -44,21 +44,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:sticky top-0 left-0 h-screen w-72
-          bg-secondary text-white z-40
-          transform transition-all duration-700
+          fixed lg:static top-0 left-0 h-screen w-72 flex-shrink-0
+          bg-secondary text-white z-50
+          transform transition-transform duration-300 ease-in-out
           border-r border-white/[0.03]
-          ${
-            isOpen
-              ? "translate-x-0 shadow-[0_0_100px_rgba(0,0,0,0.5)]"
-              : "-translate-x-full lg:translate-x-0"
+          ${isOpen
+            ? "translate-x-0 shadow-[0_0_100px_rgba(0,0,0,0.5)]"
+            : "-translate-x-full lg:translate-x-0"
           }
         `}
       >
         <div className="flex flex-col h-full bg-gradient-to-b from-orange-500/[0.08] via-transparent to-transparent">
           {/* Logo */}
-          <div className="flex items-center justify-center h-20 mt-4">
-            <img src="/1.png" alt="logo" className="size-28" />
+          <div className="flex items-center justify-center h-20 min-h-[5rem]">
+            <img src="/1.png" alt="logo" className="size-28 object-contain" />
           </div>
 
           {/* Menu */}
@@ -75,10 +74,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                         `
                         relative flex items-center gap-4 px-4 py-3.5 rounded-2xl
                         transition-all duration-300 group
-                        ${
-                          isActive
-                            ? "bg-orange-500/10 text-orange-500 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.3)]"
-                            : "text-gray-500 hover:text-white hover:bg-white/5"
+                        ${isActive
+                          ? "bg-orange-500/10 text-orange-500 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.3)]"
+                          : "text-gray-500 hover:text-white hover:bg-white/5"
                         }
                       `
                       }
@@ -92,10 +90,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                           <div
                             className={`
                               p-2 rounded-xl transition-all duration-300
-                              ${
-                                isActive
-                                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30 rotate-3"
-                                  : "group-hover:bg-white/10 group-hover:scale-110 group-hover:-rotate-3"
+                              ${isActive
+                                ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30 rotate-3"
+                                : "group-hover:bg-white/10 group-hover:scale-110 group-hover:-rotate-3"
                               }
                             `}
                           >

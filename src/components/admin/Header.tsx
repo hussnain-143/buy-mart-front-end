@@ -1,10 +1,23 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   return (
-    <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-2xl border-b border-gray-100">
-      <div className="flex items-center justify-between px-10 py-5">
+    <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-2xl border-b border-gray-100 h-20 flex-shrink-0">
+      <div className="flex items-center justify-between px-6 lg:px-10 h-full gap-4">
+
+        {/* Menu Button (Mobile) */}
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-secondary rounded-xl hover:bg-gray-100 transition-colors"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
         {/* Search */}
         <div className="flex-1 max-w-2xl">
           <div className="relative group">
@@ -29,7 +42,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* Admin Text Badge */}
-        <div className="ml-10">
+        <div className="hidden sm:block ml-10">
           <div className="
             flex items-center gap-3
             px-6 py-3
