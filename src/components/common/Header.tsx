@@ -10,6 +10,7 @@ import Vendor from "../../pages/Vendor";
 type UserType = {
   name?: string;
   profileUrl?: string;
+  role?: string;
   vendor_subscription?: SubscriptionStatus;
 };
 
@@ -138,7 +139,7 @@ const Header = () => {
       setProfileOpen(false);
 
       showToast("Logged out successfully", "success");
-      navigate("/login");
+      navigate("/home");
     } catch (error: any) {
       showToast(error?.message || "Logout failed", "error");
     }
@@ -243,6 +244,14 @@ const Header = () => {
                 style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
               />
             ) : null}
+            {  user?.role === "admin" && (
+                <Button
+                content="Go to Admin Panel"
+                onClick={() => navigate("/super/dashboard")}
+                style="rounded-md  px-5 py-2.5 text-sm font-medium text-primary border border-primary hover:bg-primary/10 cursor-pointer"
+              />
+              )
+            }
         </>
       )}
     </>
