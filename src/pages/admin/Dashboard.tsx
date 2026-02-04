@@ -22,6 +22,7 @@ import {
   TopSellingPanel,
   AlertPanel,
 } from "../../components/admin/ProductPanels";
+import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
 import {
   AdminButton,
 } from "../../components/admin/AdminForm";
@@ -79,14 +80,30 @@ const Dashboard: React.FC = () => {
     { title: "Total Orders", value: "—", icon: Activity },
   ];
 
-  /* ===================== TABLE ===================== */
-  const vendorColumns = [
-    { key: "name", header: "Vendor Name" },
-    { key: "email", header: "Email" },
-    { key: "shop", header: "Shop Name" },
-    { key: "status", header: "Status" },
+  /* ===================== TABLE CONFIG ===================== */
+  const getStatusStyles = (status: string) => {
+    const s = String(status).toLowerCase();
+    if (s.includes('active')) return 'bg-emerald-100 text-emerald-600 shadow-sm shadow-emerald-100/50';
+    if (s.includes('pending')) return 'bg-amber-100 text-amber-600 shadow-sm shadow-amber-100/50';
+    return 'bg-slate-100 text-slate-600';
+  };
+
+  const vendorColumns: TableColumn<any>[] = [
+    { header: "Vendor Name", accessorKey: "name" },
+    { header: "Email", accessorKey: "email" },
+    { header: "Shop Name", accessorKey: "shop" },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (row) => (
+        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest inline-flex items-center ${getStatusStyles(row.status)}`}>
+          {row.status}
+        </span>
+      )
+    },
   ];
 
+  // Map raw vendor data to flat structure for table
   const vendorData = vendors.map((vendor) => ({
     name: vendor.owner?.firstName + " " + vendor.owner?.lastName || "N/A",
     email: vendor.owner?.email || "N/A",
@@ -153,9 +170,18 @@ const Dashboard: React.FC = () => {
             <AlertPanel />
           </div>
         </div>
+
+        {/* TABLE */}
+        <AdminTable
+          title="Global Vendor Management"
+          columns={vendorColumns}
+          data={vendorData}
+          searchPlaceholder="Search vendors..."
+        />
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
