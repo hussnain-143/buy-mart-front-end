@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* ANALYTICS */}
-        {/* <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-2 space-y-8 min-w-0">
             <OrderTrendsChart />
             <RevenueTrendChart />
@@ -146,7 +146,7 @@ const Dashboard: React.FC = () => {
           <div className="min-w-0">
             <CategoryDistributionChart />
           </div>
-        </div> */}
+        </div>
 
         {/* PANELS */}
         {/* <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
