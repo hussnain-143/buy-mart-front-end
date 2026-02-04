@@ -57,7 +57,7 @@ export const TopSellingPanel: React.FC = () => (
 );
 
 export const AlertPanel: React.FC = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full hover:shadow-2xl transition-all duration-500 group">
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 min-h-full hover:shadow-2xl transition-all duration-500 group">
         <div className="flex items-center gap-4 mb-8">
             <div className="w-2 h-8 bg-gradient-to-b from-red-500 to-rose-400 rounded-full" />
             <div>
