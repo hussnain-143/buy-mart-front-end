@@ -4,7 +4,6 @@ import { CheckCircle } from "lucide-react";
 import Toast from "../../components/common/Toast";
 import { GetAllVendors, updateVendor } from "../../services/vendor.service";
 
-import DataTable from "../../components/admin/DataTable";
 import { AdminButton } from "../../components/admin/AdminForm";
 import { useNavigate } from "react-router-dom";
 
@@ -163,15 +162,15 @@ const AdminVendor: React.FC = () => {
         </div>
 
         {/* ================= TABLE ================= */}
-        {activeTab === "all" && (
+        {/* {activeTab === "all" && (
           <DataTable
             title="All Registered Vendors"
             columns={vendorColumns}
             data={allVendors}
           />
-        )}
+        )} */}
 
-        {activeTab === "request" && requestVendors.length > 0 ? (
+        {/* {activeTab === "request" && requestVendors.length > 0 ? (
           <DataTable
             title="Vendor Approval Requests"
             columns={vendorColumns}
@@ -179,7 +178,7 @@ const AdminVendor: React.FC = () => {
           />
         ) : (
           null
-        )}
+        )} */}
 
         {activeTab === "request" && requestVendors.length === 0 && (
           <p className="text-center text-sm text-muted-foreground mt-6">
