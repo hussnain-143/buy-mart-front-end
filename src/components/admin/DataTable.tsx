@@ -24,10 +24,10 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, title }) => {
             return 'bg-red-100 text-red-600 shadow-sm shadow-red-100/50';
         return 'bg-slate-100 text-slate-600';
     };
-    
+
 
     return (
-        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/40 overflow-hidden hover:shadow-2xl transition-all duration-500 group/table">
+        <div className="w-full max-w-full bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/40 overflow-hidden hover:shadow-2xl transition-all duration-500 group/table">
             {title && (
                 <div className="p-8 border-b border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-transparent to-gray-50/30">
                     <div className="flex items-center gap-3">
@@ -41,7 +41,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, title }) => {
                     <thead className="bg-gray-50/50 border-b border-gray-100/50">
                         <tr>
                             {columns.map((col) => (
-                                <th key={col.key} className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                                <th key={col.key} className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
                                     {col.header}
                                 </th>
                             ))}
@@ -52,7 +52,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, title }) => {
                         {data.map((row, index) => (
                             <tr key={index} className="hover:bg-primary/[0.02] transition-colors duration-300 group/row">
                                 {columns.map((col) => (
-                                    <td key={col.key} className="px-6 py-6 text-sm font-bold text-gray-500 group-hover/row:text-secondary transition-colors">
+                                    <td key={col.key} className="px-6 py-6 text-sm font-bold text-gray-500 group-hover/row:text-secondary transition-colors whitespace-nowrap">
                                         {col.key === 'status' ? (
                                             <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${getStatusStyles(row[col.key])}`}>
                                                 {row[col.key]}

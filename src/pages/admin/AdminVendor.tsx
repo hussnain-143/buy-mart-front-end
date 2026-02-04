@@ -117,7 +117,7 @@ const AdminVendor: React.FC = () => {
     }));
 
   return (
-    <div className="relative space-y-10 font-montserrat">
+    <div className="relative space-y-10 font-montserrat min-w-0 max-w-full">
       {toast.show && (
         <Toast
           type={toast.type}
@@ -125,7 +125,7 @@ const AdminVendor: React.FC = () => {
           onClose={() => setToast({ show: false, message: "", type: "info" })}
         />
       )}
-      <div className="relative z-10 space-y-10">
+      <div className="relative z-10 space-y-10 min-w-0">
 
         {/* ================= HEADER ================= */}
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 pb-6 border-b border-border/40">
@@ -164,24 +164,32 @@ const AdminVendor: React.FC = () => {
 
         {/* ================= TABLE ================= */}
         {activeTab === "all" && (
-          <DataTable
-            title="All Registered Vendors"
-            columns={vendorColumns}
-            data={allVendors}
-          />
+          <div className="w-full min-w-0 overflow-hidden">
+            <DataTable
+              title="All Registered Vendors"
+              columns={vendorColumns}
+              data={allVendors}
+            />
+          </div>
         )}
 
-        {activeTab === "request" &&  requestVendors.length > 0 ? (
-          <DataTable
-            title="Vendor Approval Requests"
-            columns={vendorColumns}
-            data={requestVendors}
-          />
+        {activeTab === "request" && requestVendors.length > 0 ? (
+          <div className="w-full min-w-0 overflow-hidden">
+            <DataTable
+              title="Vendor Approval Requests"
+              columns={vendorColumns}
+              data={requestVendors}
+            />
+          </div>
         ) : (
+          null
+        )}
+
+        {activeTab === "request" && requestVendors.length === 0 && (
           <p className="text-center text-sm text-muted-foreground mt-6">
             No pending vendor approval requests.
           </p>
-        ) }
+        )}
       </div>
     </div>
   );
