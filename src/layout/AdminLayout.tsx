@@ -21,7 +21,7 @@ const AdminLayout = () => {
                 <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-y-auto px-10 py-12 custom-scrollbar animate-in fade-in slide-in-from-bottom-6 duration-700 ease-out">
+                <main className="flex-1 w-full min-w-0 overflow-y-auto px-10 py-12 custom-scrollbar">
                     <div className="max-w-[1600px] mx-auto">
                         <Outlet />
                     </div>
