@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import GlobalSkeleton from '../../components/common/GlobalSkeleton';
 
-const ProtectedRoutes = () => {
+const AdminRoutes = () => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -11,6 +11,10 @@ const ProtectedRoutes = () => {
       const token = localStorage.getItem("token");
       if (token) {
         setIsAuthenticated(true);
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        if (user.role !== "admin") {
+          setIsAuthenticated(false);
+        }
       } else {
         setIsAuthenticated(false);
       }
@@ -21,7 +25,7 @@ const ProtectedRoutes = () => {
   }, []);
 
   if (loading) {
-    return  <GlobalSkeleton/> // Or your Loader component
+    return  <GlobalSkeleton/> 
   }
 
   // Check if user is authenticated
@@ -33,4 +37,4 @@ const ProtectedRoutes = () => {
   return <Navigate to="/login" replace />;
 };
 
-export default ProtectedRoutes;
+export default AdminRoutes;

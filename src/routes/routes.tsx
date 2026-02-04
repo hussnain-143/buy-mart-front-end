@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import MainLayout from "../layout/MainLayout";
 import { lazy, Suspense } from "react";
 
 
@@ -14,7 +13,14 @@ const Subscription = lazy(() => import("../pages/Subscription"));
 const Checkout = lazy(() => import("../pages/Checkout"));
 const Success = lazy(() => import("../pages/Success"));
 const Cancel = lazy(() => import("../pages/Cancel"));
-import ProtectedRoutes from "./Auth/ProtectedRoutes";
+
+const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
+const AdminVendor = lazy(() => import("../pages/admin/AdminVendor"));
+
+import MainLayout from "../layout/MainLayout";
+import ProtectedRoutes from "./Auth/Protected.routes";
+import AdminRoutes from "./Auth/Admin.routes";
+import AdminLayout from "../layout/AdminLayout";
 
 
 const AppRoutes = () => {
@@ -34,6 +40,13 @@ const AppRoutes = () => {
           <Route path="/vendor-form" element={<Suspense fallback={<Loader />}><Vendor /></Suspense>} />
         </Route>
       </Route>
+      <Route element={<AdminLayout />}>
+          <Route  path="/super" element={ <AdminRoutes />} >
+            <Route path="dashboard" index element={ <Suspense fallback={<Loader/>}><Dashboard/></Suspense> } />
+            <Route path="vendors" index element={ <Suspense fallback={<Loader/>}><AdminVendor/></Suspense> } />
+          </Route>
+      </Route>
+
 
 
       {/* Routes WITHOUT Header + Footer */}
