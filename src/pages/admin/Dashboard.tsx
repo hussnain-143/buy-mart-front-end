@@ -100,7 +100,7 @@ const Dashboard: React.FC = () => {
 
   /* ===================== RENDER ===================== */
   return (
-    <div className="relative space-y-12 font-montserrat">
+    <div className="relative space-y-12 font-montserrat min-w-0 w-full">
       {toast.show && (
         <Toast
           type={toast.type}
