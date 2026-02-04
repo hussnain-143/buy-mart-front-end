@@ -159,13 +159,11 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* TABLE */}
-        <div className="w-full min-w-0 overflow-hidden">
-          <DataTable
-            title="Global Vendor Management"
-            columns={vendorColumns}
-            data={vendorData}
-          />
-        </div>
+        <DataTable
+          title="Global Vendor Management"
+          columns={vendorColumns}
+          data={vendorData}
+        />
       </div>
     </div>
   );
