@@ -113,7 +113,7 @@ const Dashboard: React.FC = () => {
 
   /* ===================== RENDER ===================== */
   return (
-    <div className="relative space-y-12 font-montserrat min-w-0 w-full">
+    <div className="relative font-montserrat min-w-0 w-full">
       {toast.show && (
         <Toast
           type={toast.type}
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      <div className="relative z-10 space-y-12">
+      <div className="relative z-10 space-y-12 min-w-0">
         {/* HEADER */}
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 pb-8 border-b border-border/40">
           <div className="space-y-3">
