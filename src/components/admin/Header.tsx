@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         <div className="flex-1 max-w-2xl">
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-              <Si wearch className="w-4 h-4 text-gray-500 group-focus-within:text-primary transition-colors" />
+              <Search className="w-4 h-4 text-gray-500 group-focus-within:text-primary transition-colors" />
             </div>
             <input
               type="text"
