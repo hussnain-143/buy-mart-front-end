@@ -172,33 +172,33 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* ANALYTICS SECTION */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[350px]">
+        {/* ROW 2: MAIN CHARTS */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[350px]">
           <OrderTrendsChart />
           <RevenueTrendChart />
-          <CategoryDistributionChart />
         </div>
 
-        {/* CONTENT GRID */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-          {/* Main Table Section (Wider) */}
-          <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
-            <AdminTable
-              title="Vendor Directory"
-              columns={vendorColumns}
-              data={vendorData}
-              searchPlaceholder="Search by name, email or shop..."
-            />
+        {/* ROW 3: INFO PANELS */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <div className="h-[350px]">
+            <CategoryDistributionChart />
           </div>
+          <div className="h-full">
+            <TopSellingPanel />
+          </div>
+          <div className="h-full">
+            <SystemLogs />
+          </div>
+        </div>
 
-          {/* Right Side Panels (Narrower) */}
-          <div className="space-y-6 w-full">
-            <div className="h-fit">
-              <TopSellingPanel />
-            </div>
-            <div className="h-fit">
-              <SystemLogs />
-            </div>
-          </div>
+        {/* ROW 4: TABLE */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+          <AdminTable
+            title="Vendor Directory"
+            columns={vendorColumns}
+            data={vendorData}
+            searchPlaceholder="Search by name, email or shop..."
+          />
         </div>
       </div>
     </div>

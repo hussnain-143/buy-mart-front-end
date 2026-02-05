@@ -74,7 +74,7 @@ const getBgColor = (type: string) => {
 
 const SystemLogs: React.FC = () => {
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h3 className="text-gray-900 font-bold text-lg tracking-tight flex items-center gap-2">
