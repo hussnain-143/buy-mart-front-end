@@ -1,0 +1,37 @@
+import { useState } from 'react';
+import Header from '../components/vendor/Header';
+import Sidebar from '../components/vendor/Sidebar';
+import Footer from '../components/vendor/Footer';
+import { Outlet } from 'react-router-dom';
+
+const VendorLayout = () => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    return (
+        <div className="flex h-screen overflow-hidden bg-[#fafafa] selection:bg-orange-500/10 selection:text-orange-600">
+            {/* Sidebar */}
+            <Sidebar isOpen={sidebarOpen} />
+
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col overflow-hidden relative">
+                {/* Global Glow Layer */}
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/5 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
+                {/* Header */}
+                <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+
+                {/* Main Content */}
+                <main className="flex-1 w-full min-w-0 overflow-y-auto px-10 py-12 pb-32 custom-scrollbar">
+                    <div className="max-w-[1600px] mx-auto">
+                        <Outlet />
+                    </div>
+                </main>
+
+                {/* Footer */}
+                <Footer />
+            </div>
+        </div>
+    );
+};
+
+export default VendorLayout;
