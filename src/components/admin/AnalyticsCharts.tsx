@@ -36,12 +36,14 @@ const categoryData = [
 const COLORS = ['#FF6F00', '#212121', '#FFD54F', '#4ADE80', '#3B82F6'];
 
 export const CategoryDistributionChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full min-h-[400px] hover:shadow-2xl transition-all duration-500">
+    <div className="bg-secondary p-8 rounded-[2.5rem] border-2 border-white/5 hover:border-primary/50 transition-all duration-500 h-full min-h-[400px]">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-primary to-orange-300 rounded-full" />
+            <div className="p-3 bg-primary text-white rounded-2xl shadow-[0_0_15px_rgba(255,111,0,0.3)]">
+                <PieChart size={20} />
+            </div>
             <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Category Distribution</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Products by Category</p>
+                <h3 className="text-white font-black text-xl tracking-tight uppercase">Segment Analysis</h3>
+                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Market Share Distribution</p>
             </div>
         </div>
         <ResponsiveContainer width="100%" height="75%">
@@ -54,19 +56,21 @@ export const CategoryDistributionChart = () => (
                     outerRadius={110}
                     paddingAngle={10}
                     dataKey="value"
+                    stroke="none"
                 >
                     {categoryData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                 </Pie>
                 <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                    contentStyle={{ borderRadius: '24px', border: 'none', backgroundColor: '#212121', color: '#fff', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
+                    itemStyle={{ color: '#fff', fontWeight: 'bold' }}
                 />
                 <Legend
                     verticalAlign="bottom"
                     iconType="circle"
                     wrapperStyle={{ paddingTop: '30px' }}
-                    formatter={(value) => <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest">{value}</span>}
+                    formatter={(value) => <span className="text-gray-400 font-black text-[9px] uppercase tracking-widest">{value}</span>}
                 />
             </PieChart>
         </ResponsiveContainer>
@@ -74,35 +78,40 @@ export const CategoryDistributionChart = () => (
 );
 
 export const OrderTrendsChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
+    <div className="bg-secondary p-8 rounded-[2.5rem] border-2 border-white/5 hover:border-primary/50 transition-all duration-500 h-[400px]">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-400 rounded-full" />
+            <div className="p-3 bg-blue-500 text-white rounded-2xl shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <BarChart size={20} />
+            </div>
             <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Order Analytics</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Orders Over Time</p>
+                <h3 className="text-white font-black text-xl tracking-tight uppercase">Order Velocity</h3>
+                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Volume Metrics Over Time</p>
             </div>
         </div>
         <ResponsiveContainer width="100%" height="75%">
             <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.05} />
+                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontWeight: 900 }} />
+                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontWeight: 900 }} />
                 <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                    contentStyle={{ borderRadius: '24px', border: 'none', backgroundColor: '#212121', color: '#fff', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
                 />
-                <Bar dataKey="orders" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="orders" fill="#3B82F6" radius={[6, 6, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
     </div>
 );
 
 export const RevenueTrendChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
+    <div className="bg-secondary p-8 rounded-[2.5rem] border-2 border-white/5 hover:border-primary/50 transition-all duration-500 h-[400px]">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-emerald-500 to-teal-400 rounded-full" />
+            <div className="p-3 bg-emerald-500 text-white rounded-2xl shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                <AreaChart size={20} />
+            </div>
             <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Revenue Trend</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Global Revenue Growth</p>
+                <h3 className="text-white font-black text-xl tracking-tight uppercase">Capital Flow</h3>
+                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Revenue Generation Growth</p>
             </div>
         </div>
         <ResponsiveContainer width="100%" height="75%">
@@ -113,11 +122,11 @@ export const RevenueTrendChart = () => (
                         <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.05} />
+                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontWeight: 900 }} />
+                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontWeight: 900 }} />
                 <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                    contentStyle={{ borderRadius: '24px', border: 'none', backgroundColor: '#212121', color: '#fff', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" />
             </AreaChart>
