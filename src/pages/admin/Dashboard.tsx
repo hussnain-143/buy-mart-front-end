@@ -191,13 +191,13 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="space-y-6 min-w-0">
-            <div className="h-[380px]">
+            <div className="h-[350px]">
               <CategoryDistributionChart />
             </div>
-            <div className="h-[400px]">
+            <div className="h-auto min-h-[300px]">
               <TopSellingPanel />
             </div>
-            <div className="h-[350px]">
+            <div className="h-auto min-h-[300px]">
               <SystemLogs />
             </div>
           </div>

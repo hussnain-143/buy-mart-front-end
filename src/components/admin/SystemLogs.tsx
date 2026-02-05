@@ -88,7 +88,7 @@ const SystemLogs: React.FC = () => {
                 </button>
             </div>
 
-            <div className="relative pl-4 space-y-8 overflow-y-auto custom-scrollbar pr-2 flex-1">
+            <div className="relative pl-4 space-y-4 overflow-y-auto custom-scrollbar pr-2 flex-1">
                 {/* Vertical Line */}
                 <div className="absolute left-[19px] top-2 bottom-4 w-0.5 bg-gray-100" />
 
@@ -109,7 +109,7 @@ const SystemLogs: React.FC = () => {
                                     {log.time}
                                 </span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                            <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
                                 {log.description}
                             </p>
                         </div>
