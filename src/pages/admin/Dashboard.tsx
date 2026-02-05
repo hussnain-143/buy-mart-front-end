@@ -21,8 +21,8 @@ import {
 } from "../../components/admin/AnalyticsCharts";
 import {
   TopSellingPanel,
-  AlertPanel,
 } from "../../components/admin/ProductPanels";
+import SystemLogs from "../../components/admin/SystemLogs";
 import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
 import {
   AdminButton,
@@ -198,7 +198,7 @@ const Dashboard: React.FC = () => {
               <TopSellingPanel />
             </div>
             <div className="h-[350px]">
-              <AlertPanel />
+              <SystemLogs />
             </div>
           </div>
         </div>
