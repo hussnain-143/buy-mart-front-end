@@ -23,31 +23,33 @@ const lowStock: ProductPerformance[] = [
 ];
 
 export const TopSellingPanel: React.FC = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full hover:shadow-2xl transition-all duration-500 group">
+    <div className="bg-secondary p-8 rounded-[2.5rem] border-2 border-white/5 hover:border-primary/50 transition-all duration-500 group">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-primary to-orange-300 rounded-full" />
+            <div className="p-3 bg-primary text-white rounded-2xl shadow-[0_0_15px_rgba(255,111,0,0.3)]">
+                <TrendingUp size={20} />
+            </div>
             <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Top Performance</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Must-Sell Global Leaders</p>
+                <h3 className="text-white font-black text-xl tracking-tight uppercase">Elite Performance</h3>
+                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">High Velocity Global Leaders</p>
             </div>
         </div>
-        <div className="space-y-6">
+        <div className="space-y-4">
             {topSelling.map((product) => (
-                <div key={product.id} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 hover:bg-white border border-transparent hover:border-gray-100 transition-all duration-300">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-emerald-50 text-emerald-500 rounded-xl">
+                <div key={product.id} className="flex items-center justify-between p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-primary/30 transition-all duration-300">
+                    <div className="flex items-center gap-5">
+                        <div className="p-3 bg-emerald-500/20 text-emerald-500 rounded-2xl">
                             <Package className="w-5 h-5" />
                         </div>
                         <div>
-                            <h4 className="text-sm font-black text-secondary tracking-tight">{product.name}</h4>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{product.sales} Sales</p>
+                            <h4 className="text-sm font-black text-white tracking-tight">{product.name}</h4>
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{product.sales} Sales</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-sm font-black text-emerald-600">{product.revenue}</p>
-                        <div className="flex items-center justify-end gap-1 text-[10px] font-black text-primary">
-                            <TrendingUp className="w-3 h-3" />
-                            HOT
+                        <p className="text-md font-black text-emerald-400">{product.revenue}</p>
+                        <div className="flex items-center justify-end gap-1 text-[9px] font-black text-primary uppercase tracking-tighter">
+                            <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+                            Trending
                         </div>
                     </div>
                 </div>
@@ -57,35 +59,36 @@ export const TopSellingPanel: React.FC = () => (
 );
 
 export const AlertPanel: React.FC = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 min-h-full hover:shadow-2xl transition-all duration-500 group">
+    <div className="bg-secondary p-8 rounded-[2.5rem] border-2 border-white/5 hover:border-primary/50 transition-all duration-500 group">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-red-500 to-rose-400 rounded-full" />
+            <div className="p-3 bg-red-500 text-white rounded-2xl shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                <AlertTriangle size={20} />
+            </div>
             <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Inventory Alerts</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Critical Stock Levels</p>
+                <h3 className="text-white font-black text-xl tracking-tight uppercase">System Alerts</h3>
+                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Critical Inventory Status</p>
             </div>
         </div>
         <div className="space-y-4">
             {lowStock.map((product) => (
-                <div key={product.id} className="flex items-center gap-4 p-4 rounded-2xl bg-red-50/30 border border-red-100/50 group/item hover:bg-red-50 transition-colors">
-                    <div className="p-3 bg-red-100 text-red-600 rounded-xl relative overflow-hidden">
-                        <AlertTriangle className="w-5 h-5 relative z-10" />
-                        <div className="absolute inset-0 bg-red-500/10 animate-ping" />
-                    </div>
-                    <div className="flex-1">
-                        <h4 className="text-sm font-black text-secondary tracking-tight">{product.name}</h4>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">{product.stock} units left</span>
-                            <div className="h-1 flex-1 bg-gray-200 rounded-full overflow-hidden">
-                                <div className="h-full bg-red-500" style={{ width: `${(product.stock / 10) * 100}%` }} />
-                            </div>
+                <div key={product.id} className="p-5 rounded-3xl bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 transition-all">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                            <h4 className="text-sm font-black text-white tracking-tight">{product.name}</h4>
+                            <span className="text-[10px] font-black text-red-400 uppercase tracking-widest">{product.stock} units remaining</span>
                         </div>
+                        <div className="p-2 bg-red-500 text-white rounded-xl animate-pulse">
+                            <AlertTriangle className="w-3 h-3" />
+                        </div>
+                    </div>
+                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" style={{ width: `${(product.stock / 10) * 100}%` }} />
                     </div>
                 </div>
             ))}
         </div>
-        <button className="w-full mt-8 py-4 bg-secondary text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20">
-            Manage Inventory Fleet
+        <button className="w-full mt-8 py-4 bg-primary text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary/90 hover:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(255,111,0,0.3)]">
+            Command Center Access
         </button>
     </div>
 );

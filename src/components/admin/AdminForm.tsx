@@ -15,10 +15,10 @@ export const AdminButton: React.FC<ButtonProps> = ({
     const baseStyles = "px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variants = {
-        primary: "bg-gradient-to-r from-primary to-primary/80 text-white hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5",
-        secondary: "bg-gradient-to-r from-secondary to-secondary/80 text-white hover:shadow-lg hover:shadow-secondary/30 hover:-translate-y-0.5",
-        danger: "bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-0.5",
-        ghost: "bg-white/50 backdrop-blur-sm text-gray-600 hover:bg-gray-100/80 border border-gray-200",
+        primary: "bg-primary text-white shadow-[0_10px_20px_rgba(255,111,0,0.3)] hover:shadow-[0_15px_30px_rgba(255,111,0,0.4)] hover:-translate-y-1 active:scale-95 uppercase text-[10px] font-black tracking-widest",
+        secondary: "bg-secondary text-white border-2 border-white/5 hover:border-primary/50 hover:shadow-[0_10px_20px_rgba(0,0,0,0.3)] hover:-translate-y-1 active:scale-95 uppercase text-[10px] font-black tracking-widest",
+        danger: "bg-red-500 text-white shadow-[0_10px_20px_rgba(239,68,68,0.3)] hover:shadow-[0_15px_30px_rgba(239,68,68,0.4)] hover:-translate-y-1 active:scale-95 uppercase text-[10px] font-black tracking-widest",
+        ghost: "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5 uppercase text-[10px] font-black tracking-widest",
     };
 
     return (

@@ -83,9 +83,9 @@ const Dashboard: React.FC = () => {
   /* ===================== TABLE CONFIG ===================== */
   const getStatusStyles = (status: string) => {
     const s = String(status).toLowerCase();
-    if (s.includes('active')) return 'bg-emerald-100 text-emerald-600 shadow-sm shadow-emerald-100/50';
-    if (s.includes('pending')) return 'bg-amber-100 text-amber-600 shadow-sm shadow-amber-100/50';
-    return 'bg-slate-100 text-slate-600';
+    if (s.includes('active')) return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+    if (s.includes('pending')) return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+    return 'bg-white/5 text-gray-400 border border-white/10';
   };
 
   const vendorColumns: TableColumn<any>[] = [
@@ -96,7 +96,8 @@ const Dashboard: React.FC = () => {
       header: "Status",
       accessorKey: "status",
       cell: (row) => (
-        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest inline-flex items-center ${getStatusStyles(row.status)}`}>
+        <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] inline-flex items-center ${getStatusStyles(row.status)}`}>
+          <div className={`w-1 h-1 rounded-full mr-2 ${row.status === 'active' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
           {row.status}
         </span>
       )
@@ -124,22 +125,26 @@ const Dashboard: React.FC = () => {
 
       <div className="relative z-10 space-y-12 min-w-0">
         {/* HEADER */}
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 pb-8 border-b border-border/40">
-          <div className="space-y-3">
-            <h1 className="text-4xl lg:text-5xl font-black text-secondary">
-              System{" "}
-              <span className="bg-gradient-to-r from-primary via-orange-500 to-amber-400 bg-clip-text text-transparent">
-                Oversight
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 pb-10 border-b border-white/5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-primary rounded-full animate-ping" />
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Live System Environment</span>
+            </div>
+            <h1 className="text-5xl lg:text-7xl font-black text-secondary leading-none">
+              Nexus{" "}
+              <span className="text-primary">
+                Control
               </span>
             </h1>
-            <p className="text-sm text-muted-foreground">
-              Unified Management Hub for Platform Control
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-[0.2em]">
+              Unified Management Hub for Platform Governance
             </p>
           </div>
 
-          <AdminButton onClick={() => setIsModalOpen(true)}>
-            <Plus className="w-5 h-5 mr-2" />
-            Initiate System Entry
+          <AdminButton onClick={() => setIsModalOpen(true)} className="h-16 px-10 rounded-[2rem]">
+            <Plus className="w-6 h-6 mr-3" />
+            Initialize System Entry
           </AdminButton>
         </div>
 
