@@ -171,33 +171,31 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* ANALYTICS GRID */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div className="xl:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[380px]">
-              <OrderTrendsChart />
-              <RevenueTrendChart />
-            </div>
+        {/* ANALYTICS SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[350px]">
+          <OrderTrendsChart />
+          <RevenueTrendChart />
+          <CategoryDistributionChart />
+        </div>
 
-            {/* Main Table Section */}
-            <div className="bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
-              <AdminTable
-                title="Vendor Directory"
-                columns={vendorColumns}
-                data={vendorData}
-                searchPlaceholder="Search by name, email or shop..."
-              />
-            </div>
+        {/* CONTENT GRID */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+          {/* Main Table Section (Wider) */}
+          <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+            <AdminTable
+              title="Vendor Directory"
+              columns={vendorColumns}
+              data={vendorData}
+              searchPlaceholder="Search by name, email or shop..."
+            />
           </div>
 
-          <div className="space-y-6 min-w-0">
-            <div className="h-[350px]">
-              <CategoryDistributionChart />
-            </div>
-            <div className="h-auto min-h-[300px]">
+          {/* Right Side Panels (Narrower) */}
+          <div className="space-y-6 w-full">
+            <div className="h-fit">
               <TopSellingPanel />
             </div>
-            <div className="h-auto min-h-[300px]">
+            <div className="h-fit">
               <SystemLogs />
             </div>
           </div>

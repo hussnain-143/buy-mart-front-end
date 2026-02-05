@@ -20,7 +20,7 @@ const topSelling: ProductPerformance[] = [
 
 
 export const TopSellingPanel: React.FC = () => (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col">
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
         <div className="flex items-center justify-between mb-6">
             <div>
                 <h3 className="text-gray-900 font-bold text-lg tracking-tight">Top Products</h3>
