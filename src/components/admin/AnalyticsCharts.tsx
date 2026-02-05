@@ -1,26 +1,28 @@
 import {
     XAxis,
+    YAxis,
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    LineChart,
+    Line,
+    PieChart,
+    Pie,
+    Cell,
+    Legend,
     AreaChart,
     Area,
     BarChart,
     Bar,
-    PieChart,
-    Pie,
-    Cell,
-    Legend
 } from 'recharts';
-import { TrendingUp, Activity, PieChart as PieIcon } from 'lucide-react';
 
 const data = [
-    { name: '00:00', orders: 40, revenue: 2400, load: 45 },
-    { name: '04:00', orders: 30, revenue: 1398, load: 30 },
-    { name: '08:00', orders: 85, revenue: 9800, load: 85 },
-    { name: '12:00', orders: 70, revenue: 3908, load: 70 },
-    { name: '16:00', orders: 92, revenue: 4800, load: 92 },
-    { name: '20:00', orders: 60, revenue: 3800, load: 60 },
+    { name: '00:00', load: 45, api: 2400, growth: 12, orders: 40, revenue: 2400 },
+    { name: '04:00', load: 30, api: 1398, growth: 15, orders: 30, revenue: 1398 },
+    { name: '08:00', load: 85, api: 9800, growth: 22, orders: 85, revenue: 9800 },
+    { name: '12:00', load: 70, api: 3908, growth: 28, orders: 70, revenue: 3908 },
+    { name: '16:00', load: 92, api: 4800, growth: 35, orders: 92, revenue: 4800 },
+    { name: '20:00', load: 60, api: 3800, growth: 42, orders: 60, revenue: 3800 },
 ];
 
 const categoryData = [
@@ -31,41 +33,15 @@ const categoryData = [
     { name: 'Accessories', value: 150 },
 ];
 
-const COLORS = ['#22d3ee', '#818cf8', '#e879f9', '#f472b6', '#34d399'];
-
-// Custom Tooltip Component
-const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="bg-black/80 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl">
-                <p className="text-gray-400 text-xs font-bold mb-2 uppercase tracking-widest">{label}</p>
-                {payload.map((entry: any, index: number) => (
-                    <div key={index} className="flex items-center gap-2 text-sm font-bold">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                        <span className="text-white">
-                            {entry.value}
-                            {entry.name === 'revenue' && '$'}
-                        </span>
-                    </div>
-                ))}
-            </div>
-        );
-    }
-    return null;
-};
+const COLORS = ['#FF6F00', '#212121', '#FFD54F', '#4ADE80', '#3B82F6'];
 
 export const CategoryDistributionChart = () => (
-    <div className="relative overflow-hidden bg-slate-900/20 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/5 h-full min-h-[400px] group hover:border-purple-500/30 transition-all duration-500">
-        {/* Background Glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -z-10 group-hover:bg-purple-500/20 transition-all duration-700" />
-
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full min-h-[400px] hover:shadow-2xl transition-all duration-500">
         <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-purple-500/10 text-purple-400 rounded-2xl border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                <PieIcon size={20} />
-            </div>
+            <div className="w-2 h-8 bg-gradient-to-b from-primary to-orange-300 rounded-full" />
             <div>
-                <h3 className="text-white font-black text-xl tracking-tight uppercase">Market Share</h3>
-                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Category Dominance</p>
+                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Category Distribution</h3>
+                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Products by Category</p>
             </div>
         </div>
         <ResponsiveContainer width="100%" height="75%">
@@ -76,20 +52,21 @@ export const CategoryDistributionChart = () => (
                     cy="45%"
                     innerRadius={80}
                     outerRadius={110}
-                    paddingAngle={8}
+                    paddingAngle={10}
                     dataKey="value"
-                    stroke="none"
                 >
                     {categoryData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} className="outline-none" />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />
                     ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                />
                 <Legend
                     verticalAlign="bottom"
                     iconType="circle"
-                    wrapperStyle={{ paddingTop: '20px' }}
-                    formatter={(value) => <span className="text-gray-400 font-bold text-[10px] uppercase tracking-widest ml-2">{value}</span>}
+                    wrapperStyle={{ paddingTop: '30px' }}
+                    formatter={(value) => <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest">{value}</span>}
                 />
             </PieChart>
         </ResponsiveContainer>
@@ -97,69 +74,157 @@ export const CategoryDistributionChart = () => (
 );
 
 export const OrderTrendsChart = () => (
-    <div className="relative overflow-hidden bg-slate-900/20 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/5 h-[400px] group hover:border-cyan-500/30 transition-all duration-500">
-        {/* Background Glow */}
-        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -z-10 group-hover:bg-cyan-500/20 transition-all duration-700" />
-
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
         <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-2xl border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                <Activity size={20} />
-            </div>
+            <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-400 rounded-full" />
             <div>
-                <h3 className="text-white font-black text-xl tracking-tight uppercase">Order Flow</h3>
-                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Real-time Velocity</p>
+                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Order Analytics</h3>
+                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Orders Over Time</p>
             </div>
         </div>
         <ResponsiveContainer width="100%" height="75%">
             <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.05} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontWeight: 700 }} dy={10} />
-                <Tooltip cursor={{ fill: 'white', opacity: 0.05 }} content={<CustomTooltip />} />
-                <Bar dataKey="orders" fill="#22d3ee" radius={[4, 4, 0, 0]} maxBarSize={40}>
-                    {data.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={`url(#barGradient-${index})`} />
-                    ))}
-                </Bar>
-                <defs>
-                    {data.map((_, index) => (
-                        <linearGradient key={`barGradient-${index}`} id={`barGradient-${index}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.8} />
-                            <stop offset="100%" stopColor="#22d3ee" stopOpacity={0.2} />
-                        </linearGradient>
-                    ))}
-                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
+                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <Tooltip
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                />
+                <Bar dataKey="orders" fill="#3B82F6" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
     </div>
 );
 
 export const RevenueTrendChart = () => (
-    <div className="relative overflow-hidden bg-slate-900/20 backdrop-blur-3xl p-8 rounded-[2.5rem] border border-white/5 h-[400px] group hover:border-emerald-500/30 transition-all duration-500">
-        {/* Background Glow */}
-        <div className="absolute top-20 right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -z-10 group-hover:bg-emerald-500/20 transition-all duration-700" />
-
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
         <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 shadow-[0_0_15px_rgba(52,211,153,0.2)]">
-                <TrendingUp size={20} />
-            </div>
+            <div className="w-2 h-8 bg-gradient-to-b from-emerald-500 to-teal-400 rounded-full" />
             <div>
-                <h3 className="text-white font-black text-xl tracking-tight uppercase">Revenue Stream</h3>
-                <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Financial Trajectory</p>
+                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Revenue Trend</h3>
+                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Global Revenue Growth</p>
             </div>
         </div>
         <ResponsiveContainer width="100%" height="75%">
             <AreaChart data={data}>
                 <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#34d399" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#34d399" stopOpacity={0} />
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.05} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontWeight: 700 }} dy={10} />
-                <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="revenue" stroke="#34d399" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
+                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <Tooltip
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" />
             </AreaChart>
+        </ResponsiveContainer>
+    </div>
+);
+
+// Backward compatibility or keeping previous charts if needed
+export const SystemLoadChart = () => (
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500 overflow-hidden relative group">
+        <div className="flex items-center justify-between mb-8 relative z-10">
+            <div className="flex items-center gap-4">
+                <div className="w-2 h-8 bg-gradient-to-b from-primary to-orange-300 rounded-full" />
+                <div>
+                    <h3 className="text-secondary font-black text-xl tracking-tight uppercase">System Health</h3>
+                    <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Live CPU & Memory Load</p>
+                </div>
+            </div>
+            <div className="flex gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Stable</span>
+            </div>
+        </div>
+        <ResponsiveContainer width="100%" height="75%">
+            <AreaChart data={data}>
+                <defs>
+                    <linearGradient id="colorLoad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#FF6F00" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#FF6F00" stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
+                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <Tooltip
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                />
+                <Area type="monotone" dataKey="load" stroke="#FF6F00" strokeWidth={4} fillOpacity={1} fill="url(#colorLoad)" />
+            </AreaChart>
+        </ResponsiveContainer>
+    </div>
+);
+
+export const VendorGrowthChart = () => (
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
+        <div className="flex items-center gap-4 mb-8">
+            <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-400 rounded-full" />
+            <div>
+                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Vendor Acquisition</h3>
+                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Global Partner Growth</p>
+            </div>
+        </div>
+        <ResponsiveContainer width="100%" height="75%">
+            <LineChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
+                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                <Tooltip
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                />
+                <Line
+                    type="monotone"
+                    dataKey="growth"
+                    stroke="#3B82F6"
+                    strokeWidth={4}
+                    dot={{ fill: '#3B82F6', strokeWidth: 3, r: 6, stroke: '#fff' }}
+                    activeDot={{ r: 10, strokeWidth: 0, fill: '#3B82F6' }}
+                />
+            </LineChart>
+        </ResponsiveContainer>
+    </div>
+);
+
+export const GlobalDistributionChart = () => (
+    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full min-h-[400px] hover:shadow-2xl transition-all duration-500">
+        <div className="flex items-center gap-4 mb-8">
+            <div className="w-2 h-8 bg-gradient-to-b from-secondary to-slate-500 rounded-full" />
+            <div>
+                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Global Presence</h3>
+                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Revenue by Geography</p>
+            </div>
+        </div>
+        <ResponsiveContainer width="100%" height="75%">
+            <PieChart>
+                <Pie
+                    data={categoryData}
+                    cx="50%"
+                    cy="45%"
+                    innerRadius={80}
+                    outerRadius={110}
+                    paddingAngle={10}
+                    dataKey="value"
+                >
+                    {categoryData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />
+                    ))}
+                </Pie>
+                <Tooltip
+                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                />
+                <Legend
+                    verticalAlign="bottom"
+                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '30px' }}
+                    formatter={(value) => <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest">{value}</span>}
+                />
+            </PieChart>
         </ResponsiveContainer>
     </div>
 );
