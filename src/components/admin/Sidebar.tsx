@@ -9,9 +9,10 @@ import {
   Settings,
   Tag,
   MessageSquare,
-  FileText,
   ArrowLeft,
   Store,
+  ShieldCheck,
+  ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -24,14 +25,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
     { icon: Store, label: "Vendors", href: "/vendors" },
-    { icon: ShoppingCart, label: "Orders", href: "/orders", badge: "5" },
-    { icon: Package, label: "Products", href: "/products" },
-    { icon: Users, label: "Customers", href: "/customers" },
+    { icon: ShieldCheck, label: "Brand Requests", href: "/brand-requests" },
     { icon: Tag, label: "Categories", href: "/categories" },
-    { icon: BarChart3, label: "Analytics", href: "/analytics" },
+    { icon: Users, label: "Users", href: "/users" },
+    { icon: ShoppingCart, label: "Orders", href: "/orders", badge: "5" },
+    { icon: ClipboardList, label: "Order Logs", href: "/order-logs" },
+    { icon: Package, label: "Products", href: "/products" },
     { icon: MessageSquare, label: "Reviews", href: "/reviews" },
-    { icon: FileText, label: "Reports", href: "/reports" },
-    { icon: Settings, label: "Settings", href: "/rsettings" },
+    { icon: BarChart3, label: "Analytics", href: "/analytics" },
+    { icon: Settings, label: "Settings", href: "/settings" },
   ];
 
   return (

@@ -16,6 +16,13 @@ const Cancel = lazy(() => import("../pages/Cancel"));
 
 const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
 const AdminVendor = lazy(() => import("../pages/admin/AdminVendor"));
+const AdminCategories = lazy(() => import("../pages/admin/AdminCategories"));
+const AdminBrandRequests = lazy(() => import("../pages/admin/AdminBrandRequests"));
+const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
+const AdminOrders = lazy(() => import("../pages/admin/AdminOrders"));
+const AdminOrderLogs = lazy(() => import("../pages/admin/AdminOrderLogs"));
+const AdminProducts = lazy(() => import("../pages/admin/AdminProducts"));
+const AdminReviews = lazy(() => import("../pages/admin/AdminReviews"));
 
 import MainLayout from "../layout/MainLayout";
 import ProtectedRoutes from "./Auth/Protected.routes";
@@ -41,10 +48,17 @@ const AppRoutes = () => {
         </Route>
       </Route>
       <Route element={<AdminLayout />}>
-          <Route  path="/super" element={ <AdminRoutes />} >
-            <Route path="dashboard" index element={ <Suspense fallback={<Loader/>}><Dashboard/></Suspense> } />
-            <Route path="vendors" index element={ <Suspense fallback={<Loader/>}><AdminVendor/></Suspense> } />
-          </Route>
+        <Route path="/super" element={<AdminRoutes />} >
+          <Route path="dashboard" index element={<Suspense fallback={<Loader />}><Dashboard /></Suspense>} />
+          <Route path="vendors" element={<Suspense fallback={<Loader />}><AdminVendor /></Suspense>} />
+          <Route path="categories" element={<Suspense fallback={<Loader />}><AdminCategories /></Suspense>} />
+          <Route path="brand-requests" element={<Suspense fallback={<Loader />}><AdminBrandRequests /></Suspense>} />
+          <Route path="users" element={<Suspense fallback={<Loader />}><AdminUsers /></Suspense>} />
+          <Route path="orders" element={<Suspense fallback={<Loader />}><AdminOrders /></Suspense>} />
+          <Route path="order-logs" element={<Suspense fallback={<Loader />}><AdminOrderLogs /></Suspense>} />
+          <Route path="products" element={<Suspense fallback={<Loader />}><AdminProducts /></Suspense>} />
+          <Route path="reviews" element={<Suspense fallback={<Loader />}><AdminReviews /></Suspense>} />
+        </Route>
       </Route>
 
 
