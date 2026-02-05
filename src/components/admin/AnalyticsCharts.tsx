@@ -13,7 +13,7 @@ import {
     AreaChart,
     Area,
     BarChart,
-    Bar,
+    Bar
 } from 'recharts';
 
 const data = [
@@ -28,203 +28,209 @@ const data = [
 const categoryData = [
     { name: 'Electronics', value: 400 },
     { name: 'Fashion', value: 300 },
-    { name: 'Home & Living', value: 300 },
+    { name: 'Home', value: 300 },
     { name: 'Beauty', value: 200 },
     { name: 'Accessories', value: 150 },
 ];
 
 const COLORS = ['#FF6F00', '#212121', '#FFD54F', '#4ADE80', '#3B82F6'];
 
-export const CategoryDistributionChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full min-h-[400px] hover:shadow-2xl transition-all duration-500">
-        <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-primary to-orange-300 rounded-full" />
-            <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Category Distribution</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Products by Category</p>
-            </div>
+// Common chart container style
+const ChartContainer = ({ title, subtitle, children }: { title: string, subtitle: string, children: React.ReactNode }) => (
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-full min-h-[400px] flex flex-col">
+        <div className="mb-6">
+            <h3 className="text-gray-900 font-bold text-lg tracking-tight">{title}</h3>
+            <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mt-1">{subtitle}</p>
         </div>
-        <ResponsiveContainer width="100%" height="75%">
+        <div className="flex-1 min-h-0">
+            {children}
+        </div>
+    </div>
+);
+
+// Common tooltip style
+const tooltipStyle = {
+    backgroundColor: '#fff',
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    padding: '8px 12px',
+    fontSize: '12px',
+    fontWeight: 600,
+    color: '#1f2937'
+};
+
+export const CategoryDistributionChart = () => (
+    <ChartContainer title="Category Distribution" subtitle="Products by Category">
+        <ResponsiveContainer width="100%" height="100%">
             <PieChart>
                 <Pie
                     data={categoryData}
                     cx="50%"
-                    cy="45%"
+                    cy="50%"
                     innerRadius={80}
-                    outerRadius={110}
-                    paddingAngle={10}
+                    outerRadius={100}
+                    paddingAngle={5}
                     dataKey="value"
                 >
                     {categoryData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#fff" strokeWidth={2} />
                     ))}
                 </Pie>
-                <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
-                />
+                <Tooltip contentStyle={tooltipStyle} cursor={false} />
                 <Legend
                     verticalAlign="bottom"
+                    height={36}
                     iconType="circle"
-                    wrapperStyle={{ paddingTop: '30px' }}
-                    formatter={(value) => <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest">{value}</span>}
+                    iconSize={8}
+                    formatter={(value) => <span className="text-gray-600 text-xs font-medium ml-1">{value}</span>}
                 />
             </PieChart>
         </ResponsiveContainer>
-    </div>
+    </ChartContainer>
 );
 
 export const OrderTrendsChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
-        <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-400 rounded-full" />
-            <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Order Analytics</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Orders Over Time</p>
-            </div>
-        </div>
-        <ResponsiveContainer width="100%" height="75%">
-            <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+    <ChartContainer title="Order Analytics" subtitle="Orders Over Time">
+        <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                <XAxis
+                    dataKey="name"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: '#9CA3AF' }}
+                    dy={10}
                 />
-                <Bar dataKey="orders" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                <YAxis
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: '#9CA3AF' }}
+                />
+                <Tooltip
+                    cursor={{ fill: '#F9FAFB' }}
+                    contentStyle={tooltipStyle}
+                />
+                <Bar
+                    dataKey="orders"
+                    fill="#3B82F6"
+                    radius={[4, 4, 4, 4]}
+                    barSize={32}
+                />
             </BarChart>
         </ResponsiveContainer>
-    </div>
+    </ChartContainer>
 );
 
 export const RevenueTrendChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
-        <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-emerald-500 to-teal-400 rounded-full" />
-            <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Revenue Trend</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Global Revenue Growth</p>
-            </div>
-        </div>
-        <ResponsiveContainer width="100%" height="75%">
-            <AreaChart data={data}>
+    <ChartContainer title="Revenue Trend" subtitle="Global Revenue Growth">
+        <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.1} />
                         <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                <XAxis
+                    dataKey="name"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: '#9CA3AF' }}
+                    dy={10}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" />
+                <YAxis
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: '#9CA3AF' }}
+                />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#10B981"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorRevenue)"
+                />
             </AreaChart>
         </ResponsiveContainer>
-    </div>
+    </ChartContainer>
 );
 
 // Backward compatibility or keeping previous charts if needed
 export const SystemLoadChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500 overflow-hidden relative group">
-        <div className="flex items-center justify-between mb-8 relative z-10">
-            <div className="flex items-center gap-4">
-                <div className="w-2 h-8 bg-gradient-to-b from-primary to-orange-300 rounded-full" />
-                <div>
-                    <h3 className="text-secondary font-black text-xl tracking-tight uppercase">System Health</h3>
-                    <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Live CPU & Memory Load</p>
-                </div>
-            </div>
-            <div className="flex gap-2">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Stable</span>
-            </div>
-        </div>
-        <ResponsiveContainer width="100%" height="75%">
-            <AreaChart data={data}>
+    <ChartContainer title="System Health" subtitle="Live CPU & Memory Load">
+        <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                     <linearGradient id="colorLoad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#FF6F00" stopOpacity={0.3} />
+                        <stop offset="5%" stopColor="#FF6F00" stopOpacity={0.1} />
                         <stop offset="95%" stopColor="#FF6F00" stopOpacity={0} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
-                />
-                <Area type="monotone" dataKey="load" stroke="#FF6F00" strokeWidth={4} fillOpacity={1} fill="url(#colorLoad)" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} tick={{ fill: '#9CA3AF' }} dy={10} />
+                <YAxis fontSize={11} tickLine={false} axisLine={false} tick={{ fill: '#9CA3AF' }} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Area type="monotone" dataKey="load" stroke="#FF6F00" strokeWidth={2} fillOpacity={1} fill="url(#colorLoad)" />
             </AreaChart>
         </ResponsiveContainer>
-    </div>
+    </ChartContainer>
 );
 
 export const VendorGrowthChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-[400px] hover:shadow-2xl transition-all duration-500">
-        <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-400 rounded-full" />
-            <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Vendor Acquisition</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Global Partner Growth</p>
-            </div>
-        </div>
-        <ResponsiveContainer width="100%" height="75%">
-            <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.3} />
-                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <YAxis fontSize={10} tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
-                />
+    <ChartContainer title="Vendor Acquisition" subtitle="Global Partner Growth">
+        <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} tick={{ fill: '#9CA3AF' }} dy={10} />
+                <YAxis fontSize={11} tickLine={false} axisLine={false} tick={{ fill: '#9CA3AF' }} />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Line
                     type="monotone"
                     dataKey="growth"
                     stroke="#3B82F6"
-                    strokeWidth={4}
-                    dot={{ fill: '#3B82F6', strokeWidth: 3, r: 6, stroke: '#fff' }}
-                    activeDot={{ r: 10, strokeWidth: 0, fill: '#3B82F6' }}
+                    strokeWidth={2}
+                    dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4, stroke: '#fff' }}
+                    activeDot={{ r: 6, strokeWidth: 0, fill: '#3B82F6' }}
                 />
             </LineChart>
         </ResponsiveContainer>
-    </div>
+    </ChartContainer>
 );
 
 export const GlobalDistributionChart = () => (
-    <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-white/40 h-full min-h-[400px] hover:shadow-2xl transition-all duration-500">
-        <div className="flex items-center gap-4 mb-8">
-            <div className="w-2 h-8 bg-gradient-to-b from-secondary to-slate-500 rounded-full" />
-            <div>
-                <h3 className="text-secondary font-black text-xl tracking-tight uppercase">Global Presence</h3>
-                <p className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">Revenue by Geography</p>
-            </div>
-        </div>
-        <ResponsiveContainer width="100%" height="75%">
+    <ChartContainer title="Global Presence" subtitle="Revenue by Geography">
+        <ResponsiveContainer width="100%" height="100%">
             <PieChart>
                 <Pie
                     data={categoryData}
                     cx="50%"
-                    cy="45%"
+                    cy="50%"
                     innerRadius={80}
-                    outerRadius={110}
-                    paddingAngle={10}
+                    outerRadius={100}
+                    paddingAngle={5}
                     dataKey="value"
                 >
                     {categoryData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#fff" strokeWidth={2} />
                     ))}
                 </Pie>
-                <Tooltip
-                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 50px -10px rgba(0,0,0,0.1)', backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)' }}
-                />
+                <Tooltip contentStyle={tooltipStyle} cursor={false} />
                 <Legend
                     verticalAlign="bottom"
+                    height={36}
                     iconType="circle"
-                    wrapperStyle={{ paddingTop: '30px' }}
-                    formatter={(value) => <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest">{value}</span>}
+                    iconSize={8}
+                    formatter={(value) => <span className="text-gray-600 text-xs font-medium ml-1">{value}</span>}
                 />
             </PieChart>
         </ResponsiveContainer>
-    </div>
+    </ChartContainer>
 );
