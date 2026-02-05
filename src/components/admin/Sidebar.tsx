@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     { icon: BarChart3, label: "Analytics", href: "/analytics" },
     { icon: MessageSquare, label: "Reviews", href: "/reviews" },
     { icon: FileText, label: "Reports", href: "/reports" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+    { icon: Settings, label: "Settings", href: "/rsettings" },
   ];
 
   return (

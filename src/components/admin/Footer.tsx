@@ -4,7 +4,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="relative mt-auto border-t border-white/5 bg-[#0a0a0a]/80 backdrop-blur-3xl">
       {/* soft accent line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+      an
 
       <div className="py-12 text-center">
         <div className="flex flex-col items-center gap-4">
