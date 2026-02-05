@@ -88,7 +88,7 @@ const AdminTable = <T extends Record<string, any>>({
             </div>
 
             {/* TABLE CONTENT */}
-            <div className="flex-1 overflow-auto relative min-h-[300px]">
+            <div className="flex-1 overflow-auto relative min-h-[200px]">
                 {isLoading ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
                         <div className="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent"></div>
