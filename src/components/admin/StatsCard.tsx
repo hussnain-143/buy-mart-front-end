@@ -5,47 +5,43 @@ interface StatsCardProps {
     title: string;
     value: string | number;
     icon: LucideIcon;
-    trend?: {
-        value: number;
-        isUp: boolean;
-    };
-    isCritical?: boolean;
+
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon: Icon, trend, isCritical }) => {
-    return (
-        <div className={`
-            p-6 rounded-2xl bg-white border transition-all duration-300
-            ${isCritical
-                ? 'border-red-100 shadow-[0_4px_20px_-10px_rgba(239,68,68,0.2)]'
-                : 'border-gray-100 shadow-sm hover:shadow-md hover:border-orange-100'
-            }
-        `}>
-            <div className="flex items-start justify-between mb-4">
-                <div className={`p-3 rounded-xl ${isCritical ? 'bg-red-50 text-red-500' : 'bg-orange-50 text-orange-600'}`}>
-                    <Icon className="w-5 h-5" />
-                </div>
-                {trend && (
-                    <span className={`
-                        text-xs font-bold px-2 py-1 rounded-lg flex items-center gap-1
-                        ${trend.isUp
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-red-50 text-red-700'
-                        }
-                    `}>
-                        {trend.isUp ? '↑' : '↓'} {Math.abs(trend.value)}%
-                    </span>
-                )}
-            </div>
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon: Icon }) => {
+  return (
+    <div
+      className="
+        relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6
+        shadow-sm transition-all duration-300
+        hover:-translate-y-1 hover:shadow-lg hover:border-primary/50
+      "
+    >
+      {/* Background Glow */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 blur-2xl rounded-full"></div>
 
-            <div className="space-y-1">
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-900 tracking-tight tabular-nums">
-                    {value}
-                </h3>
-            </div>
+      {/* Top Accent Line */}
+      <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary via-primary/70 to-transparent"></div>
+
+      <div className="relative flex items-start justify-between mb-6">
+        {/* Icon */}
+        <div className="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary">
+          <Icon className="w-6 h-6" />
         </div>
-    );
+      </div>
+
+      <div className="relative space-y-2">
+        <p className="text-secondary text-xs font-semibold uppercase tracking-wider">
+          {title}
+        </p>
+
+        <h3 className="text-3xl font-extrabold text-primary tracking-tight tabular-nums">
+          {value}
+        </h3>
+      </div>
+    </div>
+  );
 };
+
 
 export default StatsCard;
