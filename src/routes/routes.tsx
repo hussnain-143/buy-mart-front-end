@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
 
+
 const Home = lazy(() => import("../pages/Home"));
 const Login = lazy(() => import("../pages/Login"));
 const Signup = lazy(() => import("../pages/Signup"));
@@ -13,6 +14,14 @@ const Subscription = lazy(() => import("../pages/Subscription"));
 const Checkout = lazy(() => import("../pages/Checkout"));
 const Success = lazy(() => import("../pages/Success"));
 const Cancel = lazy(() => import("../pages/Cancel"));
+
+const VendorDashboard = lazy(() => import("../pages/vendor/VendorDashboard"));
+const SellerProducts = lazy(() => import("../pages/vendor/SellerProducts"));
+const SellerOrders = lazy(() => import("../pages/vendor/SellerOrders"));
+const SellerReviews = lazy(() => import("../pages/vendor/SellerReviews"));
+const SellerAnalytics = lazy(() => import("../pages/vendor/SellerAnalytics"));
+const SellerProfile = lazy(() => import("../pages/vendor/SellerProfile"));
+const SellerSettings = lazy(() => import("../pages/vendor/SellerSettings"));
 
 const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
 const AdminVendor = lazy(() => import("../pages/admin/AdminVendor"));
@@ -27,7 +36,9 @@ const AdminReviews = lazy(() => import("../pages/admin/AdminReviews"));
 import MainLayout from "../layout/MainLayout";
 import ProtectedRoutes from "./Auth/Protected.routes";
 import AdminRoutes from "./Auth/Admin.routes";
+import VendorRoutes from "./Auth/Vendor.routes";
 import AdminLayout from "../layout/AdminLayout";
+import VendorLayout from "../layout/VendorLayout";
 
 
 const AppRoutes = () => {
@@ -58,6 +69,18 @@ const AppRoutes = () => {
           <Route path="order-logs" element={<Suspense fallback={<Loader />}><AdminOrderLogs /></Suspense>} />
           <Route path="products" element={<Suspense fallback={<Loader />}><AdminProducts /></Suspense>} />
           <Route path="reviews" element={<Suspense fallback={<Loader />}><AdminReviews /></Suspense>} />
+        </Route>
+      </Route>
+
+      <Route element={<VendorLayout />}>
+        <Route path="/seller" element={<VendorRoutes />} >
+          <Route path="dashboard" index element={<Suspense fallback={<Loader />}><VendorDashboard /></Suspense>} />
+          <Route path="products" element={<Suspense fallback={<Loader />}><SellerProducts /></Suspense>} />
+          <Route path="orders" element={<Suspense fallback={<Loader />}><SellerOrders /></Suspense>} />
+          <Route path="reviews" element={<Suspense fallback={<Loader />}><SellerReviews /></Suspense>} />
+          <Route path="analytics" element={<Suspense fallback={<Loader />}><SellerAnalytics /></Suspense>} />
+          <Route path="profile" element={<Suspense fallback={<Loader />}><SellerProfile /></Suspense>} />
+          <Route path="settings" element={<Suspense fallback={<Loader />}><SellerSettings /></Suspense>} />
         </Route>
       </Route>
 
