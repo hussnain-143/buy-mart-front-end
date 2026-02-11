@@ -25,3 +25,21 @@ export const updateVendor = (id: string) => {
     credentials: "include",
   } as any);
 };
+
+export const getVendorKey = () => {
+  return apiRequest(`/vendor/stripe-id`, {
+    method: "GET",
+    credentials: "include",
+  } as any);
+};
+
+export const setVendorKey = (data: { stripe_vendor_id: string }) => {
+  return apiRequest(`/vendor/stripe-id`, {
+    method: "PUT",
+    body: JSON.stringify(data), // <-- stringify the object
+    headers: {
+      "Content-Type": "application/json", // ✅ must set
+    },
+    credentials: "include",
+  } as any);
+}

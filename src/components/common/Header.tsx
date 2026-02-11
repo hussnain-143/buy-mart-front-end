@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, ShoppingCart, User, LogOut, Ban, Package } from "lucide-react";
 import Toast from "./Toast";
 import Button from "./button";
 import { LogoutUser } from "../../services/auth.service";
-import Vendor from "../../pages/Vendor";
 
 // ================= TYPES =================
 type UserType = {
@@ -77,8 +76,7 @@ const Header = () => {
   ];
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `relative text-sm font-medium transition-colors duration-200 ${
-      isActive ? "text-accent" : "text-white hover:text-accent"
+    `relative text-[13px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${isActive ? "text-accent" : "text-white/60 hover:text-white"
     }`;
 
   // ================= TOAST =================
@@ -231,27 +229,27 @@ const Header = () => {
               </div>
             )}
           </div>
-            {vendor?.is_active ? (
-              <Button
-                content="Seller Dashboard"
-                onClick={() => navigate("/seller/dashboard")}
-                style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
-              />
-            ) : subStatus?.status !== "active" ? (
-              <Button
-                content="Become a Reseller"
-                onClick={() => navigate("/subscription")}
-                style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
-              />
-            ) : null}
-            {  user?.role === "admin" && (
-                <Button
-                content="Go to Admin Panel"
-                onClick={() => navigate("/super/dashboard")}
-                style="rounded-md  px-5 py-2.5 text-sm font-medium text-primary border border-primary hover:bg-primary/10 cursor-pointer"
-              />
-              )
-            }
+          {vendor?.is_active ? (
+            <Button
+              content="Seller Dashboard"
+              onClick={() => navigate("/seller/dashboard")}
+              style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
+            />
+          ) : subStatus?.status !== "active" ? (
+            <Button
+              content="Become a Reseller"
+              onClick={() => navigate("/subscription")}
+              style="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 cursor-pointer"
+            />
+          ) : null}
+          {user?.role === "admin" && (
+            <Button
+              content="Go to Admin Panel"
+              onClick={() => navigate("/super/dashboard")}
+              style="rounded-md  px-5 py-2.5 text-sm font-medium text-primary border border-primary hover:bg-primary/10 cursor-pointer"
+            />
+          )
+          }
         </>
       )}
     </>
@@ -259,7 +257,10 @@ const Header = () => {
 
   // ================= RENDER =================
   return (
-    <header className="sticky top-0 z-50 bg-secondary shadow-lg">
+    <header className="sticky top-0 z-50 w-full transition-all duration-300">
+      {/* Glassmorphism Background Layer */}
+      <div className="absolute inset-0 bg-secondary/80 backdrop-blur-xl border-b border-white/5" />
+
       {toast.show && (
         <Toast
           type={toast.type}
@@ -268,11 +269,11 @@ const Header = () => {
         />
       )}
 
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <NavLink to="/" className="flex items-center">
-            <img src="/1.png" alt="Logo" className="h-25 w-auto" />
+          <NavLink to="/" className="flex items-center group transition-transform hover:scale-105">
+            <img src="/1.png" alt="Logo" className="h-16 w-auto brightness-110 contrast-125" />
           </NavLink>
 
           {/* Desktop Nav */}
@@ -282,26 +283,40 @@ const Header = () => {
                 key={item.to}
                 to={item.to}
                 end={item.end}
-                className={navLinkClass}
+                className={({ isActive }) =>
+                  `relative text-[13px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${isActive
+                    ? "text-accent"
+                    : "text-white/60 hover:text-white"
+                  }`
+                }
               >
-                {item.label}
+                {({ isActive }) => (
+                  <>
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-accent rounded-full" />
+                    )}
+                  </>
+                )}
               </NavLink>
             ))}
           </nav>
 
           {/* Desktop Right */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-8">
             <NavLink
               to="/cart"
-              className="relative text-white hover:text-accent"
+              className="relative text-white/70 hover:text-white transition-colors group"
             >
-              <ShoppingCart size={24} />
+              <ShoppingCart size={22} className="group-hover:scale-110 transition-transform" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-xs flex items-center justify-center text-white">
+                <span className="absolute -top-2.5 -right-2.5 h-5 w-5 rounded-full bg-accent text-[10px] font-black flex items-center justify-center text-secondary border-2 border-secondary/80">
                   {cartCount}
                 </span>
               )}
             </NavLink>
+
+            <div className="h-6 w-[1px] bg-white/10 mx-2" />
 
             <RightArea />
           </div>

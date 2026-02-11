@@ -14,6 +14,11 @@ const Subscription = lazy(() => import("../pages/Subscription"));
 const Checkout = lazy(() => import("../pages/Checkout"));
 const Success = lazy(() => import("../pages/Success"));
 const Cancel = lazy(() => import("../pages/Cancel"));
+const Shop = lazy(() => import("../pages/Shop"));
+const Product = lazy(() => import("../pages/Product"));
+const Categories = lazy(() => import("../pages/Category"));
+const CategoryProducts = lazy(() => import("../pages/CategoryProducts"));
+const Deals = lazy(() => import("../pages/Deals"));
 
 const VendorDashboard = lazy(() => import("../pages/vendor/VendorDashboard"));
 const SellerProducts = lazy(() => import("../pages/vendor/SellerProducts"));
@@ -49,6 +54,12 @@ const AppRoutes = () => {
       <Route element={<MainLayout />}>
         <Route index element={<Suspense fallback={<Loader />}><Home /></Suspense>} />
         <Route path="/home" element={<Suspense fallback={<Loader />}><Home /></Suspense>} />
+        <Route path="/shop" element={<Suspense fallback={<Loader />}><Shop /></Suspense>} />
+        <Route path="/product/:slug" element={<Suspense fallback={<Loader />}><Product /></Suspense>} />
+        <Route path="/categories" element={<Suspense fallback={<Loader />}><Categories /></Suspense>} />
+        <Route path="/categories/:slug" element={<Suspense fallback={<Loader />}><CategoryProducts /></Suspense>} />
+        <Route path="/deals" element={<Suspense fallback={<Loader />}><Deals /></Suspense>} />
+
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Suspense fallback={<Loader />}><Profile /></Suspense>} />
           <Route path="/subscription" element={<Suspense fallback={<Loader />}><Subscription /></Suspense>} />
