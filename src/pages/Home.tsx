@@ -1,14 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  ArrowRight,
-  Laptop,
-  Shirt,
-  Sparkles,
-  HomeIcon,
-  Package,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, Laptop, Shirt, Sparkles, HomeIcon, Package, Zap } from "lucide-react";
 
 // ========================
 // Color Palette
@@ -63,7 +55,7 @@ const Home = () => {
       <section className="relative h-screen min-h-[900px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="/hero-bg..jpeg"
+            src="/hero-bg.jpeg"
             alt="Hero Background"
             className="w-full h-full object-cover scale-110 animate-pulse-slow brightness-80 contrast-105"
           />
@@ -71,12 +63,32 @@ const Home = () => {
         </div>
 
         <div className="relative z-10 text-center px-6 max-w-[1400px] mx-auto">
-          <h1 className="text-6xl md:text-[100px] font-black text-white mb-8 leading-[0.85] tracking-tighter">
-            Elevate Your <br />
-            <span className="text-accent underline decoration-8 underline-offset-16">Lifestyle</span>
+          <h1 className="text-6xl md:text-[80px] font-black text-white mb-6 md:mb-8 leading-[0.85] tracking-tight">
+            Live Smarter. <br />
+            <span className="
+              md:text-[100px]
+              bg-gradient-to-r from-primary to-accent
+              bg-clip-text text-transparent
+              underline decoration-8 underline-offset-16
+              leading-[0.9]
+              mt-4 inline-block
+            ">
+              Feel Premium.
+            </span>
           </h1>
-          <p className="text-lg md:text-2xl text-white/50 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-            Curated products blending design and utility for a premium living experience.
+
+          <p className="
+            text-lg md:text-2xl 
+            text-white/80 
+            max-w-3xl md:max-w-4xl 
+            mx-auto 
+            leading-relaxed md:leading-loose 
+            font-medium 
+            mt-6 
+            mb-16 
+            text-center
+          ">
+            Discover a curated selection of products where sleek design meets ultimate functionality — crafted to elevate your everyday lifestyle.
           </p>
 
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
@@ -189,7 +201,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Hot Selling Slider (Auto Scroll, Curve Slider) */}
+      {/* Hot Selling Slider */}
       <section className="py-32 px-6 bg-secondary/10">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-4xl md:text-5xl font-black text-white mb-12 tracking-tight text-center">
@@ -229,6 +241,14 @@ const Home = () => {
           .animate-scroll-hot {
             display: flex;
             animation: scroll-hot 30s linear infinite;
+          }
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee {
+            display: flex;
+            animation: marquee 60s linear infinite;
           }
           .scrollbar-hide::-webkit-scrollbar {
             display: none;

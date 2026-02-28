@@ -36,7 +36,7 @@ export const getVendorKey = () => {
 export const setVendorKey = (data: { stripe_vendor_id: string }) => {
   return apiRequest(`/vendor/stripe-id`, {
     method: "PUT",
-    body: JSON.stringify(data), // <-- stringify the object
+    body: data, // <-- stringify the object
     headers: {
       "Content-Type": "application/json", // ✅ must set
     },
