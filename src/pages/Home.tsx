@@ -1,92 +1,151 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  ArrowRight,
-  Zap,
-  Shirt,
-  Laptop,
-  Sparkles,
-  HomeIcon,
-  Package,
-  Truck,
-  Shield,
-} from "lucide-react";
+import { ArrowRight, Laptop, Shirt, Sparkles, HomeIcon, Package, Zap } from "lucide-react";
 
+// ========================
+// Color Palette
+// ========================
+const COLORS = {
+  electronics: "from-blue-500/20 to-cyan-500/20",
+  fashion: "from-purple-500/20 to-pink-500/20",
+  beauty: "from-rose-500/20 to-red-500/20",
+  home: "from-amber-500/20 to-orange-500/20",
+  accent: "text-yellow-400",
+  accentBg: "bg-accent",
+  text: "text-white",
+  secondary: "text-secondary",
+};
+
+// ========================
+// Component
+// ========================
 const Home = () => {
   const categories = [
-    { name: "Electronics", icon: Laptop, color: "from-blue-500/20 to-cyan-500/20" },
-    { name: "Fashion", icon: Shirt, color: "from-purple-500/20 to-pink-500/20" },
-    { name: "Beauty", icon: Sparkles, color: "from-rose-500/20 to-red-500/20" },
-    { name: "Home & Living", icon: HomeIcon, color: "from-amber-500/20 to-orange-500/20" },
+    { name: "Electronics", icon: Laptop, color: COLORS.electronics },
+    { name: "Fashion", icon: Shirt, color: COLORS.fashion },
+    { name: "Beauty", icon: Sparkles, color: COLORS.beauty },
+    { name: "Home & Living", icon: HomeIcon, color: COLORS.home },
   ];
 
-  const featuredProducts = Array.from({ length: 6 }, (_, i) => ({
+  const brands = ["ROLEX", "GUCCI", "APPLE", "SONY", "PRADA", "DYSON", "TESLA"];
+
+  const topSellingProducts = Array.from({ length: 8 }, (_, i) => ({
     id: i + 1,
     name: `Premium Product ${i + 1}`,
     price: "$" + (99 + i * 50),
     oldPrice: i % 2 === 0 ? "$" + (149 + i * 50) : null,
   }));
 
+  const deals = [
+    { id: 1, name: "Summer Sale", discount: "30%", description: "On all Electronics", icon: Zap },
+    { id: 2, name: "Fashion Week", discount: "50%", description: "Exclusive Fashion Items", icon: Shirt },
+    { id: 3, name: "Luxury Deals", discount: "25%", description: "Premium Home & Living", icon: HomeIcon },
+  ];
+
+  const latestProducts = Array.from({ length: 6 }, (_, i) => ({
+    id: i + 1,
+    name: `Latest Product ${i + 1}`,
+    price: "$" + (120 + i * 40),
+  }));
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section - Full Screen */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Gradient + Placeholder Image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary via-secondary to-accent/10" />
-        <div className="absolute inset-0 bg-black/50" />
-        {/* Replace with real hero image */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Package size={400} className="text-white/5" />
+    <div className="min-h-screen bg-secondary overflow-x-hidden">
+
+      {/* Hero Section */}
+      <section className="relative h-screen min-h-[900px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/hero-bg.jpeg"
+            alt="Hero Background"
+            className="w-full h-full object-cover scale-110 animate-pulse-slow brightness-80 contrast-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-secondary/60 to-secondary" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
-            Premium Shopping <br />
-            <span className="text-accent">Redefined</span>
+        <div className="relative z-10 text-center px-6 max-w-[1400px] mx-auto">
+          <h1 className="text-6xl md:text-[80px] font-black text-white mb-6 md:mb-8 leading-[0.85] tracking-tight">
+            Live Smarter. <br />
+            <span className="
+              md:text-[100px]
+              bg-gradient-to-r from-primary to-accent
+              bg-clip-text text-transparent
+              underline decoration-8 underline-offset-16
+              leading-[0.9]
+              mt-4 inline-block
+            ">
+              Feel Premium.
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-3xl mx-auto">
-            Discover exclusive deals, fast delivery, and unmatched quality.
+
+          <p className="
+            text-lg md:text-2xl 
+            text-white/80 
+            max-w-3xl md:max-w-4xl 
+            mx-auto 
+            leading-relaxed md:leading-loose 
+            font-medium 
+            mt-6 
+            mb-16 
+            text-center
+          ">
+            Discover a curated selection of products where sleek design meets ultimate functionality — crafted to elevate your everyday lifestyle.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+
+          <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
             <NavLink
               to="/shop"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full bg-accent text-secondary text-lg font-semibold hover:scale-105 transition-transform"
+              className={`inline-flex items-center justify-center px-14 py-5 ${COLORS.accentBg} text-secondary font-black uppercase tracking-[0.4em] text-[12px] rounded-full hover:scale-105 transition-all duration-700`}
             >
-              Shop Now <ArrowRight size={24} />
+              Explore Collection <ArrowRight size={20} className="ml-4" />
             </NavLink>
+
             <NavLink
               to="/deals"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full border-2 border-white/30 text-white text-lg font-medium backdrop-blur-sm hover:bg-white/10 transition"
+              className={`inline-flex items-center justify-center px-14 py-5 bg-white/5 text-white font-black uppercase tracking-[0.4em] text-[12px] rounded-full border border-white/20 hover:bg-white/10 transition-all duration-500`}
             >
-              <Zap size={24} /> View Deals
+              View Deals <Zap size={20} className="ml-4" />
             </NavLink>
-            <NavLink
-              to="/subscription"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full border-2 border-accent text-accent text-lg font-semibold backdrop-blur-sm hover:bg-accent/10 transition"
-            >
-              Become a Seller <ArrowRight size={24} />
-            </NavLink>
+          </div>
+        </div>
+
+        {/* Brand Marquee */}
+        <div className="absolute bottom-0 left-0 w-full py-12 bg-white/5 backdrop-blur-md border-t border-white/5">
+          <div className="flex items-center gap-24 animate-marquee whitespace-nowrap px-10">
+            {[...brands, ...brands].map((brand, i) => (
+              <span
+                key={i}
+                className="text-3xl md:text-5xl font-black text-white/10 hover:text-accent/30 transition-colors cursor-default tracking-widest"
+              >
+                {brand}
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Glassmorphism Categories - Floating Above */}
-      <section className="relative -mt-32 px-6 mb-20">
+      {/* Categories Section */}
+      <section className="relative -mt-24 px-6 mb-32 z-20">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {categories.map((cat) => {
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-10">
+            {categories.map((cat, idx) => {
               const Icon = cat.icon;
               return (
                 <NavLink
                   key={cat.name}
                   to={`/categories/${cat.name.toLowerCase().replace(/ & /g, "-")}`}
-                  className="group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-10 text-center hover:bg-white/10 hover:border-accent/50 hover:-translate-y-4 transition-all duration-500 shadow-2xl"
+                  className="group relative h-64 flex flex-col items-center justify-center rounded-[40px] overflow-hidden transition-all duration-700 hover:-translate-y-4 shadow-2xl"
+                  style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${cat.color} opacity-30 group-hover:opacity-50 transition`} />
-                  <Icon size={64} className="relative z-10 mx-auto mb-6 text-white group-hover:text-accent transition" />
-                  <p className="relative z-10 text-xl font-semibold text-white group-hover:text-accent transition">
+                  <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl border border-white/10 group-hover:border-accent/30 transition-colors" />
+                  <div
+                    className={`absolute -inset-20 bg-gradient-to-br ${cat.color} blur-[80px] opacity-10 group-hover:opacity-40 transition-opacity`}
+                  />
+                  <div className="relative z-10 mb-6 p-6 rounded-full bg-white/5 border border-white/5 group-hover:bg-accent/10 group-hover:border-accent/20 transition-all duration-500 group-hover:scale-110">
+                    <Icon size={48} className="text-white group-hover:text-accent transition-colors" />
+                  </div>
+                  <span className="relative z-10 text-[12px] font-black uppercase tracking-[0.3em] text-white/50 group-hover:text-white transition-colors">
                     {cat.name}
-                  </p>
+                  </span>
                 </NavLink>
               );
             })}
@@ -94,93 +153,112 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-20 px-6">
+      {/* Latest Products */}
+      <section className="py-32 px-6 bg-secondary/10">
         <div className="mx-auto max-w-7xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Featured Products
-            </h2>
-            <p className="text-xl text-white/70">Handpicked just for you</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredProducts.map((product) => (
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-12 tracking-tight text-center">
+            Latest Products
+          </h2>
+          <div className="flex gap-6 overflow-x-auto px-2 snap-x snap-mandatory scrollbar-hide">
+            {latestProducts.map((product) => (
               <div
                 key={product.id}
-                className="group bg-secondary/50 backdrop-blur-sm rounded-2xl overflow-hidden hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 border border-white/10"
+                className="snap-start min-w-[320px] flex-shrink-0 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg hover:shadow-accent/10 transition-all duration-500"
               >
-                <div className="h-72 bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center">
-                  <Package size={100} className="text-white/20 group-hover:scale-110 transition" />
+                <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4">
+                  <Package size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
                 </div>
-                <div className="p-8">
-                  <h3 className="text-xl font-medium text-white mb-3 group-hover:text-accent transition">
-                    {product.name}
-                  </h3>
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="text-2xl font-bold text-accent">{product.price}</span>
-                    {product.oldPrice && (
-                      <span className="text-lg text-white/50 line-through">
-                        {product.oldPrice}
-                      </span>
-                    )}
-                  </div>
-                  <button className="w-full py-4 rounded-xl bg-accent text-secondary font-semibold hover:opacity-90 transition">
-                    Add to Cart
-                  </button>
-                </div>
+                <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
+                <span className="text-2xl font-black text-accent">{product.price}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Deals Banner */}
-      <section className="py-20 px-6">
+      {/* Deals */}
+      <section className="py-32 px-6 bg-secondary/5">
         <div className="mx-auto max-w-7xl">
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-accent via-accent/80 to-accent/60 p-16 text-center text-secondary">
-            <div className="absolute inset-0 bg-black/20" />
-            <div className="relative z-10">
-              <h2 className="text-5xl md:text-7xl font-bold mb-6">
-                Flash Sale – Up to 70% Off
-              </h2>
-              <p className="text-2xl mb-10">Limited time • Top brands • Don't miss out</p>
-              <NavLink
-                to="/deals"
-                className="inline-flex items-center gap-4 px-12 py-6 rounded-full bg-secondary text-white text-xl font-bold hover:bg-white transition"
-              >
-                Grab Deals <ArrowRight size={28} />
-              </NavLink>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-12 tracking-tight text-center">
+            Hot Deals
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {deals.map((deal) => {
+              const Icon = deal.icon;
+              return (
+                <div
+                  key={deal.id}
+                  className="group relative bg-white/5 p-10 rounded-3xl border border-white/10 shadow-lg hover:shadow-accent/20 transition-all duration-500 text-center"
+                >
+                  <Icon size={48} className="text-accent mb-4 mx-auto" />
+                  <h3 className="text-2xl font-black text-white mb-2">{deal.name}</h3>
+                  <p className="text-white/50 mb-4">{deal.description}</p>
+                  <span className="text-4xl font-black text-accent">{deal.discount}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Hot Selling Slider */}
+      <section className="py-32 px-6 bg-secondary/10">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-12 tracking-tight text-center">
+            Hot Selling
+          </h2>
+          <div className="relative overflow-hidden">
+            <div className="flex gap-6 animate-scroll-hot">
+              {topSellingProducts.concat(topSellingProducts).map((product, i) => (
+                <div
+                  key={i}
+                  className="min-w-[370px] flex-shrink-0 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg hover:shadow-accent/10 transition-all duration-500"
+                >
+                  <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4">
+                    <Package size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-2xl font-black text-accent">{product.price}</span>
+                    {product.oldPrice && (
+                      <span className="text-sm text-white/30 line-through font-bold">{product.oldPrice}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Newsletter Signup */}
-      <section className="py-20 px-6 bg-secondary/30">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Stay Updated
-          </h2>
-          <p className="text-xl text-white/70 mb-10">
-            Get exclusive deals and new arrivals straight to your inbox.
-          </p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-8 py-5 rounded-full bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-4 focus:ring-accent/50 transition"
-              required
-            />
-            <button
-              type="submit"
-              className="px-10 py-5 rounded-full bg-accent text-secondary font-bold hover:opacity-90 transition"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section>
+      {/* Tailwind Animations */}
+      <style>
+        {`
+          @keyframes scroll-hot {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-scroll-hot {
+            display: flex;
+            animation: scroll-hot 30s linear infinite;
+          }
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee {
+            display: flex;
+            animation: marquee 60s linear infinite;
+          }
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}
+      </style>
     </div>
   );
 };
