@@ -19,6 +19,8 @@ const Product = lazy(() => import("../pages/Product"));
 const Categories = lazy(() => import("../pages/Category"));
 const CategoryProducts = lazy(() => import("../pages/CategoryProducts"));
 const Deals = lazy(() => import("../pages/Deals"));
+const Cart = lazy(() => import("../pages/Cart"));
+const ProductCheckout = lazy(() => import("../pages/ProductCheckout"));
 
 const VendorDashboard = lazy(() => import("../pages/vendor/VendorDashboard"));
 const SellerProducts = lazy(() => import("../pages/vendor/SellerProducts"));
@@ -27,6 +29,7 @@ const SellerReviews = lazy(() => import("../pages/vendor/SellerReviews"));
 const SellerAnalytics = lazy(() => import("../pages/vendor/SellerAnalytics"));
 const SellerProfile = lazy(() => import("../pages/vendor/SellerProfile"));
 const SellerSettings = lazy(() => import("../pages/vendor/SellerSettings"));
+const SellerBrands = lazy(() => import("../pages/vendor/SellerBrands"));
 
 const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
 const AdminVendor = lazy(() => import("../pages/admin/AdminVendor"));
@@ -59,11 +62,13 @@ const AppRoutes = () => {
         <Route path="/categories" element={<Suspense fallback={<Loader />}><Categories /></Suspense>} />
         <Route path="/categories/:slug" element={<Suspense fallback={<Loader />}><CategoryProducts /></Suspense>} />
         <Route path="/deals" element={<Suspense fallback={<Loader />}><Deals /></Suspense>} />
+        <Route path="/cart" element={<Suspense fallback={<Loader />}><Cart /></Suspense>} />
 
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Suspense fallback={<Loader />}><Profile /></Suspense>} />
           <Route path="/subscription" element={<Suspense fallback={<Loader />}><Subscription /></Suspense>} />
           <Route path="/checkout" element={<Suspense fallback={<Loader />}><Checkout /></Suspense>} />
+          <Route path="/product-checkout" element={<Suspense fallback={<Loader />}><ProductCheckout /></Suspense>} />
           <Route path="/success" element={<Suspense fallback={<Loader />}><Success /></Suspense>} />
           <Route path="/cancel" element={<Suspense fallback={<Loader />}><Cancel /></Suspense>} />
           <Route path="/vendor-form" element={<Suspense fallback={<Loader />}><Vendor /></Suspense>} />
@@ -92,6 +97,7 @@ const AppRoutes = () => {
           <Route path="analytics" element={<Suspense fallback={<Loader />}><SellerAnalytics /></Suspense>} />
           <Route path="profile" element={<Suspense fallback={<Loader />}><SellerProfile /></Suspense>} />
           <Route path="settings" element={<Suspense fallback={<Loader />}><SellerSettings /></Suspense>} />
+          <Route path="brands" element={<Suspense fallback={<Loader />}><SellerBrands /></Suspense>} />
         </Route>
       </Route>
 

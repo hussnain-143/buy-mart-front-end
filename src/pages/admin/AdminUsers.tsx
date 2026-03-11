@@ -1,37 +1,61 @@
-
+import { useEffect, useState } from 'react';
 import AdminTable, { TableColumn } from '../../components/admin/AdminTable';
 import { Mail, Phone, MoreHorizontal } from 'lucide-react';
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    role: 'Customer' | 'Vendor' | 'Admin';
-    status: 'Active' | 'Blocked';
-    avatar: string;
-    joinDate: string;
-}
+import { GetAllUsers } from '../../services/auth.service';
+import Toast from '../../components/common/Toast';
 
 const AdminUsers = () => {
-    // Mock data
-    const users: User[] = [
-        { id: '1', name: 'Alice Johnson', email: 'alice@example.com', phone: '+1 234 567 890', role: 'Customer', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Alice+Johnson&background=random', joinDate: '2023-01-15' },
-        { id: '2', name: 'Bob Smith', email: 'bob@store.com', phone: '+1 987 654 321', role: 'Vendor', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Bob+Smith&background=random', joinDate: '2023-02-20' },
-        { id: '3', name: 'Charlie Admin', email: 'admin@buymart.com', phone: '+1 555 555 555', role: 'Admin', status: 'Active', avatar: 'https://ui-avatars.com/api/?name=Charlie+Admin&background=random', joinDate: '2022-12-01' },
-        { id: '4', name: 'David Lee', email: 'david@badactor.com', phone: '+1 666 666 666', role: 'Customer', status: 'Blocked', avatar: 'https://ui-avatars.com/api/?name=David+Lee&background=random', joinDate: '2023-05-10' },
-    ];
+    const [users, setUsers] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
 
-    const columns: TableColumn<User>[] = [
+    const showToast = (message: string, type = "info", duration = 3000) => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), duration);
+    };
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoading(true);
+            try {
+                const res = await GetAllUsers();
+                setUsers(res.data?.users || res.data || []);
+            } catch (error: any) {
+                showToast(error.message || "Failed to load users", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+        if (!window.confirm(`Are you sure you want to ${currentStatus !== false ? 'block' : 'activate'} this user?`)) return;
+        try {
+            const { ToggleUserStatus } = await import('../../services/auth.service');
+            await ToggleUserStatus(id);
+            showToast(`User ${currentStatus !== false ? 'blocked' : 'activated'} successfully`, "success");
+            const res = await GetAllUsers();
+            setUsers(res.data?.users || res.data || []);
+        } catch (error: any) {
+            showToast(error.message || "Failed to update user status", "error");
+        }
+    };
+
+    const columns: TableColumn<any>[] = [
         {
             header: 'User',
-            accessorKey: 'name',
+            accessorKey: 'userName',
             cell: (row) => (
                 <div className="flex items-center gap-3">
-                    <img src={row.avatar} alt={row.name} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
+                    <img
+                        src={row.profileUrl || `https://ui-avatars.com/api/?name=${row.firstName}+${row.lastName}&background=random`}
+                        alt={row.userName}
+                        className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                    />
                     <div>
-                        <div className="font-bold text-gray-800">{row.name}</div>
-                        <div className="text-xs text-gray-400">Joined {row.joinDate}</div>
+                        <div className="font-bold text-gray-800">{row.firstName} {row.lastName}</div>
+                        <div className="text-xs text-gray-400">@{row.userName}</div>
                     </div>
                 </div>
             ),
@@ -44,9 +68,11 @@ const AdminUsers = () => {
                     <div className="flex items-center gap-1.5 text-xs text-gray-500">
                         <Mail size={12} /> {row.email}
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                        <Phone size={12} /> {row.phone}
-                    </div>
+                    {row.phone && (
+                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                            <Phone size={12} /> {row.phone}
+                        </div>
+                    )}
                 </div>
             )
         },
@@ -56,8 +82,8 @@ const AdminUsers = () => {
             cell: (row) => (
                 <span className={`
             px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
-            ${row.role === 'Admin' ? 'bg-purple-500/10 text-purple-600' :
-                        row.role === 'Vendor' ? 'bg-blue-500/10 text-blue-600' : 'bg-gray-100 text-gray-600'}
+            ${row.role === 'admin' ? 'bg-purple-500/10 text-purple-600' :
+                        row.role === 'vendor' ? 'bg-blue-500/10 text-blue-600' : 'bg-gray-100 text-gray-600'}
         `}>
                     {row.role}
                 </span>
@@ -65,24 +91,30 @@ const AdminUsers = () => {
         },
         {
             header: 'Status',
-            accessorKey: 'status',
+            accessorKey: 'isActive',
             cell: (row) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${row.status === 'Active'
+                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${row.isActive !== false
                         ? 'bg-green-500/10 text-green-600'
                         : 'bg-red-500/10 text-red-600'
                         }`}
                 >
-                    {row.status}
+                    {row.isActive !== false ? 'Active' : 'Blocked'}
                 </span>
             ),
         },
         {
             header: 'Actions',
-            accessorKey: 'id',
-            cell: () => (
-                <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all">
-                    <MoreHorizontal size={18} />
+            accessorKey: '_id',
+            cell: (row) => (
+                <button
+                    onClick={() => handleToggleStatus(row._id, row.isActive)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-md ${row.isActive !== false
+                        ? 'bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 shadow-red-500/10'
+                        : 'bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700 shadow-green-500/10'
+                        }`}
+                >
+                    {row.isActive !== false ? 'Block User' : 'Activate User'}
                 </button>
             ),
         },
@@ -90,6 +122,18 @@ const AdminUsers = () => {
 
     return (
         <div className="space-y-6">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={() => setToast({ show: false, message: "", type: "info" })}
+                />
+            )}
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-black text-gray-800 tracking-tight">
@@ -99,7 +143,7 @@ const AdminUsers = () => {
                 </div>
             </div>
 
-            <div className="h-[600px]">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <AdminTable
                     data={users}
                     columns={columns}

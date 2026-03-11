@@ -12,7 +12,7 @@ export const LoginUser = <T>(data: T) => {
 export const SigninUser = <T>(data: T, isFormData = false) => {
   return apiRequest("/user/signup", {
     method: "POST",
-    body: data, 
+    body: data,
     credentials: "include",
     // DON'T set "Content-Type" header for FormData — browser handles it automatically
     headers: isFormData ? {} : { "Content-Type": "application/json" },
@@ -78,6 +78,13 @@ export const UpdateAddress = <T>(data: T) => {
 export const RefreshAccessToken = () => {
   return apiRequest("/user/refresh-token", {
     method: "POST",
+    credentials: "include",
+  } as any);
+};
+
+export const GetAllUsers = () => {
+  return apiRequest("/user/all", {
+    method: "GET",
     credentials: "include",
   } as any);
 };

@@ -43,3 +43,10 @@ export const setVendorKey = (data: { stripe_vendor_id: string }) => {
     credentials: "include",
   } as any);
 }
+
+export const ToggleVendorStatus = (id: string) => {
+  return apiRequest(`/vendor/admin/${id}/toggle-status`, {
+    method: "PATCH",
+    credentials: "include",
+  } as any);
+};

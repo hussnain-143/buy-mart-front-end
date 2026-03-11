@@ -21,6 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     const menuItems = [
         { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
         { icon: Package, label: "My Products", href: "/products" },
+        { icon: LayoutDashboard, label: "My Brands", href: "/brands" },
         { icon: ShoppingCart, label: "Orders", href: "/orders", badge: "2" },
         { icon: MessageSquare, label: "Reviews", href: "/reviews" },
         { icon: BarChart3, label: "Analytics", href: "/analytics" },
