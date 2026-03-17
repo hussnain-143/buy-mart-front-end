@@ -27,3 +27,10 @@ export const GetAllReviews = () => {
         credentials: "include",
     } as any);
 };
+
+export const GetVendorReviews = () => {
+    return apiRequest("/review/vendor", {
+        method: "GET",
+        credentials: "include",
+    } as any);
+};

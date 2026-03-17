@@ -122,8 +122,16 @@ const SellerDashboard: React.FC = () => {
 
                 {/* CHARTS ROW */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <OrderTrendsChart />
-                    <RevenueTrendChart />
+                    <OrderTrendsChart data={stats?.revenueTrends?.map((item: any) => ({
+                        name: `${item._id.month}/${item._id.year.toString().slice(-2)}`,
+                        revenue: item.revenue,
+                        orders: item.orders
+                    }))} />
+                    <RevenueTrendChart data={stats?.revenueTrends?.map((item: any) => ({
+                        name: `${item._id.month}/${item._id.year.toString().slice(-2)}`,
+                        revenue: item.revenue,
+                        orders: item.orders
+                    }))} />
                 </div>
 
                 {/* RECENT ORDERS TABLE */}

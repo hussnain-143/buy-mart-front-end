@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
-import { GetCart, UpdateCartItem, RemoveFromCart, ClearCart } from "../services/cart.service";
+import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, Loader } from "lucide-react";
+import { useCart } from "../context/CartContext";
 import Toast from "../components/common/Toast";
 
 const Cart = () => {
-    const [cart, setCart] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const { cart, loading, refreshing, fetchCart, updateQuantity, removeItem, clearCart } = useCart();
     const [toast, setToast] = useState({ show: false, message: "", type: "info" });
     const navigate = useNavigate();
 
@@ -15,57 +14,33 @@ const Cart = () => {
         setTimeout(() => setToast({ show: false, message: "", type: "info" }), 3000);
     };
 
-    const fetchCart = async () => {
-        setLoading(true);
-        try {
-            const res = await GetCart();
-            if (res.success) {
-                setCart(res.data);
-            }
-        } catch (error) {
-            console.error("Error fetching cart:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
         fetchCart();
     }, []);
 
     const handleUpdateQuantity = async (productId: string, newQty: number) => {
         if (newQty < 1) return;
-        try {
-            const res = await UpdateCartItem(productId, { quantity: newQty });
-            if (res.success) {
-                fetchCart();
-            }
-        } catch (error: any) {
-            showToast(error.message || "Update failed", "error");
+        const success = await updateQuantity(productId, newQty);
+        if (!success) {
+            showToast("Update failed", "error");
         }
     };
 
     const handleRemove = async (productId: string) => {
-        try {
-            const res = await RemoveFromCart(productId);
-            if (res.success) {
-                showToast("Item removed", "success");
-                fetchCart();
-            }
-        } catch (error: any) {
-            showToast(error.message || "Remove failed", "error");
+        const success = await removeItem(productId);
+        if (success) {
+            showToast("Item removed", "success");
+        } else {
+            showToast("Remove failed", "error");
         }
     };
 
     const handleClear = async () => {
-        try {
-            const res = await ClearCart();
-            if (res.success) {
-                showToast("Cart cleared", "success");
-                setCart(null);
-            }
-        } catch (error: any) {
-            showToast(error.message || "Clear failed", "error");
+        const success = await clearCart();
+        if (success) {
+            showToast("Cart cleared", "success");
+        } else {
+            showToast("Clear failed", "error");
         }
     };
 
@@ -93,7 +68,12 @@ const Cart = () => {
     }
 
     return (
-        <div className="min-h-screen bg-secondary px-6 py-12">
+        <div className="min-h-screen bg-secondary px-6 py-12 relative">
+            {refreshing && (
+                <div className="fixed top-24 right-10 z-50 bg-primary/20 backdrop-blur-md p-3 rounded-full border border-primary/30 animate-pulse">
+                    <Loader size={20} className="text-primary animate-spin" />
+                </div>
+            )}
             {toast.show && <Toast type={toast.type} message={toast.message} onClose={() => setToast({ ...toast, show: false })} />}
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-5xl font-black text-white mb-12 uppercase tracking-tight">Your <span className="text-primary">Cart</span></h1>
@@ -120,23 +100,31 @@ const Cart = () => {
 
                                 <div className="flex items-center gap-6">
                                     <div className="flex items-center bg-white/5 rounded-full border border-white/10 px-4 py-2">
-                                        <button onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity - 1)} className="text-white/50 hover:text-white transition-colors">
+                                        <button 
+                                            onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity - 1)} 
+                                            disabled={refreshing || item.quantity <= 1}
+                                            className="text-white/50 hover:text-white transition-colors disabled:opacity-30"
+                                        >
                                             <Minus size={18} />
                                         </button>
-                                        <span className="mx-6 text-white font-black">{item.quantity}</span>
-                                        <button onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity + 1)} className="text-white/50 hover:text-white transition-colors">
+                                        <span className="mx-6 text-white font-black w-8 text-center">{item.quantity}</span>
+                                        <button 
+                                            onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity + 1)} 
+                                            disabled={refreshing}
+                                            className="text-white/50 hover:text-white transition-colors disabled:opacity-30"
+                                        >
                                             <Plus size={18} />
                                         </button>
                                     </div>
 
-                                    <button onClick={() => handleRemove(item.product_id._id)} className="p-4 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                                    <button onClick={() => handleRemove(item.product_id._id)} disabled={refreshing} className="p-4 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all disabled:opacity-30">
                                         <Trash2 size={20} />
                                     </button>
                                 </div>
                             </div>
                         ))}
 
-                        <button onClick={handleClear} className="self-end mt-4 text-white/30 hover:text-red-500 font-black uppercase tracking-widest text-[10px] flex items-center gap-2 transition-colors">
+                        <button onClick={handleClear} disabled={refreshing} className="self-end mt-4 text-white/30 hover:text-red-500 font-black uppercase tracking-widest text-[10px] flex items-center gap-2 transition-colors disabled:opacity-30">
                             <Trash2 size={14} /> Clear Entire Cart
                         </button>
                     </div>

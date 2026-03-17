@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
@@ -9,7 +9,9 @@ import {
     ArrowLeft,
     Store,
     BarChart3,
+    Tag,
 } from "lucide-react";
+import { GetSidebarMetrics } from "../../services/analytics.service";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -17,13 +19,28 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     const navigate = useNavigate();
+    const [metrics, setMetrics] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            try {
+                const res = await GetSidebarMetrics();
+                if (res.success) {
+                    setMetrics(res.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch sidebar metrics", error);
+            }
+        };
+        fetchMetrics();
+    }, []);
 
     const menuItems = [
         { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-        { icon: Package, label: "My Products", href: "/products" },
-        { icon: LayoutDashboard, label: "My Brands", href: "/brands" },
-        { icon: ShoppingCart, label: "Orders", href: "/orders", badge: "2" },
-        { icon: MessageSquare, label: "Reviews", href: "/reviews" },
+        { icon: Package, label: "My Products", href: "/products", badge: metrics?.products?.toString() },
+        { icon: Tag, label: "My Brands", href: "/brands" },
+        { icon: ShoppingCart, label: "Orders", href: "/orders", badge: metrics?.orders > 0 ? metrics.orders.toString() : undefined },
+        { icon: MessageSquare, label: "Reviews", href: "/reviews", badge: metrics?.reviews > 0 ? metrics.reviews.toString() : undefined },
         { icon: BarChart3, label: "Analytics", href: "/analytics" },
         { icon: Store, label: "Store Profile", href: "/profile" },
         { icon: Settings, label: "Settings", href: "/settings" },

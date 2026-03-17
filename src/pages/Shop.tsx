@@ -42,7 +42,9 @@ const Shop = () => {
 
         const res = await GetAllProducts(params);
         if (res.success) {
-          setProducts(res.data.docs);
+          // Handle both paginated (res.data.docs) and unpaginated (res.data) results
+          const productList = res.data?.docs || (Array.isArray(res.data) ? res.data : []);
+          setProducts(productList);
         }
       }
     } catch (error) {
@@ -115,7 +117,7 @@ const Shop = () => {
                 className="w-full px-5 py-3 rounded-full bg-white/5 text-white border border-white/10 focus:outline-none focus:border-primary transition-all duration-300"
               >
                 <option value="">All</option>
-                {categories.map((cat) => (
+                {categories?.map((cat) => (
                   <option key={cat._id} value={cat._id}>{cat.name}</option>
                 ))}
               </select>
@@ -201,7 +203,7 @@ const Shop = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {products.map((product) => (
+              {products?.map((product) => (
                 <div
                   key={product._id}
                   className="group bg-white/5 p-6 rounded-[40px] border border-white/10 shadow-lg hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-2"

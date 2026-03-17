@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import Slider from "react-slick";
 import { GetAllProducts, GetProductById } from "../services/product.service";
-import { AddToCart } from "../services/cart.service";
+import { useCart } from "../context/CartContext";
 import { AddReview, GetProductReviews } from "../services/review.service";
 import Toast from "../components/common/Toast";
 
@@ -26,6 +26,8 @@ const SingleProduct = () => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type: "info" }), 3000);
   };
+
+  const { addItem } = useCart();
 
   const fetchData = async () => {
     setLoading(true);
@@ -60,13 +62,11 @@ const SingleProduct = () => {
 
   const handleAddToCart = async () => {
     if (!product) return;
-    try {
-      const res = await AddToCart({ product_id: product._id, quantity: 1 });
-      if (res.success) {
-        showToast("Added to cart!", "success");
-      }
-    } catch (error: any) {
-      showToast(error.message || "Failed to add to cart", "error");
+    const success = await addItem(product._id, 1);
+    if (success) {
+      showToast("Added to cart!", "success");
+    } else {
+      showToast("Failed to add to cart", "error");
     }
   };
 

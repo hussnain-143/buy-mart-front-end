@@ -4,7 +4,7 @@ import { Menu, ShoppingCart, User, LogOut, Ban, Package } from "lucide-react";
 import Toast from "./Toast";
 import Button from "./button";
 import { LogoutUser } from "../../services/auth.service";
-import { GetCart } from "../../services/cart.service";
+import { useCart } from "../../context/CartContext";
 
 // ================= TYPES =================
 type UserType = {
@@ -32,7 +32,7 @@ const Header = () => {
   const [user, setUser] = useState<UserType | null>(null);
   const [subStatus, setSubStatus] = useState<SubscriptionStatus | null>(null);
   const [vendor, setVendor] = useState<VendorType | null>(null);
-  const [cartCount, setCartCount] = useState(0);
+  const { cartCount } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [toast, setToast] = useState({
@@ -64,23 +64,7 @@ const Header = () => {
       setUser(null);
       setSubStatus(null);
       setVendor(null);
-      setCartCount(0);
     }
-
-    const fetchCartCount = async () => {
-      if (token) {
-        try {
-          const res = await GetCart();
-          if (res.success) {
-            setCartCount(res.data.items.length);
-          }
-        } catch (error) {
-          console.error("Error fetching cart count:", error);
-        }
-      }
-    };
-
-    fetchCartCount();
   }, []);
 
   // ================= NAV ITEMS =================

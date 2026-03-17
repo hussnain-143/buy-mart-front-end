@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { LayoutDashboard, ShoppingBag, Users, Package, Tag, Activity } from "lucide-react";
+import {
+    LayoutDashboard,
+    ShoppingBag,
+    Users,
+    Package,
+    Tag,
+    Activity
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Toast from "../../components/common/Toast";
@@ -12,10 +19,9 @@ import { TopSellingPanel } from "../../components/admin/ProductPanels";
 import SystemLogs from "../../components/admin/SystemLogs";
 
 import {
-  CategoryDistributionChart,
-  OrderTrendsChart,
-  RevenueTrendChart,
-  VendorGrowthChart,
+    CategoryDistributionChart,
+    OrderTrendsChart,
+    RevenueTrendChart,
 } from "../../components/admin/AnalyticsCharts";
 
 const Dashboard: React.FC = () => {
@@ -110,13 +116,24 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const vendorData = vendors.map((vendor) => ({
+  const vendorData = vendors.slice(0, 5).map((vendor: any) => ({
     name: vendor.owner?.firstName + " " + vendor.owner?.lastName || "N/A",
     email: vendor.owner?.email || "N/A",
     shop: vendor.shop_name || "N/A",
     status: vendor.is_active ? "active" : "pending",
     _id: vendor._id,
   }));
+
+  // Map Backend Data for Charts
+  const chartData = stats?.revenueTrends?.map((item: any) => ({
+    name: `${item._id.month}/${item._id.year.toString().slice(-2)}`,
+    revenue: item.revenue,
+    orders: item.orders
+  })) || [];
+
+  const categoryDistribution = stats?.categoryDistribution || [];
+  const topProducts = stats?.topProducts || [];
+  const recentLogs = stats?.recentLogs || [];
 
   return (
     <div className="min-h-screen bg-gray-50/50 font-sans text-secondary pb-20">
@@ -160,17 +177,16 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* CHARTS ROW 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <OrderTrendsChart />
-          <RevenueTrendChart />
-          <VendorGrowthChart />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <OrderTrendsChart data={chartData} />
+          <RevenueTrendChart data={chartData} />
         </div>
 
         {/* CHARTS ROW 2 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <CategoryDistributionChart />
-          <TopSellingPanel />
-          <SystemLogs />
+          <CategoryDistributionChart data={categoryDistribution} />
+          <TopSellingPanel products={topProducts} />
+          <SystemLogs logs={recentLogs} />
         </div>
 
         {/* VENDOR TABLE */}

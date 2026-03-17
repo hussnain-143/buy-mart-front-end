@@ -1,17 +1,59 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { BarChart3, TrendingUp, Users, ShoppingCart, DollarSign, Calendar, ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { RevenueTrendChart, CategoryDistributionChart, OrderTrendsChart } from "../../components/admin/AnalyticsCharts";
+import { RevenueTrendChart, OrderTrendsChart } from "../../components/admin/AnalyticsCharts";
+import { GetVendorStats } from "../../services/analytics.service";
+import Toast from "../../components/common/Toast";
 
 const SellerAnalytics: React.FC = () => {
+    const [stats, setStats] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
+
+    const showToast = (message: string, type = "info") => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), 3000);
+    };
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            setLoading(true);
+            try {
+                const res = await GetVendorStats();
+                setStats(res.data);
+            } catch (error: any) {
+                showToast(error.message || "Failed to load analytics", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    const avgOrderValue = stats?.totalOrders > 0 ? (stats.totalRevenue / stats.totalOrders).toFixed(2) : "0.00";
+
     const mainStats = [
-        { label: "Total Profit", value: "$12,842", sub: "+$420 today", trend: "up", icon: DollarSign, color: "text-green-500" },
-        { label: "Store Visitors", value: "48.2k", sub: "1.2k unique", trend: "up", icon: Users, color: "text-blue-500" },
-        { label: "Conversion Rate", value: "2.4%", sub: "-0.5% vs last week", trend: "down", icon: TrendingUp, color: "text-amber-500" },
-        { label: "Avg. Order Value", value: "$85.20", sub: "+$2.10 average", trend: "up", icon: ShoppingCart, color: "text-primary" },
+        { label: "Total Revenue", value: `$${(stats?.totalRevenue || 0).toLocaleString()}`, sub: "Overall earnings", trend: "up", icon: DollarSign, color: "text-green-500" },
+        { label: "Store Orders", value: stats?.totalOrders || 0, sub: "Successful transactions", trend: "up", icon: Users, color: "text-blue-500" },
+        { label: "Active Products", value: stats?.totalProducts || 0, sub: "Live in catalog", trend: "up", icon: TrendingUp, color: "text-amber-500" },
+        { label: "Avg. Order Value", value: `$${avgOrderValue}`, sub: "Per transaction average", trend: "up", icon: ShoppingCart, color: "text-primary" },
     ];
+
+    const chartData = stats?.revenueTrends?.map((item: any) => ({
+        name: `${item._id.month}/${item._id.year.toString().slice(-2)}`,
+        revenue: item.revenue,
+        orders: item.orders
+    })) || [];
 
     return (
         <div className="min-h-screen bg-gray-50/50 font-sans text-secondary pb-20">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast type={toast.type} message={toast.message} onClose={() => setToast({ ...toast, show: false })} />
+            )}
             <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-8 space-y-8">
 
                 {/* HEADER */}
@@ -56,17 +98,12 @@ const SellerAnalytics: React.FC = () => {
                 </div>
 
                 {/* CHARTS GRID */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2">
-                        <RevenueTrendChart />
-                    </div>
-                    <div>
-                        <CategoryDistributionChart />
-                    </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <RevenueTrendChart data={chartData} />
+                    <OrderTrendsChart data={chartData} />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <OrderTrendsChart />
                     <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
                         <h3 className="text-lg font-bold mb-6">Top Geographic Locations</h3>
                         <div className="space-y-6">

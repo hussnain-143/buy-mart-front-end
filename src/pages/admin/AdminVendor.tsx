@@ -3,7 +3,7 @@ import { CheckCircle, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Toast from "../../components/common/Toast";
-import { GetAllVendors, updateVendor } from "../../services/vendor.service";
+import { GetAllVendors, ApproveVendor, ToggleVendorStatus } from "../../services/vendor.service";
 
 import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
 
@@ -52,7 +52,7 @@ const AdminVendor: React.FC = () => {
         return;
       }
 
-      const res = await updateVendor(id);
+      const res = await ApproveVendor(id);
       const updatedVendor = res.data?.vendor || res.data;
       showToast(`Vendor approved successfully!`, "success");
 
@@ -75,7 +75,6 @@ const AdminVendor: React.FC = () => {
         setTimeout(() => navigate("/login"), 1500);
         return;
       }
-      const { ToggleVendorStatus } = await import("../../services/vendor.service");
       await ToggleVendorStatus(id);
       showToast(`Vendor ${currentStatus ? 'blocked' : 'activated'} successfully!`, "success");
 
@@ -95,26 +94,12 @@ const AdminVendor: React.FC = () => {
     return "bg-red-50 text-red-700 border border-red-100";
   };
 
-  const vendorData = vendors.map((vendor) => ({
-    _id: vendor._id,
-    name: vendor.owner?.firstName ? (vendor.owner?.firstName + " " + vendor.owner?.lastName) : "N/A",
-    email: vendor.owner?.email || "N/A",
-    shop: vendor.shop_name || "N/A",
-    sales: vendor.total_sales || 0,
-    status: vendor.is_active ? "active" : "blocked", // Assume if it's here and not approved, it's blocked... Wait, if it's not approved it won't be in the all tab? Ah, pending are also in all tab.
-    is_active: vendor.is_active,
-    is_approved: vendor.is_approved !== undefined ? vendor.is_approved : true, // Might need to check model if approvals are separate from active status. The code uses is_active for approval.
-  }));
 
   // Let's refine the status based on the current logic: The backend uses 'is_active' for both approval and blocking right now.
   // We'll just assume 'is_active' is true for Active, false for Pending/Blocked.
   // For requests tab, we assume we show ones that are NOT active. So they are "pending".
 
   const mapData = vendors.map((vendor) => {
-    let statusStr = "pending";
-    if (vendor.is_active) statusStr = "active";
-    else if (vendor.is_blocked) statusStr = "blocked"; // if we had a blocked flag, but we don't. We'll just use active/inactive for block/unblock now based on toggle toggle.
-
     return {
       _id: vendor._id,
       name: vendor.owner?.firstName ? (vendor.owner?.firstName + " " + vendor.owner?.lastName) : "N/A",

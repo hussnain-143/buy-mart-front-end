@@ -92,7 +92,7 @@ const Home = () => {
       <section className="relative h-screen min-h-[900px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="/hero-bg.jpeg"
+            src="/hero-bg.png"
             alt="Hero Background"
             className="w-full h-full object-cover scale-110 animate-pulse-slow brightness-80 contrast-105"
           />

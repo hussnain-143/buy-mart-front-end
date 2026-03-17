@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Package, Plus, Search, Filter, Edit2, Trash2, Eye } from "lucide-react";
 import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
-import { GetVendorProducts, AddProduct } from "../../services/product.service";
+import { GetVendorProducts, AddProduct, UpdateProduct, DeleteProduct } from "../../services/product.service";
 import { GetAllCategories } from "../../services/category.service";
 import { GetUserBrands } from "../../services/brand.service";
 import Toast from "../../components/common/Toast";
@@ -96,6 +96,34 @@ const SellerProducts: React.FC = () => {
         }
     };
 
+    const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+        try {
+            // Using generic UpdateProduct service or a toggle specific one if exists
+            // Since we only have AddProduct and GetVendorProducts in product.service.ts
+            // Let's check product.service.ts for update/toggle
+            const res = await UpdateProduct(id, { is_active: !currentStatus });
+            if (res.success) {
+                showToast(`Product ${!currentStatus ? 'activated' : 'deactivated'} successfully`, "success");
+                fetchData();
+            }
+        } catch (error: any) {
+            showToast(error.message || "Failed to update status", "error");
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+        try {
+            const res = await DeleteProduct(id);
+            if (res.success) {
+                showToast("Product deleted successfully", "success");
+                fetchData();
+            }
+        } catch (error: any) {
+            showToast(error.message || "Failed to delete product", "error");
+        }
+    };
+
     const productColumns: TableColumn<any>[] = [
         {
             header: "Product",
@@ -141,16 +169,18 @@ const SellerProducts: React.FC = () => {
             header: "Status",
             accessorKey: "is_active",
             cell: (row) => (
-                <span className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider ${row.is_active ? "bg-green-50 text-green-600 border border-green-100" : "bg-gray-50 text-gray-500 border border-gray-100"
+                <button 
+                    onClick={() => handleToggleStatus(row._id, row.is_active)}
+                    className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 ${row.is_active ? "bg-green-50 text-green-600 border border-green-100" : "bg-gray-50 text-gray-500 border border-gray-100"
                     }`}>
                     {row.is_active ? "Active" : "Inactive"}
-                </span>
+                </button>
             )
         },
         {
             header: "Actions",
             accessorKey: "_id",
-            cell: () => (
+            cell: (row) => (
                 <div className="flex items-center gap-2">
                     <button className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-primary transition-colors">
                         <Eye className="w-4 h-4" />
@@ -158,7 +188,10 @@ const SellerProducts: React.FC = () => {
                     <button className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-blue-500 transition-colors">
                         <Edit2 className="w-4 h-4" />
                     </button>
-                    <button className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors">
+                    <button 
+                        onClick={() => handleDelete(row._id)}
+                        className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors"
+                    >
                         <Trash2 className="w-4 h-4" />
                     </button>
                 </div>
