@@ -5,11 +5,13 @@ import { OrderTrendsChart, RevenueTrendChart } from "../../components/admin/Anal
 import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
 import { GetVendorStats } from "../../services/analytics.service";
 import { GetVendorOrders } from "../../services/order.service";
+import { GetVendorReviews } from "../../services/review.service";
 import Toast from "../../components/common/Toast";
 
 const SellerDashboard: React.FC = () => {
     const [stats, setStats] = useState<any>(null);
     const [orders, setOrders] = useState<any[]>([]);
+    const [reviews, setReviews] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState({ show: false, type: "info", message: "" });
 
@@ -22,12 +24,14 @@ const SellerDashboard: React.FC = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const [statsRes, ordersRes] = await Promise.all([
+                const [statsRes, ordersRes, reviewsRes] = await Promise.all([
                     GetVendorStats(),
-                    GetVendorOrders()
+                    GetVendorOrders(),
+                    GetVendorReviews()
                 ]);
                 setStats(statsRes.data);
                 setOrders(ordersRes.data || []);
+                setReviews(reviewsRes.data || []);
             } catch (error: any) {
                 showToast(error.message || "Failed to load vendor data", "error");
             } finally {
@@ -134,22 +138,63 @@ const SellerDashboard: React.FC = () => {
                     }))} />
                 </div>
 
-                {/* RECENT ORDERS TABLE */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-lg font-bold">Recent Orders</h3>
-                            <p className="text-xs text-secondary/50 font-medium tracking-tight">Latest transactions from your store</p>
+                {/* RECENT ORDERS & REVIEWS GRID */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* RECENT ORDERS TABLE */}
+                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 className="text-lg font-bold">Recent Orders</h3>
+                                <p className="text-xs text-secondary/50 font-medium tracking-tight">Latest transactions from your store</p>
+                            </div>
+                            <button className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-100 transition-colors">
+                                View All
+                            </button>
                         </div>
-                        <button className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-100 transition-colors">
-                            View All Orders
-                        </button>
+                        <AdminTable
+                            columns={recentOrdersColumns}
+                            data={orders.slice(0, 5)}
+                            title=""
+                        />
                     </div>
-                    <AdminTable
-                        columns={recentOrdersColumns}
-                        data={orders.slice(0, 5)}
-                        title=""
-                    />
+
+                    {/* RECENT REVIEWS */}
+                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 className="text-lg font-bold">Recent Reviews</h3>
+                                <p className="text-xs text-secondary/50 font-medium tracking-tight">Latest feedback from your customers</p>
+                            </div>
+                            <button className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-100 transition-colors">
+                                View All
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            {reviews.length > 0 ? reviews.slice(0, 4).map((review) => (
+                                <div key={review._id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-sm shrink-0">
+                                        {review.user_id?.firstName?.charAt(0) || "U"}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <h4 className="text-sm font-bold text-secondary truncate">{review.user_id?.firstName} {review.user_id?.lastName}</h4>
+                                            <div className="flex items-center gap-0.5">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star key={i} className={`w-2.5 h-2.5 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`} />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <p className="text-xs text-secondary/60 line-clamp-2 font-medium">"{review.comment}"</p>
+                                        <p className="text-[10px] text-primary font-bold mt-2 uppercase tracking-widest">{review.product_id?.name}</p>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="py-12 text-center text-secondary/30 font-bold uppercase tracking-widest text-[10px]">
+                                    No reviews yet
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
             </div>
