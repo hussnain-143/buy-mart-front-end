@@ -67,8 +67,8 @@ const SellerDashboard: React.FC = () => {
         },
         {
             header: "Total",
-            accessorKey: "total_amount",
-            cell: (row) => <span className="font-bold text-primary">${row.total_amount}</span>
+            accessorKey: "vendor_total",
+            cell: (row: any) => <span className="font-bold text-primary">${row.vendor_total || row.total_amount}</span>
         },
         {
             header: "Status",

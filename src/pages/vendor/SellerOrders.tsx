@@ -62,10 +62,10 @@ const SellerOrders: React.FC = () => {
         },
         {
             header: "Total",
-            accessorKey: "total_amount",
+            accessorKey: "vendor_total",
             cell: (row) => (
                 <div className="flex flex-col">
-                    <span className="font-bold text-primary">${row.total_amount}</span>
+                    <span className="font-bold text-primary">${row.vendor_total || row.total_amount}</span>
                     <span className="text-[9px] font-black text-secondary/30 uppercase tracking-tighter">{row.payment_method}</span>
                 </div>
             )
@@ -93,7 +93,6 @@ const SellerOrders: React.FC = () => {
                         onChange={async (e) => {
                             try {
                                 const newStatus = e.target.value;
-                                // Need to import UpdateOrderStatus and use it here
                                 const { UpdateOrderStatus } = await import("../../services/order.service");
                                 const res = await UpdateOrderStatus(row._id, { status: newStatus });
                                 if (res.success) {
