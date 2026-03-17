@@ -181,7 +181,7 @@ const SingleProduct = () => {
             </div>
 
             <div className="text-white/70 font-medium leading-relaxed">
-              {activeTab === "description" && <p>{product.description}</p>}
+              {activeTab === "description" && <p>{product.desc}</p>}
 
               {activeTab === "specs" && (
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -248,34 +248,52 @@ const SingleProduct = () => {
               )}
             </div>
           </div>
-
-          {/* Related Products */}
-          {relatedProducts.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-2xl font-black text-white mb-6 uppercase tracking-[0.2em]">Related Products</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {relatedProducts.map((rp) => (
-                  <NavLink
-                    to={`/product/${rp.sku}`}
-                    key={rp._id}
-                    className="group bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg hover:shadow-primary/10 transition-all duration-500"
-                  >
-                    <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 overflow-hidden">
-                      {rp.images_id?.[0]?.image_url ? (
-                        <img src={rp.images_id[0].image_url} alt={rp.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                      ) : (
-                        <Package size={80} className="text-white/10 group-hover:scale-110 transition-transform duration-500" />
-                      )}
-                    </div>
-                    <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors">{rp.name}</h3>
-                    <span className="text-2xl font-black text-primary">${rp.price}</span>
-                  </NavLink>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
+      
+      {/* Related Products - Full Width Section */}
+      {relatedProducts.length > 0 && (
+        <div className="max-w-7xl mx-auto mt-24 border-t border-white/5 pt-12">
+          <h2 className="text-3xl font-black text-white mb-8 uppercase tracking-[0.2em]">Related Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((rp) => (
+              <NavLink
+                to={`/product/${rp.sku}`}
+                key={rp._id}
+                className="group bg-white/5 rounded-[30px] border border-white/10 shadow-lg hover:shadow-primary/20 transition-all duration-500 overflow-hidden flex flex-col"
+              >
+                <div className="relative h-64 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 p-6 overflow-hidden">
+                  {rp.images_id?.[0]?.image_url ? (
+                    <img src={rp.images_id[0].image_url} alt={rp.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700" />
+                  ) : (
+                    <Package size={80} className="text-white/10 group-hover:scale-110 transition-transform duration-700" />
+                  )}
+                  {rp.discount_price > 0 && (
+                    <div className="absolute top-4 left-4 bg-primary text-white text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full">
+                      Sale
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-6 flex flex-col gap-3 flex-grow bg-black/20">
+                  <div className="text-white/40 font-black uppercase tracking-[0.2em] text-[10px]">
+                    {rp.category_id?.name || "Apparel"}
+                  </div>
+                  <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors line-clamp-2">{rp.name}</h3>
+                  <div className="mt-auto flex items-center gap-3 pt-3 border-t border-white/5">
+                    <span className="text-xl font-black text-primary">
+                      ${rp.discount_price > 0 ? rp.discount_price : rp.price}
+                    </span>
+                    {rp.discount_price > 0 && (
+                       <span className="text-white/30 line-through font-bold text-sm min-w-0 truncate">${rp.price}</span>
+                    )}
+                  </div>
+                </div>
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
