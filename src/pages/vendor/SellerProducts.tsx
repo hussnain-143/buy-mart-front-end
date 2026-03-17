@@ -42,7 +42,7 @@ const SellerProducts: React.FC = () => {
                 GetUserBrands()
             ]);
 
-            if (productsRes.success) setProducts(productsRes.data.docs || []);
+            if (productsRes.success) setProducts(productsRes.data?.docs || productsRes.data || []);
             if (categoriesRes.success) setCategories(categoriesRes.data || []);
             // Only show approved brands
             if (brandsRes.success) {
