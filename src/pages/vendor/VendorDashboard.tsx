@@ -45,8 +45,8 @@ const SellerDashboard: React.FC = () => {
         { title: "Total Revenue", value: `$${stats?.totalRevenue?.toLocaleString() || 0}`, icon: DollarSign, trend: "Overall earnings" },
         { title: "Total Orders", value: stats?.totalOrders || 0, icon: ShoppingBag, trend: "Successful orders" },
         { title: "Active Products", value: stats?.totalProducts || 0, icon: Package, trend: "Live in store" },
-        { title: "Store Rating", value: "4.9", icon: Star, trend: "from client reviews" },
-        { title: "Sales Growth", value: "N/A", icon: TrendingUp, trend: "Coming soon" },
+        { title: "Store Rating", value: stats?.storeRating || "0.0", icon: Star, trend: "from client reviews" },
+        { title: "Sales Growth", value: stats?.salesGrowth || "N/A", icon: TrendingUp, trend: "Monthly change" },
     ];
 
     const recentOrdersColumns: TableColumn<any>[] = [
