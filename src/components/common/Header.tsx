@@ -272,7 +272,7 @@ const Header = () => {
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <NavLink to="/" className="flex items-center group transition-transform hover:scale-105">
-            <img src="/1.png" alt="Logo" className="h-16 w-auto brightness-110 contrast-125" />
+            <img src="/1.png" alt="Logo" className="h-24 w-auto brightness-110 contrast-125" />
           </NavLink>
 
           {/* Desktop Nav */}
