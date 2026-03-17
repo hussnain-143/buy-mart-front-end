@@ -4,6 +4,7 @@ import { ArrowRight, Laptop, Shirt, Sparkles, HomeIcon, Package, Zap } from "luc
 import { GetAllCategories } from "../services/category.service";
 import { GetAllProducts } from "../services/product.service";
 import { GetAllBrands } from "../services/brand.service";
+import { GetActiveDeals } from "../services/deal.service";
 
 // ========================
 // Color Palette
@@ -43,11 +44,7 @@ const Home = () => {
   const [brands, setBrands] = useState<string[]>(["ROLEX", "GUCCI", "APPLE", "SONY", "PRADA", "DYSON", "TESLA"]);
   const [loading, setLoading] = useState(true);
 
-  const deals = [
-    { id: 1, name: "Summer Sale", discount: "30%", description: "On all Electronics", icon: Zap },
-    { id: 2, name: "Fashion Week", discount: "50%", description: "Exclusive Fashion Items", icon: Shirt },
-    { id: 3, name: "Luxury Deals", discount: "25%", description: "Premium Home & Living", icon: HomeIcon },
-  ];
+  const [deals, setDeals] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +58,11 @@ const Home = () => {
         if (prodRes.success) {
           setLatestProducts(prodRes.data.docs.slice(0, 6));
           setHotSellingProducts(prodRes.data.docs);
+        }
+
+        const dealsRes = await GetActiveDeals();
+        if (dealsRes.success) {
+          setDeals(dealsRes.data.slice(0, 3)); // Display top 3 active deals
         }
 
         const brandRes = await GetAllBrands();
@@ -220,26 +222,70 @@ const Home = () => {
       </section>
 
       {/* Deals */}
-      <section className="py-32 px-6 bg-secondary/5">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-12 tracking-tight text-center">
-            Hot Deals
-          </h2>
+      <section className="py-24 px-6 bg-secondary relative overflow-hidden">
+        {/* Dynamic Background Effects */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/5 rounded-[100%] blur-[120px] pointer-events-none" />
+
+        <div className="mx-auto max-w-7xl relative z-10">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-6">
+            <div>
+              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight flex items-center gap-4">
+                Flash <span className="text-accent flex items-center gap-2">Deals <Zap size={36} className="text-accent animate-pulse" /></span>
+              </h2>
+              <p className="text-white/50 mt-4 text-lg max-w-xl">
+                Unbeatable discounts on our premium collection. Grab them before they're gone!
+              </p>
+            </div>
+            <NavLink
+              to="/deals"
+              className="group flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-[0.2em] text-[12px] rounded-full border border-white/10 transition-all duration-300"
+            >
+              View All Offers
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </NavLink>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {deals.map((deal) => {
-              const Icon = deal.icon;
-              return (
-                <div
-                  key={deal.id}
-                  className="group relative bg-white/5 p-10 rounded-3xl border border-white/10 shadow-lg hover:shadow-accent/20 transition-all duration-500 text-center"
-                >
-                  <Icon size={48} className="text-accent mb-4 mx-auto" />
-                  <h3 className="text-2xl font-black text-white mb-2">{deal.name}</h3>
-                  <p className="text-white/50 mb-4">{deal.description}</p>
-                  <span className="text-4xl font-black text-accent">{deal.discount}</span>
-                </div>
-              );
-            })}
+            {deals.length > 0 ? (
+              deals.map((deal, idx) => {
+                const iconMap = [Zap, Sparkles, Package];
+                const Icon = iconMap[idx % iconMap.length];
+                return (
+                  <NavLink
+                    to={deal.product_id ? `/product/${deal.product_id.sku}` : `/shop?category=${deal.category_id?._id || ""}`}
+                    key={deal._id}
+                    className="group relative bg-[#1E1E1E]/40 backdrop-blur-xl p-8 rounded-[40px] border border-white/10 shadow-2xl hover:border-accent/30 transition-all duration-500 flex flex-col items-start overflow-hidden"
+                  >
+                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-accent/20 rounded-full blur-[60px] group-hover:bg-accent/40 transition-colors duration-700" />
+                    
+                    <div className="relative z-10 p-4 rounded-2xl bg-white/5 border border-white/10 mb-8 group-hover:bg-accent/10 transition-colors duration-500 shadow-inner">
+                      <Icon size={32} className="text-white group-hover:text-accent transition-colors duration-500" />
+                    </div>
+                    
+                    <div className="relative z-10 flex-grow">
+                      <h3 className="text-2xl lg:text-3xl font-black text-white mb-3 tracking-tight">{deal.name}</h3>
+                      <p className="text-white/60 mb-8 font-medium line-clamp-2">{deal.description}</p>
+                    </div>
+                    
+                    <div className="relative z-10 w-full flex items-end justify-between mt-auto">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] uppercase font-black tracking-[0.3em] text-white/40 mb-1">Up to</span>
+                        <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-accent to-yellow-200">
+                          {deal.discount}%
+                        </span>
+                      </div>
+                      <button className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-300 shadow-lg">
+                        <ArrowRight size={20} className="text-white group-hover:text-secondary group-hover:-rotate-45 transition-all duration-300" />
+                      </button>
+                    </div>
+                  </NavLink>
+                );
+              })
+            ) : (
+              <div className="col-span-3 text-center text-white/50 py-12">
+                More exciting deals coming soon!
+              </div>
+            )}
           </div>
         </div>
       </section>
