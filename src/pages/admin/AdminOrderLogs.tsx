@@ -1,25 +1,52 @@
-
+import { useEffect, useState } from 'react';
 import AdminTable, { TableColumn } from '../../components/admin/AdminTable';
 import { ClipboardList, Calendar } from 'lucide-react';
+import { GetLogEntries } from '../../services/log.service';
+import Toast from '../../components/common/Toast';
 
 interface OrderLog {
     id: string;
     orderNumber: string;
     action: string;
     user: string;
-    role: 'Admin' | 'System' | 'Vendor' | 'Customer';
+    role: 'admin' | 'system' | 'vendor' | 'customer' | string;
     timestamp: string;
     details: string;
 }
 
 const AdminOrderLogs = () => {
-    // Mock data
-    const logs: OrderLog[] = [
-        { id: '1', orderNumber: '#ORD-7829', action: 'Order Created', user: 'Alice Johnson', role: 'Customer', timestamp: '2023-10-25 10:30 AM', details: 'Order placed successfully' },
-        { id: '2', orderNumber: '#ORD-7829', action: 'Payment Verified', user: 'System', role: 'System', timestamp: '2023-10-25 10:31 AM', details: 'Stripe payment confirmed' },
-        { id: '3', orderNumber: '#ORD-7830', action: 'Status Updated', user: 'Charlie Admin', role: 'Admin', timestamp: '2023-10-26 09:15 AM', details: 'Changed status to Shipping' },
-        { id: '4', orderNumber: '#ORD-7831', action: 'Order Cancelled', user: 'David Lee', role: 'Customer', timestamp: '2023-10-24 02:20 PM', details: 'User requested cancellation' },
-    ];
+    const [logs, setLogs] = useState<OrderLog[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
+
+    const showToast = (message: string, type = "info") => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), 3000);
+    };
+
+    useEffect(() => {
+        const fetchLogs = async () => {
+            setLoading(true);
+            try {
+                const res = await GetLogEntries();
+                const fetchedLogs = (res.data || []).map((log: any) => ({
+                    id: log._id,
+                    orderNumber: log.reference_id ? `#REF-${log.reference_id.slice(-6).toUpperCase()}` : 'SYSTEM',
+                    action: log.action,
+                    user: `${log.user_id?.firstName || ''} ${log.user_id?.lastName || ''}`.trim() || 'System',
+                    role: log.user_id?.role || 'system',
+                    timestamp: new Date(log.createdAt).toLocaleString(),
+                    details: log.action.includes('Order ID') ? 'Transaction update logged' : 'Platform activity'
+                }));
+                setLogs(fetchedLogs);
+            } catch (error: any) {
+                showToast(error.message || "Failed to load logs", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLogs();
+    }, []);
 
     const columns: TableColumn<OrderLog>[] = [
         {
@@ -66,6 +93,14 @@ const AdminOrderLogs = () => {
 
     return (
         <div className="space-y-6">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast type={toast.type} message={toast.message} onClose={() => setToast({ ...toast, show: false })} />
+            )}
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-black text-gray-800 tracking-tight">

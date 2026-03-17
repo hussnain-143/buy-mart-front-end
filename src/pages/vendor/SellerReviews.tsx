@@ -1,48 +1,66 @@
-import React from "react";
-import { Star, MessageSquare, ThumbsUp, Package, ArrowRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Star, MessageSquare, ThumbsUp, Package } from "lucide-react";
+import { GetVendorReviews } from "../../services/review.service";
+import Toast from "../../components/common/Toast";
 
 const SellerReviews: React.FC = () => {
-    const reviews = [
-        {
-            id: 1,
-            user: "Alex Johnson",
-            product: "Premium Wireless Headset",
-            rating: 5,
-            comment: "Absolutely incredible sound quality! The battery life is much better than expected. Highly recommend this seller for electronics.",
-            date: "2 days ago",
-            helpful: 24,
-            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop"
-        },
-        {
-            id: 2,
-            user: "Emma White",
-            product: "Ergonomic Mechanical Keyboard",
-            rating: 4,
-            comment: "The keys feel great, and the lighting is customizable. Shipping took a day longer than expected, but the product is top notch.",
-            date: "1 week ago",
-            helpful: 12,
-            image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=100&h=100&fit=crop"
-        },
-        {
-            id: 3,
-            user: "Mike Ross",
-            product: "Leather Messenger Bag",
-            rating: 5,
-            comment: "Excellent craftsmanship. The leather is premium and smells great. Fits my laptop perfectly.",
-            date: "Oct 20, 2026",
-            helpful: 8,
-            image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=100&h=100&fit=crop"
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
+
+    const showToast = (message: string, type = "info", duration = 3000) => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), duration);
+    };
+
+    const fetchReviews = async () => {
+        setLoading(true);
+        try {
+            const res = await GetVendorReviews();
+            if (res.success) {
+                setReviews(res.data || []);
+            }
+        } catch (error: any) {
+            showToast(error.message || "Failed to load reviews", "error");
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
+
+    useEffect(() => {
+        fetchReviews();
+    }, []);
 
     const stats = [
-        { label: "Average Rating", value: "4.8", icon: Star, color: "text-amber-500" },
-        { label: "Total Reviews", value: "1,248", icon: MessageSquare, color: "text-blue-500" },
-        { label: "Satisfaction Rate", value: "96%", icon: ThumbsUp, color: "text-green-500" },
+        { 
+            label: "Average Rating", 
+            value: reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : "0.0", 
+            icon: Star, 
+            color: "text-amber-500" 
+        },
+        { label: "Total Reviews", value: reviews.length.toString(), icon: MessageSquare, color: "text-blue-500" },
+        { 
+            label: "Satisfaction Rate", 
+            value: reviews.length > 0 ? `${Math.round((reviews.filter(r => r.rating >= 4).length / reviews.length) * 100)}%` : "0%", 
+            icon: ThumbsUp, 
+            color: "text-green-500" 
+        },
     ];
 
     return (
         <div className="min-h-screen bg-gray-50/50 font-sans text-secondary pb-20">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={() => setToast({ show: false, message: "", type: "info" })}
+                />
+            )}
             <div className="max-w-[1600px] mx-auto px-6 lg:px-10 py-8 space-y-8">
 
                 {/* HEADER */}
@@ -76,44 +94,28 @@ const SellerReviews: React.FC = () => {
                 {/* REVIEWS LIST */}
                 <div className="grid grid-cols-1 gap-6">
                     {reviews.map((review) => (
-                        <div key={review.id} className="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md group">
+                        <div key={review._id} className="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm transition-all hover:shadow-md group">
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                                 <div className="flex-1 space-y-4">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-orange-500/20">
-                                                {review.user.charAt(0)}
+                                                {review.user_id?.firstName?.charAt(0) || "U"}
                                             </div>
                                             <div>
-                                                <h4 className="font-bold text-secondary text-sm">{review.user}</h4>
+                                                <h4 className="font-bold text-secondary text-sm">{review.user_id?.firstName} {review.user_id?.lastName}</h4>
                                                 <div className="flex items-center gap-1 mt-1">
                                                     {[...Array(5)].map((_, i) => (
                                                         <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`} />
                                                     ))}
-                                                    <span className="text-[10px] text-secondary/40 font-bold ml-2 uppercase tracking-tight">{review.date}</span>
+                                                    <span className="text-[10px] text-secondary/40 font-bold ml-2 uppercase tracking-tight">{new Date(review.createdAt).toLocaleDateString()}</span>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 text-green-600 rounded-lg">
-                                                <ThumbsUp className="w-3 h-3" />
-                                                <span className="text-[10px] font-bold">VERIFIED PURCHASE</span>
                                             </div>
                                         </div>
                                     </div>
                                     <p className="text-secondary/70 text-sm leading-relaxed font-medium">
                                         "{review.comment}"
                                     </p>
-                                    <div className="flex flex-wrap items-center gap-4 pt-2">
-                                        <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-secondary/40 hover:text-primary transition-colors">
-                                            <ThumbsUp className="w-3.5 h-3.5" />
-                                            Helpful ({review.helpful})
-                                        </button>
-                                        <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-secondary/40 hover:text-blue-500 transition-colors">
-                                            <MessageSquare className="w-3.5 h-3.5" />
-                                            Reply to Customer
-                                        </button>
-                                    </div>
                                 </div>
                                 <div className="w-full md:w-64 flex-shrink-0">
                                     <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-gray-100 transition-colors">
@@ -122,26 +124,24 @@ const SellerReviews: React.FC = () => {
                                             <span className="text-[10px] font-black uppercase tracking-widest text-secondary/60">Related Product</span>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                            <img src={review.image} alt={review.product} className="w-12 h-12 rounded-xl object-cover shadow-sm" />
+                                            <div className="w-12 h-12 rounded-xl bg-gray-200 overflow-hidden shrink-0">
+                                                <img src={review.product_id?.images_id?.[0]?.image_url || "/placeholder-prod.png"} alt={review.product_id?.name} className="w-full h-full object-cover shadow-sm" />
+                                            </div>
                                             <p className="flex-1 text-[11px] font-bold text-secondary leading-tight line-clamp-2">
-                                                {review.product}
+                                                {review.product_id?.name}
                                             </p>
                                         </div>
-                                        <ArrowRight className="w-4 h-4 ml-auto mt-4 text-secondary/20 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ))}
+                    {reviews.length === 0 && (
+                        <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 text-secondary/40 font-bold uppercase tracking-widest text-sm">
+                            No reviews found for your products.
+                        </div>
+                    )}
                 </div>
-
-                {/* LOAD MORE */}
-                <div className="text-center pt-8">
-                    <button className="px-10 py-4 border-2 border-dashed border-gray-200 text-gray-400 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:border-primary/50 hover:text-primary transition-all active:scale-95">
-                        Load More Feed
-                    </button>
-                </div>
-
             </div>
         </div>
     );

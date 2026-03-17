@@ -89,95 +89,109 @@ const ChartContainer = ({
 };
 
 /* ===================== CATEGORY DISTRIBUTION CHART ===================== */
-export const CategoryDistributionChart = () => (
-  <ChartContainer title="Category Distribution" subtitle="Products by Category">
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        <Pie
-          data={categoryData}
-          cx="50%"
-          cy="45%"
-          innerRadius={75}
-          outerRadius={105}
-          paddingAngle={4}
-          dataKey="value"
-        >
-          {categoryData.map((_, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={COLORS[index % COLORS.length]}
-              stroke="#fff"
-              strokeWidth={2}
-            />
-          ))}
-        </Pie>
-        <Tooltip contentStyle={tooltipStyle} cursor={false} />
-        <Legend
-          verticalAlign="bottom"
-          iconType="circle"
-          iconSize={9}
-          formatter={(value) => (
-            <span className="text-secondary/80 text-xs font-semibold ml-1">{value}</span>
-          )}
-        />
-      </PieChart>
-    </ResponsiveContainer>
-  </ChartContainer>
-);
+export const CategoryDistributionChart = ({ data: propData }: { data?: any[] }) => {
+    const chartData = propData && propData.length > 0 ? propData : categoryData;
+
+    return (
+        <ChartContainer title="Category Distribution" subtitle="Products by Category">
+            <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                    <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="45%"
+                        innerRadius={75}
+                        outerRadius={105}
+                        paddingAngle={4}
+                        dataKey="value"
+                    >
+                        {chartData.map((_, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                                stroke="#fff"
+                                strokeWidth={2}
+                            />
+                        ))}
+                    </Pie>
+                    <Tooltip contentStyle={tooltipStyle} cursor={false} />
+                    <Legend
+                        verticalAlign="bottom"
+                        iconType="circle"
+                        iconSize={9}
+                        formatter={(value) => (
+                            <span className="text-secondary/80 text-xs font-semibold ml-1">{value}</span>
+                        )}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </ChartContainer>
+    );
+};
 
 /* ===================== ORDER TRENDS CHART ===================== */
-export const OrderTrendsChart = () => (
-  <ChartContainer
-    title="Order Analytics"
-    subtitle="Orders Over Time"
-    rightContent={
-      <div className="text-right">
-        <p className="text-[10px] font-semibold text-secondary/60 uppercase">Total Orders</p>
-        <p className="text-lg font-extrabold text-primary">377</p>
-      </div>
-    }
-  >
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-        <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} dy={10} />
-        <YAxis fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} />
-        <Tooltip cursor={{ fill: "#FAFAFA" }} contentStyle={tooltipStyle} />
-        <Bar dataKey="orders" fill="#FF6F00" radius={[10, 10, 10, 10]} barSize={34} />
-      </BarChart>
-    </ResponsiveContainer>
-  </ChartContainer>
-);
+export const OrderTrendsChart = ({ data: propData }: { data?: any[] }) => {
+    const chartData = propData && propData.length > 0 ? propData : data;
+    const totalOrders = chartData.reduce((acc, curr) => acc + (curr.orders || 0), 0);
+
+    return (
+        <ChartContainer
+            title="Order Analytics"
+            subtitle="Orders Over Time"
+            rightContent={
+                <div className="text-right">
+                    <p className="text-[10px] font-semibold text-secondary/60 uppercase">Total Orders</p>
+                    <p className="text-lg font-extrabold text-primary">{totalOrders}</p>
+                </div>
+            }
+        >
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                    <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} dy={10} />
+                    <YAxis fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} />
+                    <Tooltip cursor={{ fill: "#FAFAFA" }} contentStyle={tooltipStyle} />
+                    <Bar dataKey="orders" fill="#FF6F00" radius={[10, 10, 10, 10]} barSize={34} />
+                </BarChart>
+            </ResponsiveContainer>
+        </ChartContainer>
+    );
+};
 
 /* ===================== REVENUE TREND CHART ===================== */
-export const RevenueTrendChart = () => (
-  <ChartContainer
-    title="Revenue Trend"
-    subtitle="Global Revenue Growth"
-    rightContent={
-      <div className="text-right">
-        <p className="text-[10px] font-semibold text-secondary/60 uppercase">Today Revenue</p>
-        <p className="text-lg font-extrabold text-primary">$26.1K</p>
-      </div>
-    }
-  >
-    <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-        <defs>
-          <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#FF6F00" stopOpacity={0.25} />
-            <stop offset="95%" stopColor="#FF6F00" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
-        <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} dy={10} />
-        <YAxis fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} />
-        <Tooltip contentStyle={tooltipStyle} />
-        <Area type="monotone" dataKey="revenue" stroke="#FF6F00" strokeWidth={3} fill="url(#colorRevenue)" />
-      </AreaChart>
-    </ResponsiveContainer>
-  </ChartContainer>
-);
+export const RevenueTrendChart = ({ data: propData }: { data?: any[] }) => {
+    const chartData = propData && propData.length > 0 ? propData : data;
+    const totalRevenue = chartData.reduce((acc, curr) => acc + (curr.revenue || 0), 0);
+
+    return (
+        <ChartContainer
+            title="Revenue Trend"
+            subtitle="Global Revenue Growth"
+            rightContent={
+                <div className="text-right">
+                    <p className="text-[10px] font-semibold text-secondary/60 uppercase">Period Revenue</p>
+                    <p className="text-lg font-extrabold text-primary">${totalRevenue.toLocaleString()}</p>
+                </div>
+            }
+        >
+            <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#FF6F00" stopOpacity={0.25} />
+                            <stop offset="95%" stopColor="#FF6F00" stopOpacity={0} />
+                        </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                    <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} dy={10} />
+                    <YAxis fontSize={11} tickLine={false} axisLine={false} tick={{ fill: "#9CA3AF" }} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Area type="monotone" dataKey="revenue" stroke="#FF6F00" strokeWidth={3} fill="url(#colorRevenue)" />
+                </AreaChart>
+            </ResponsiveContainer>
+        </ChartContainer>
+    );
+};
 
 /* ===================== VENDOR GROWTH CHART ===================== */
 export const VendorGrowthChart = () => (

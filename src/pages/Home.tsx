@@ -1,6 +1,9 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ArrowRight, Laptop, Shirt, Sparkles, HomeIcon, Package, Zap } from "lucide-react";
+import { GetAllCategories } from "../services/category.service";
+import { GetAllProducts } from "../services/product.service";
+import { GetAllBrands } from "../services/brand.service";
 
 // ========================
 // Color Palette
@@ -16,25 +19,29 @@ const COLORS = {
   secondary: "text-secondary",
 };
 
+const CATEGORY_ICONS: Record<string, any> = {
+  "Electronics": Laptop,
+  "Fashion": Shirt,
+  "Beauty": Sparkles,
+  "Home & Living": HomeIcon,
+};
+
+const CATEGORY_COLORS: Record<string, string> = {
+  "Electronics": COLORS.electronics,
+  "Fashion": COLORS.fashion,
+  "Beauty": COLORS.beauty,
+  "Home & Living": COLORS.home,
+};
+
 // ========================
 // Component
 // ========================
 const Home = () => {
-  const categories = [
-    { name: "Electronics", icon: Laptop, color: COLORS.electronics },
-    { name: "Fashion", icon: Shirt, color: COLORS.fashion },
-    { name: "Beauty", icon: Sparkles, color: COLORS.beauty },
-    { name: "Home & Living", icon: HomeIcon, color: COLORS.home },
-  ];
-
-  const brands = ["ROLEX", "GUCCI", "APPLE", "SONY", "PRADA", "DYSON", "TESLA"];
-
-  const topSellingProducts = Array.from({ length: 8 }, (_, i) => ({
-    id: i + 1,
-    name: `Premium Product ${i + 1}`,
-    price: "$" + (99 + i * 50),
-    oldPrice: i % 2 === 0 ? "$" + (149 + i * 50) : null,
-  }));
+  const [categories, setCategories] = useState<any[]>([]);
+  const [latestProducts, setLatestProducts] = useState<any[]>([]);
+  const [hotSellingProducts, setHotSellingProducts] = useState<any[]>([]);
+  const [brands, setBrands] = useState<string[]>(["ROLEX", "GUCCI", "APPLE", "SONY", "PRADA", "DYSON", "TESLA"]);
+  const [loading, setLoading] = useState(true);
 
   const deals = [
     { id: 1, name: "Summer Sale", discount: "30%", description: "On all Electronics", icon: Zap },
@@ -42,11 +49,41 @@ const Home = () => {
     { id: 3, name: "Luxury Deals", discount: "25%", description: "Premium Home & Living", icon: HomeIcon },
   ];
 
-  const latestProducts = Array.from({ length: 6 }, (_, i) => ({
-    id: i + 1,
-    name: `Latest Product ${i + 1}`,
-    price: "$" + (120 + i * 40),
-  }));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const catRes = await GetAllCategories();
+        if (catRes.success) {
+          setCategories(catRes.data.slice(0, 4));
+        }
+
+        const prodRes = await GetAllProducts({ limit: 8 });
+        if (prodRes.success) {
+          setLatestProducts(prodRes.data.docs.slice(0, 6));
+          setHotSellingProducts(prodRes.data.docs);
+        }
+
+        const brandRes = await GetAllBrands();
+        if (brandRes.success && brandRes.data.length > 0) {
+          setBrands(brandRes.data.map((b: any) => b.name.toUpperCase()));
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-secondary flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-secondary overflow-x-hidden">
@@ -55,7 +92,7 @@ const Home = () => {
       <section className="relative h-screen min-h-[900px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="/hero-bg.jpeg"
+            src="/hero-bg.png"
             alt="Hero Background"
             className="w-full h-full object-cover scale-110 animate-pulse-slow brightness-80 contrast-105"
           />
@@ -128,17 +165,18 @@ const Home = () => {
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-10">
             {categories.map((cat, idx) => {
-              const Icon = cat.icon;
+              const Icon = CATEGORY_ICONS[cat.name] || Package;
+              const color = CATEGORY_COLORS[cat.name] || "from-gray-500/20 to-slate-500/20";
               return (
                 <NavLink
-                  key={cat.name}
-                  to={`/categories/${cat.name.toLowerCase().replace(/ & /g, "-")}`}
+                  key={cat._id}
+                  to={`/categories/${cat.slug}`}
                   className="group relative h-64 flex flex-col items-center justify-center rounded-[40px] overflow-hidden transition-all duration-700 hover:-translate-y-4 shadow-2xl"
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
                   <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl border border-white/10 group-hover:border-accent/30 transition-colors" />
                   <div
-                    className={`absolute -inset-20 bg-gradient-to-br ${cat.color} blur-[80px] opacity-10 group-hover:opacity-40 transition-opacity`}
+                    className={`absolute -inset-20 bg-gradient-to-br ${color} blur-[80px] opacity-10 group-hover:opacity-40 transition-opacity`}
                   />
                   <div className="relative z-10 mb-6 p-6 rounded-full bg-white/5 border border-white/5 group-hover:bg-accent/10 group-hover:border-accent/20 transition-all duration-500 group-hover:scale-110">
                     <Icon size={48} className="text-white group-hover:text-accent transition-colors" />
@@ -161,16 +199,21 @@ const Home = () => {
           </h2>
           <div className="flex gap-6 overflow-x-auto px-2 snap-x snap-mandatory scrollbar-hide">
             {latestProducts.map((product) => (
-              <div
-                key={product.id}
+              <NavLink
+                to={`/product/${product.sku}`}
+                key={product._id}
                 className="snap-start min-w-[320px] flex-shrink-0 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg hover:shadow-accent/10 transition-all duration-500"
               >
-                <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4">
-                  <Package size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
+                <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 overflow-hidden">
+                  {product.images_id?.[0]?.image_url ? (
+                    <img src={product.images_id[0].image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  ) : (
+                    <Package size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
+                  )}
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
-                <span className="text-2xl font-black text-accent">{product.price}</span>
-              </div>
+                <span className="text-2xl font-black text-accent">${product.price}</span>
+              </NavLink>
             ))}
           </div>
         </div>
@@ -209,22 +252,27 @@ const Home = () => {
           </h2>
           <div className="relative overflow-hidden">
             <div className="flex gap-6 animate-scroll-hot">
-              {topSellingProducts.concat(topSellingProducts).map((product, i) => (
-                <div
+              {hotSellingProducts.concat(hotSellingProducts).map((product, i) => (
+                <NavLink
+                  to={`/product/${product.sku}`}
                   key={i}
                   className="min-w-[370px] flex-shrink-0 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-lg hover:shadow-accent/10 transition-all duration-500"
                 >
-                  <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4">
-                    <Package size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
+                  <div className="relative h-56 flex items-center justify-center bg-gradient-to-br from-white/5 to-white/10 rounded-2xl mb-4 overflow-hidden">
+                    {product.images_id?.[0]?.image_url ? (
+                      <img src={product.images_id[0].image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    ) : (
+                      <Package size={80} className="text-white/20 group-hover:scale-110 transition-transform duration-500" />
+                    )}
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
                   <div className="flex gap-2 items-center">
-                    <span className="text-2xl font-black text-accent">{product.price}</span>
-                    {product.oldPrice && (
-                      <span className="text-sm text-white/30 line-through font-bold">{product.oldPrice}</span>
+                    <span className="text-2xl font-black text-accent">${product.price}</span>
+                    {product.discount_price > 0 && (
+                      <span className="text-sm text-white/30 line-through font-bold">${product.price + 50}</span>
                     )}
                   </div>
-                </div>
+                </NavLink>
               ))}
             </div>
           </div>

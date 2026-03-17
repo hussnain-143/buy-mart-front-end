@@ -1,35 +1,56 @@
-
+import { useEffect, useState } from 'react';
 import AdminTable, { TableColumn } from '../../components/admin/AdminTable';
 import { Star, MessageSquare } from 'lucide-react';
-
-interface Review {
-    id: string;
-    productName: string;
-    userName: string;
-    rating: number;
-    comment: string;
-    date: string;
-    status: 'Published' | 'Pending' | 'Flagged';
-}
+import { GetAllReviews, DeleteReview } from '../../services/review.service';
+import Toast from '../../components/common/Toast';
 
 const AdminReviews = () => {
-    // Mock data
-    const reviews: Review[] = [
-        { id: '1', productName: 'Wireless Headphones', userName: 'John Doe', rating: 5, comment: 'Amazing sound quality! Highly recommended.', date: '2023-10-20', status: 'Published' },
-        { id: '2', productName: 'Leather Jacket', userName: 'Jane Smith', rating: 4, comment: 'Great quality but a bit tight.', date: '2023-10-21', status: 'Published' },
-        { id: '3', productName: 'Smart Watch', userName: 'Bob Brown', rating: 2, comment: 'Battery life is terrible.', date: '2023-10-22', status: 'Flagged' },
-    ];
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
 
-    const columns: TableColumn<Review>[] = [
+    const showToast = (message: string, type = "info", duration = 3000) => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), duration);
+    };
+
+    const fetchReviews = async () => {
+        setLoading(true);
+        try {
+            const res = await GetAllReviews();
+            setReviews(res.data || []);
+        } catch (error: any) {
+            showToast(error.message || "Failed to load reviews", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchReviews();
+    }, []);
+
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("Are you sure you want to delete this review?")) return;
+        try {
+            await DeleteReview(id);
+            showToast("Review deleted successfully", "success");
+            fetchReviews();
+        } catch (error: any) {
+            showToast(error.message || "Failed to delete review", "error");
+        }
+    };
+
+    const columns: TableColumn<any>[] = [
         {
             header: 'Product',
-            accessorKey: 'productName',
-            cell: (row) => <span className="font-bold text-gray-800">{row.productName}</span>,
+            accessorKey: 'product_id',
+            cell: (row) => <span className="font-bold text-gray-800">{row.product_id?.name || 'N/A'}</span>,
         },
         {
             header: 'Reviewer',
-            accessorKey: 'userName',
-            cell: (row) => <span className="text-gray-600">{row.userName}</span>,
+            accessorKey: 'user_id',
+            cell: (row) => <span className="text-gray-600">{row.user_id?.firstName} {row.user_id?.lastName}</span>,
         },
         {
             header: 'Rating',
@@ -58,30 +79,37 @@ const AdminReviews = () => {
         },
         {
             header: 'Date',
-            accessorKey: 'date',
-            cell: (row) => <span className="text-xs text-gray-400">{row.date}</span>,
+            accessorKey: 'createdAt',
+            cell: (row) => <span className="text-xs text-gray-400">{new Date(row.createdAt).toLocaleDateString()}</span>,
         },
         {
-            header: 'Status',
-            accessorKey: 'status',
-            cell: (row) => {
-                let colorClass = "";
-                switch (row.status) {
-                    case 'Published': colorClass = 'bg-green-500/10 text-green-600'; break;
-                    case 'Flagged': colorClass = 'bg-red-500/10 text-red-600'; break;
-                    default: colorClass = 'bg-yellow-500/10 text-yellow-600';
-                }
-                return (
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${colorClass}`}>
-                        {row.status}
-                    </span>
-                );
-            },
+            header: 'Actions',
+            accessorKey: '_id',
+            cell: (row) => (
+                <button
+                    onClick={() => handleDelete(row._id)}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                >
+                    Delete
+                </button>
+            ),
         },
     ];
 
     return (
         <div className="space-y-6">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={() => setToast({ show: false, message: "", type: "info" })}
+                />
+            )}
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-black text-gray-800 tracking-tight">
@@ -91,7 +119,7 @@ const AdminReviews = () => {
                 </div>
             </div>
 
-            <div className="h-[600px]">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <AdminTable
                     data={reviews}
                     columns={columns}

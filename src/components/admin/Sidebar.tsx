@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   ClipboardList,
 } from "lucide-react";
+import { GetSidebarMetrics } from "../../services/analytics.service";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,14 +22,29 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const navigate = useNavigate();
+  const [metrics, setMetrics] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const res = await GetSidebarMetrics();
+        if (res.success) {
+          setMetrics(res.data);
+        }
+      } catch (error) {
+        console.error("Sidebar metrics fetch error:", error);
+      }
+    };
+    fetchMetrics();
+  }, []);
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: Store, label: "Vendors", href: "/vendors" },
-    { icon: ShieldCheck, label: "Brand Requests", href: "/brand-requests" },
+    { icon: Store, label: "Vendors", href: "/vendors", badge: metrics?.vendors > 0 ? metrics.vendors.toString() : undefined },
+    { icon: ShieldCheck, label: "Brand Requests", href: "/brand-requests", badge: metrics?.brands > 0 ? metrics.brands.toString() : undefined },
     { icon: Tag, label: "Categories", href: "/categories" },
     { icon: Users, label: "Users", href: "/users" },
-    { icon: ShoppingCart, label: "Orders", href: "/orders", badge: "5" },
+    { icon: ShoppingCart, label: "Orders", href: "/orders", badge: metrics?.orders > 0 ? metrics.orders.toString() : undefined },
     { icon: ClipboardList, label: "Order Logs", href: "/order-logs" },
     { icon: Package, label: "Products", href: "/products" },
     { icon: MessageSquare, label: "Reviews", href: "/reviews" },

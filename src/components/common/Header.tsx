@@ -4,6 +4,7 @@ import { Menu, ShoppingCart, User, LogOut, Ban, Package } from "lucide-react";
 import Toast from "./Toast";
 import Button from "./button";
 import { LogoutUser } from "../../services/auth.service";
+import { useCart } from "../../context/CartContext";
 
 // ================= TYPES =================
 type UserType = {
@@ -31,6 +32,7 @@ const Header = () => {
   const [user, setUser] = useState<UserType | null>(null);
   const [subStatus, setSubStatus] = useState<SubscriptionStatus | null>(null);
   const [vendor, setVendor] = useState<VendorType | null>(null);
+  const { cartCount } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [toast, setToast] = useState({
@@ -63,8 +65,6 @@ const Header = () => {
       setSubStatus(null);
       setVendor(null);
     }
-
-
   }, []);
 
   // ================= NAV ITEMS =================
@@ -144,7 +144,6 @@ const Header = () => {
   };
 
   // ================= CART COUNT =================
-  const cartCount = 2; // Replace with actual cart count logic
 
   // ================= RIGHT AREA =================
   const RightArea = () => (

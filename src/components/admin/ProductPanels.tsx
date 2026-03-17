@@ -1,10 +1,11 @@
 import React from 'react';
 
 interface ProductPerformance {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   sales: number;
-  revenue: string;
+  revenue: string | number;
   stock: number;
 }
 
@@ -16,49 +17,55 @@ const topSelling: ProductPerformance[] = [
   { id: '5', name: 'Bluetooth Speaker', sales: 480, revenue: '$48,000', stock: 150 },
 ];
 
-export const TopSellingPanel: React.FC = () => (
-  <div className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
-    
-    {/* Background Glow */}
-    <div className="absolute -top-16 -right-16 w-48 h-48 bg-primary/15 blur-3xl rounded-full"></div>
-    <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-secondary/10 blur-3xl rounded-full"></div>
+export const TopSellingPanel: React.FC<{ products?: ProductPerformance[] }> = ({ products: propProducts }) => {
+    const displayProducts = propProducts && propProducts.length > 0 ? propProducts : topSelling;
 
-    {/* Top Accent Line */}
-    <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary via-primary/70 to-transparent"></div>
+    return (
+        <div className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
 
-    {/* Header */}
-    <div className="relative flex items-center justify-between mb-6">
-      <div>
-        <h3 className="text-secondary font-bold text-lg tracking-tight">Top Products</h3>
-        <p className="text-secondary/70 text-xs font-semibold uppercase tracking-wider mt-1">Sales Performance</p>
-      </div>
-    </div>
+            {/* Background Glow */}
+            <div className="absolute -top-16 -right-16 w-48 h-48 bg-primary/15 blur-3xl rounded-full"></div>
+            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-secondary/10 blur-3xl rounded-full"></div>
 
-    {/* Product List */}
-    <div className="flex-1 space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-gray-100 h-[220px]">
-      {topSelling.map((product, i) => (
-        <div
-          key={product.id}
-          className="flex items-center justify-between group p-2 rounded-xl hover:bg-primary/5 transition-colors"
-        >
-          <div className="flex items-center gap-4">
-            <div>
-              <h4 className="text-sm font-semibold text-secondary">{product.name}</h4>
-              <p className="text-xs text-secondary/60 mt-0.5">{product.sales} units sold</p>
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary via-primary/70 to-transparent"></div>
+
+            {/* Header */}
+            <div className="relative flex items-center justify-between mb-6">
+                <div>
+                    <h3 className="text-secondary font-bold text-lg tracking-tight">Top Products</h3>
+                    <p className="text-secondary/70 text-xs font-semibold uppercase tracking-wider mt-1">Sales Performance</p>
+                </div>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-sm font-bold text-primary">{product.revenue}</p>
-          </div>
-        </div>
-      ))}
-    </div>
 
-    {/* Footer */}
-    <div className="mt-6 pt-4 border-t border-gray-50">
-      <button className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition-colors">
-        View All Products
-      </button>
-    </div>
-  </div>
-);
+            {/* Product List */}
+            <div className="flex-1 space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-gray-100 h-[220px]">
+                {displayProducts.map((product) => (
+                    <div
+                        key={product.id || product._id}
+                        className="flex items-center justify-between group p-2 rounded-xl hover:bg-primary/5 transition-colors"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div>
+                                <h4 className="text-sm font-semibold text-secondary">{product.name}</h4>
+                                <p className="text-xs text-secondary/60 mt-0.5">{product.sales} units sold</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-sm font-bold text-primary">
+                                {typeof product.revenue === 'number' ? `$${product.revenue.toLocaleString()}` : product.revenue}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Footer */}
+            <div className="mt-6 pt-4 border-t border-gray-50">
+                <button className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition-colors">
+                    View All Products
+                </button>
+            </div>
+        </div>
+    );
+};

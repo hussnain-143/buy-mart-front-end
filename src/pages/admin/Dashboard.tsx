@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { LayoutDashboard, ShoppingBag, Users, Package, Tag, Activity } from "lucide-react";
+import {
+    LayoutDashboard,
+    ShoppingBag,
+    Users,
+    Package,
+    Tag,
+    Activity
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Toast from "../../components/common/Toast";
 import { GetAllVendors } from "../../services/vendor.service";
+import { GetAdminStats } from "../../services/analytics.service";
 
 import StatsCard from "../../components/admin/StatsCard";
 import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
@@ -11,15 +19,16 @@ import { TopSellingPanel } from "../../components/admin/ProductPanels";
 import SystemLogs from "../../components/admin/SystemLogs";
 
 import {
-  CategoryDistributionChart,
-  OrderTrendsChart,
-  RevenueTrendChart,
-  VendorGrowthChart,
+    CategoryDistributionChart,
+    OrderTrendsChart,
+    RevenueTrendChart,
 } from "../../components/admin/AnalyticsCharts";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [vendors, setVendors] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, type: "info", message: "" });
 
   const showToast = (message: string, type = "info", duration = 3000) => {
@@ -28,7 +37,8 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchVendors = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -37,23 +47,30 @@ const Dashboard: React.FC = () => {
           return;
         }
 
-        const res = await GetAllVendors();
-        const vendorList = res.data?.vendors || res.data || [];
+        const [vendorsRes, statsRes] = await Promise.all([
+          GetAllVendors(),
+          GetAdminStats()
+        ]);
+
+        const vendorList = vendorsRes.data?.vendors || vendorsRes.data || [];
         setVendors(vendorList);
+        setStats(statsRes.data);
       } catch (error: any) {
-        showToast(error.message || "Failed to load vendors", "error");
+        showToast(error.message || "Failed to load dashboard data", "error");
+      } finally {
+        setLoading(false);
       }
     };
-    fetchVendors();
+    fetchData();
   }, [navigate]);
 
   /* ===================== CORE STATS ===================== */
   const coreStats = [
-    { title: "Active Vendors", value: vendors.length, icon: ShoppingBag },
-    { title: "Active Users", value: "8,242", icon: Users },
-    { title: "Total Products", value: "14,502", icon: Package },
-    { title: "Registered Brands", value: "320", icon: Tag },
-    { title: "Total Orders", value: "45,200", icon: Activity },
+    { title: "Active Vendors", value: stats?.totalVendors || 0, icon: ShoppingBag },
+    { title: "Active Users", value: stats?.totalUsers || 0, icon: Users },
+    { title: "Total Products", value: stats?.totalProducts || 0, icon: Package },
+    { title: "Total Revenue", value: `$${stats?.totalRevenue?.toLocaleString() || 0}`, icon: Tag },
+    { title: "Total Orders", value: stats?.totalOrders || 0, icon: Activity },
   ];
 
   const getStatusStyles = (status: string) => {
@@ -99,7 +116,7 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const vendorData = vendors.map((vendor) => ({
+  const vendorData = vendors.slice(0, 5).map((vendor: any) => ({
     name: vendor.owner?.firstName + " " + vendor.owner?.lastName || "N/A",
     email: vendor.owner?.email || "N/A",
     shop: vendor.shop_name || "N/A",
@@ -107,8 +124,24 @@ const Dashboard: React.FC = () => {
     _id: vendor._id,
   }));
 
+  // Map Backend Data for Charts
+  const chartData = stats?.revenueTrends?.map((item: any) => ({
+    name: `${item._id.month}/${item._id.year.toString().slice(-2)}`,
+    revenue: item.revenue,
+    orders: item.orders
+  })) || [];
+
+  const categoryDistribution = stats?.categoryDistribution || [];
+  const topProducts = stats?.topProducts || [];
+  const recentLogs = stats?.recentLogs || [];
+
   return (
     <div className="min-h-screen bg-gray-50/50 font-sans text-secondary pb-20">
+      {loading && (
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
       {toast.show && (
         <Toast
           type={toast.type}
@@ -144,17 +177,16 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* CHARTS ROW 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <OrderTrendsChart />
-          <RevenueTrendChart />
-          <VendorGrowthChart />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <OrderTrendsChart data={chartData} />
+          <RevenueTrendChart data={chartData} />
         </div>
 
         {/* CHARTS ROW 2 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <CategoryDistributionChart />
-          <TopSellingPanel />
-          <SystemLogs />
+          <CategoryDistributionChart data={categoryDistribution} />
+          <TopSellingPanel products={topProducts} />
+          <SystemLogs logs={recentLogs} />
         </div>
 
         {/* VENDOR TABLE */}

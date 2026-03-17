@@ -1,57 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminTable, { TableColumn } from '../../components/admin/AdminTable';
 import { Truck, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
-
-interface Order {
-    id: string;
-    orderNumber: string;
-    customerName: string;
-    total: number;
-    status: 'Pending' | 'Shipping' | 'Completed' | 'Cancelled';
-    date: string;
-    itemsCount: number;
-}
+import { GetAllOrders } from '../../services/order.service';
+import Toast from '../../components/common/Toast';
 
 const AdminOrders = () => {
+    const [orders, setOrders] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
     const [activeTab, setActiveTab] = useState<'All' | 'Pending' | 'Shipping' | 'Completed' | 'Cancelled'>('All');
 
-    // Mock data
-    const orders: Order[] = [
-        { id: '1', orderNumber: '#ORD-7829', customerName: 'Alice Johnson', total: 120.50, status: 'Completed', date: '2023-10-25', itemsCount: 3 },
-        { id: '2', orderNumber: '#ORD-7830', customerName: 'Bob Smith', total: 450.00, status: 'Shipping', date: '2023-10-26', itemsCount: 1 },
-        { id: '3', orderNumber: '#ORD-7831', customerName: 'Charlie Admin', total: 85.00, status: 'Pending', date: '2023-10-26', itemsCount: 5 },
-        { id: '4', orderNumber: '#ORD-7832', customerName: 'David Lee', total: 25.99, status: 'Cancelled', date: '2023-10-24', itemsCount: 1 },
-        { id: '5', orderNumber: '#ORD-7833', customerName: 'Eva Green', total: 210.20, status: 'Completed', date: '2023-10-23', itemsCount: 2 },
-    ];
+    const showToast = (message: string, type = "info", duration = 3000) => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), duration);
+    };
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            setLoading(true);
+            try {
+                const res = await GetAllOrders();
+                setOrders(res.data || []);
+            } catch (error: any) {
+                showToast(error.message || "Failed to load orders", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrders();
+    }, []);
 
     const filteredData = activeTab === 'All' ? orders : orders.filter(o => o.status === activeTab);
 
-    const columns: TableColumn<Order>[] = [
+    const columns: TableColumn<any>[] = [
         {
             header: 'Order',
-            accessorKey: 'orderNumber',
+            accessorKey: '_id',
             cell: (row) => (
-                <div className="font-bold text-gray-800">{row.orderNumber}</div>
+                <div className="font-bold text-gray-800">#{row._id.slice(-6)}</div>
             ),
         },
         {
             header: 'Customer',
-            accessorKey: 'customerName',
-        },
-        {
-            header: 'Items',
-            accessorKey: 'itemsCount',
-            cell: (row) => <span className="text-gray-500">{row.itemsCount} items</span>,
+            accessorKey: 'user_id',
+            cell: (row) => <span>{row.user_id?.firstName} {row.user_id?.lastName}</span>
         },
         {
             header: 'Total',
-            accessorKey: 'total',
-            cell: (row) => <span className="font-bold text-gray-800">${row.total.toFixed(2)}</span>,
+            accessorKey: 'total_amount',
+            cell: (row) => <span className="font-bold text-gray-800">${row.total_amount?.toFixed(2)}</span>,
         },
         {
             header: 'Date',
-            accessorKey: 'date',
-            cell: (row) => <span className="text-gray-400 text-xs">{row.date}</span>,
+            accessorKey: 'createdAt',
+            cell: (row) => <span className="text-gray-400 text-xs">{new Date(row.createdAt).toLocaleDateString()}</span>,
         },
         {
             header: 'Status',
@@ -61,10 +63,12 @@ const AdminOrders = () => {
                 let Icon = null;
 
                 switch (row.status) {
+                    case 'Delivered':
                     case 'Completed':
                         colorClass = 'bg-green-500/10 text-green-600';
                         Icon = CheckCircle;
                         break;
+                    case 'Shipped':
                     case 'Shipping':
                         colorClass = 'bg-blue-500/10 text-blue-600';
                         Icon = Truck;
@@ -79,15 +83,49 @@ const AdminOrders = () => {
                 }
 
                 return (
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 w-fit ${colorClass}`}>
-                        <Icon size={12} strokeWidth={3} /> {row.status}
-                    </span>
+                    <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit ${colorClass}`}>
+                            {Icon && <Icon size={12} strokeWidth={3} />}
+                        </span>
+                        <select
+                            value={row.status}
+                            onChange={async (e) => {
+                                try {
+                                    const newStatus = e.target.value;
+                                    const { UpdateOrderStatus } = await import('../../services/order.service');
+                                    const res = await UpdateOrderStatus(row._id, { status: newStatus });
+                                    if (res.success) {
+                                        showToast(`Order status updated to ${newStatus}`, "success");
+                                        const fetchOrders = async () => {
+                                            setLoading(true);
+                                            try {
+                                                const ordersRes = await GetAllOrders();
+                                                setOrders(ordersRes.data || []);
+                                            } catch (error: any) { } finally {
+                                                setLoading(false);
+                                            }
+                                        };
+                                        fetchOrders();
+                                    }
+                                } catch (error: any) {
+                                    showToast(error.message || "Failed to update order status", "error");
+                                }
+                            }}
+                            className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-transparent border-none outline-none cursor-pointer ${colorClass.split(' ')[1]}`}
+                        >
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
                 )
             },
         },
         {
             header: 'Actions',
-            accessorKey: 'id',
+            accessorKey: '_id',
             cell: () => (
                 <button className="text-sm font-bold text-primary hover:underline">View Details</button>
             )
@@ -98,6 +136,18 @@ const AdminOrders = () => {
 
     return (
         <div className="space-y-8">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={() => setToast({ show: false, message: "", type: "info" })}
+                />
+            )}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-gray-800 tracking-tight">
@@ -135,7 +185,7 @@ const AdminOrders = () => {
                 ))}
             </div>
 
-            <div className="h-[600px]">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <AdminTable
                     data={filteredData}
                     columns={columns}

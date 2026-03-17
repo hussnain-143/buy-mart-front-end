@@ -3,7 +3,7 @@ import { CheckCircle, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Toast from "../../components/common/Toast";
-import { GetAllVendors, updateVendor } from "../../services/vendor.service";
+import { GetAllVendors, ApproveVendor, ToggleVendorStatus } from "../../services/vendor.service";
 
 import AdminTable, { TableColumn } from "../../components/admin/AdminTable";
 
@@ -52,7 +52,7 @@ const AdminVendor: React.FC = () => {
         return;
       }
 
-      const res = await updateVendor(id);
+      const res = await ApproveVendor(id);
       const updatedVendor = res.data?.vendor || res.data;
       showToast(`Vendor approved successfully!`, "success");
 
@@ -64,25 +64,56 @@ const AdminVendor: React.FC = () => {
     }
   };
 
+  /* ===================== TOGGLE STATUS ===================== */
+  const toggleVendorStatus = async (id: string, currentStatus: boolean, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!window.confirm(`Are you sure you want to ${currentStatus ? 'block' : 'activate'} this vendor?`)) return;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showToast("Please login first", "error");
+        setTimeout(() => navigate("/login"), 1500);
+        return;
+      }
+      await ToggleVendorStatus(id);
+      showToast(`Vendor ${currentStatus ? 'blocked' : 'activated'} successfully!`, "success");
+
+      setVendors((prev) =>
+        prev.map((v) => (v._id === id ? { ...v, is_active: !currentStatus } : v))
+      );
+    } catch (error: any) {
+      showToast(error.message || "Failed to update vendor status", "error");
+    }
+  };
+
   /* ===================== HELPERS ===================== */
   const getStatusStyles = (status: string) => {
     const s = String(status).toLowerCase();
     if (s.includes("active")) return "bg-green-50 text-green-700 border border-green-100";
-    return "bg-amber-50 text-amber-700 border border-amber-100";
+    if (s.includes("pending")) return "bg-amber-50 text-amber-700 border border-amber-100";
+    return "bg-red-50 text-red-700 border border-red-100";
   };
 
-  const vendorData = vendors.map((vendor) => ({
-    _id: vendor._id,
-    name: vendor.owner?.firstName + " " + vendor.owner?.lastName || "N/A",
-    email: vendor.owner?.email || "N/A",
-    shop: vendor.shop_name || "N/A",
-    sales: vendor.total_sales || 0,
-    status: vendor.is_active ? "active" : "pending",
-  }));
+
+  // Let's refine the status based on the current logic: The backend uses 'is_active' for both approval and blocking right now.
+  // We'll just assume 'is_active' is true for Active, false for Pending/Blocked.
+  // For requests tab, we assume we show ones that are NOT active. So they are "pending".
+
+  const mapData = vendors.map((vendor) => {
+    return {
+      _id: vendor._id,
+      name: vendor.owner?.firstName ? (vendor.owner?.firstName + " " + vendor.owner?.lastName) : "N/A",
+      email: vendor.owner?.email || "N/A",
+      shop: vendor.shop_name || "N/A",
+      sales: vendor.total_sales || 0,
+      status: vendor.is_active ? "active" : "pending_or_blocked",
+      is_active: vendor.is_active
+    }
+  })
 
   const filteredData = activeTab === "all"
-    ? vendorData
-    : vendorData.filter(v => v.status !== "active");
+    ? mapData
+    : mapData.filter(v => v.status !== "active");
 
   /* ===================== TABLE CONFIG ===================== */
   const vendorColumns: TableColumn<any>[] = [
@@ -104,10 +135,10 @@ const AdminVendor: React.FC = () => {
       cell: (row) => (
         <span
           className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide inline-flex items-center ${getStatusStyles(
-            row.status
+            row.is_active ? "active" : "pending"
           )}`}
         >
-          {row.status}
+          {row.is_active ? "Active" : "Inactive/Pending"}
         </span>
       ),
     },
@@ -124,7 +155,12 @@ const AdminVendor: React.FC = () => {
             Approve
           </button>
         ) : (
-          <span className="text-gray-400 text-xs font-medium">-</span>
+          <button
+            onClick={(e) => toggleVendorStatus(row._id, row.is_active, e)}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 text-xs rounded-lg shadow-sm"
+          >
+            Block
+          </button>
         ),
     },
   ];

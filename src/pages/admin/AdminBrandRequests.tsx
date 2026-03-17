@@ -1,68 +1,104 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AdminTable, { TableColumn } from '../../components/admin/AdminTable';
-import { Check, X, Clock } from 'lucide-react';
-
-interface BrandRequest {
-    id: string;
-    brandName: string;
-    ownerName: string;
-    email: string;
-    status: 'Pending' | 'Approved' | 'Rejected';
-    requestDate: string;
-    logo: string;
-}
+import { Check, Clock } from 'lucide-react';
+import { GetAdminBrands, ApproveBrand } from '../../services/brand.service';
+import Toast from '../../components/common/Toast';
 
 const AdminBrandRequests = () => {
+    const [requests, setRequests] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState({ show: false, type: "info", message: "" });
     const [activeTab, setActiveTab] = useState<'Pending' | 'Approved' | 'Rejected' | 'All'>('Pending');
 
-    // Mock data
-    const requests: BrandRequest[] = [
-        { id: '1', brandName: 'TechGizmos', ownerName: 'John Doe', email: 'john@techgizmos.com', status: 'Pending', requestDate: '2023-10-25', logo: 'https://ui-avatars.com/api/?name=Tech+Gizmos&background=random' },
-        { id: '2', brandName: 'Fashionista', ownerName: 'Jane Smith', email: 'jane@fashionista.com', status: 'Approved', requestDate: '2023-10-24', logo: 'https://ui-avatars.com/api/?name=Fashionista&background=random' },
-        { id: '3', brandName: 'GreenEarth', ownerName: 'Bob Brown', email: 'bob@greenearth.com', status: 'Rejected', requestDate: '2023-10-23', logo: 'https://ui-avatars.com/api/?name=Green+Earth&background=random' },
-    ];
+    const showToast = (message: string, type = "info", duration = 3000) => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast({ show: false, message: "", type }), duration);
+    };
 
-    const filteredData = activeTab === 'All' ? requests : requests.filter(r => r.status === activeTab);
+    const fetchBrands = async () => {
+        setLoading(true);
+        try {
+            const res = await GetAdminBrands();
+            setRequests(res.data || []);
+        } catch (error: any) {
+            showToast(error.message || "Failed to load brand requests", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const columns: TableColumn<BrandRequest>[] = [
+    useEffect(() => {
+        fetchBrands();
+    }, []);
+
+    const handleApprove = async (id: string) => {
+        try {
+            await ApproveBrand(id);
+            showToast("Brand approved successfully", "success");
+            fetchBrands();
+        } catch (error: any) {
+            showToast(error.message || "Failed to approve brand", "error");
+        }
+    };
+
+    const handleReject = async (id: string) => {
+        if (!window.confirm("Are you sure you want to reject and delete this brand request?")) return;
+        try {
+            const { DeleteBrand } = await import('../../services/brand.service');
+            await DeleteBrand(id);
+            showToast("Brand request rejected and deleted", "success");
+            fetchBrands();
+        } catch (error: any) {
+            showToast(error.message || "Failed to reject brand", "error");
+        }
+    };
+
+    const filteredData = requests.filter(r => {
+        const status = r.is_approved ? 'Approved' : 'Pending';
+        if (activeTab === 'All') return true;
+        return status === activeTab;
+    });
+
+    const columns: TableColumn<any>[] = [
         {
             header: 'Brand',
-            accessorKey: 'brandName',
+            accessorKey: 'name',
             cell: (row) => (
                 <div className="flex items-center gap-3">
-                    <img src={row.logo} alt={row.brandName} className="w-10 h-10 rounded-lg object-cover shadow-sm" />
+                    <img
+                        src={row.logo || `https://ui-avatars.com/api/?name=${row.name}&background=random`}
+                        alt={row.name}
+                        className="w-10 h-10 rounded-lg object-cover shadow-sm"
+                    />
                     <div>
-                        <div className="font-bold text-gray-800">{row.brandName}</div>
-                        <div className="text-xs text-gray-500">{row.ownerName}</div>
+                        <div className="font-bold text-gray-800">{row.name}</div>
+                        <div className="text-xs text-gray-500">{row.user_id?.firstName} {row.user_id?.lastName}</div>
                     </div>
                 </div>
             ),
         },
         {
             header: 'Contact',
-            accessorKey: 'email',
-            cell: (row) => <span className="text-gray-600">{row.email}</span>,
+            accessorKey: 'user_id',
+            cell: (row) => <span className="text-gray-600">{row.user_id?.email}</span>,
         },
         {
             header: 'Date',
-            accessorKey: 'requestDate',
-            cell: (row) => <span className="text-gray-500 text-sm font-medium">{row.requestDate}</span>,
+            accessorKey: 'createdAt',
+            cell: (row) => <span className="text-gray-500 text-sm font-medium">{new Date(row.createdAt).toLocaleDateString()}</span>,
         },
         {
             header: 'Status',
-            accessorKey: 'status',
+            accessorKey: 'is_approved',
             cell: (row) => {
+                const status = row.is_approved ? 'Approved' : 'Pending';
                 let colorClass = "";
                 let Icon = null;
 
-                switch (row.status) {
+                switch (status) {
                     case 'Approved':
                         colorClass = 'bg-green-500/10 text-green-600';
                         Icon = Check;
-                        break;
-                    case 'Rejected':
-                        colorClass = 'bg-red-500/10 text-red-600';
-                        Icon = X;
                         break;
                     default:
                         colorClass = 'bg-yellow-500/10 text-yellow-600';
@@ -71,36 +107,54 @@ const AdminBrandRequests = () => {
 
                 return (
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 w-fit ${colorClass}`}>
-                        <Icon size={12} strokeWidth={3} /> {row.status}
+                        {Icon && <Icon size={12} strokeWidth={3} />} {status}
                     </span>
                 )
             },
         },
         {
             header: 'Actions',
-            accessorKey: 'id',
+            accessorKey: '_id',
             cell: (row) => (
                 <div className="flex items-center gap-2">
-                    {row.status === 'Pending' && (
+                    {!row.is_approved && (
                         <>
-                            <button className="px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-bold hover:bg-green-600 transition-all shadow-md shadow-green-500/20">
+                            <button
+                                onClick={() => handleApprove(row._id)}
+                                className="px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-bold hover:bg-green-600 transition-all shadow-md shadow-green-500/20"
+                            >
                                 Approve
                             </button>
-                            <button className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition-all shadow-md shadow-red-500/20">
+                            <button
+                                onClick={() => handleReject(row._id)}
+                                className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition-all shadow-md shadow-red-500/20"
+                            >
                                 Reject
                             </button>
                         </>
                     )}
-                    {row.status !== 'Pending' && <span className="text-gray-400 text-xs italic">No actions</span>}
+                    {row.is_approved && <span className="text-gray-400 text-xs italic">Approved</span>}
                 </div>
             )
         }
     ];
 
-    const tabs = ['Pending', 'Approved', 'Rejected', 'All'] as const;
+    const tabs = ['Pending', 'Approved', 'All'] as const;
 
     return (
         <div className="space-y-8">
+            {loading && (
+                <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            {toast.show && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={() => setToast({ show: false, message: "", type: "info" })}
+                />
+            )}
             <div>
                 <h1 className="text-3xl font-black text-gray-800 tracking-tight">
                     Brand Requests
@@ -127,12 +181,12 @@ const AdminBrandRequests = () => {
                 ))}
             </div>
 
-            <div className="h-[600px]">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <AdminTable
                     data={filteredData}
                     columns={columns}
                     title={`${activeTab} Requests`}
-                    subtitle={`Showing ${filteredData.length} ${activeTab.toLowerCase()} requests`}
+                    subtitle={`Showing ${filteredData.length} records`}
                 />
             </div>
         </div>
