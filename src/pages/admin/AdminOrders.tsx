@@ -48,7 +48,7 @@ const AdminOrders = () => {
         {
             header: 'Total',
             accessorKey: 'total_amount',
-            cell: (row) => <span className="font-bold text-gray-800">${row.total_amount?.toFixed(2)}</span>,
+            cell: (row) => <span className="font-bold text-gray-800">${(row.total_amount || 0).toFixed(2)}</span>,
         },
         {
             header: 'Date',
