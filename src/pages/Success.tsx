@@ -60,12 +60,9 @@ const Success = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-secondary text-white px-6 relative overflow-hidden selection:bg-primary/30">
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px]"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]"></div>
 
             <div className="relative max-w-2xl w-full bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[60px] p-12 md:p-20 text-center shadow-2xl animate-fade-in-up">
                 
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full shadow-[0_0_20px_rgba(255,165,0,0.5)]"></div>
 
                 {(status === "loading" || status === "finalizing") && (
                     <div className="py-12 flex flex-col items-center">
@@ -75,10 +72,10 @@ const Success = () => {
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                             </div>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight uppercase text-white leading-none">
+                        <h2 className="text-3xl md:text-4xl font-black mb-6 tracking-tight uppercase text-white leading-none">
                             {status === "loading" ? "Verifying..." : "Finalizing..."}
                         </h2>
-                        <p className="text-white/40 text-lg font-medium max-w-sm mx-auto tracking-tight italic">
+                        <p className="text-white/40 text-base font-medium max-w-sm mx-auto tracking-tight italic">
                             Securing your transaction and updating our records.
                         </p>
                     </div>
@@ -94,8 +91,8 @@ const Success = () => {
                         </div>
                         
                         <div className="space-y-3 mb-10">
-                            <span className="text-accent font-black text-[10px] uppercase tracking-[0.5em] block">Transaction Secured</span>
-                            <h1 className="text-6xl md:text-8xl font-black tracking-tight uppercase text-white leading-none">
+                            <span className="text-accent font-black text-[10px] uppercase tracking-[0.5em] block">Order Confirmed</span>
+                            <h1 className="text-5xl md:text-7xl font-black tracking-tight uppercase text-white leading-none">
                                 SUCCESS
                             </h1>
                         </div>
@@ -103,20 +100,20 @@ const Success = () => {
                         <div className="bg-white/5 border border-white/10 rounded-[40px] p-8 mb-12 shadow-inner">
                             {type === "product" ? (
                                 <>
-                                    <p className="text-white/50 mb-6 font-medium text-lg leading-relaxed">
+                                    <p className="text-white/50 mb-6 font-medium text-base leading-relaxed">
                                         Your premium acquisition has been authorized and dispatched to fulfillment.
                                     </p>
                                     {orderId && (
                                         <div className="pt-6 border-t border-white/10">
                                             <p className="text-[10px] font-black tracking-[0.5em] text-white/30 uppercase mb-3 text-center">Reference ID</p>
-                                            <p className="text-3xl font-black text-primary tracking-widest uppercase tabular-nums">
+                                            <p className="text-xl font-black text-primary tracking-widest uppercase tabular-nums">
                                                 #{orderId.slice(-8).toUpperCase()}
                                             </p>
                                         </div>
                                     )}
                                 </>
                             ) : (
-                                <p className="text-white/50 font-medium text-lg leading-relaxed italic">
+                                <p className="text-white/50 font-medium text-base leading-relaxed italic">
                                     Operational credentials upgraded. Your premium access is now active.
                                 </p>
                             )}
@@ -160,8 +157,8 @@ const Success = () => {
                         <div className="w-28 h-28 bg-rose-500/10 border border-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl">
                             <span className="text-5xl animate-pulse">⚠️</span>
                         </div>
-                        <h2 className="text-5xl font-black mb-6 tracking-tight uppercase text-white">An Error Occurred</h2>
-                        <p className="text-white/40 text-lg font-medium mb-12 max-w-md mx-auto leading-relaxed italic">
+                        <h2 className="text-3xl font-black mb-6 tracking-tight uppercase text-white">An Error Occurred</h2>
+                        <p className="text-white/40 text-base font-medium mb-12 max-w-md mx-auto leading-relaxed italic">
                              The transaction hash could not be verified. Please retry.
                         </p>
                         <NavLink

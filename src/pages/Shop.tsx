@@ -240,9 +240,19 @@ const Shop = () => {
                       )}
                     </div>
                   </div>
-                  <button onClick={() => handleAddToCart(product._id)} className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-primary text-white font-black uppercase tracking-[0.25em] text-[11px] hover:scale-105 transition-all duration-500 shadow-lg shadow-primary/30">
-                    <ShoppingCart size={18} />
-                    Add to Cart
+                  <button 
+                    onClick={() => handleAddToCart(product._id)} 
+                    disabled={product.stock_quantity <= 0}
+                    className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-primary text-white font-black uppercase tracking-[0.25em] text-[11px] hover:scale-105 transition-all duration-500 shadow-lg shadow-primary/30 disabled:opacity-50 disabled:grayscale disabled:scale-100"
+                  >
+                    {product.stock_quantity <= 0 ? (
+                      "Out of Stock"
+                    ) : (
+                      <>
+                        <ShoppingCart size={18} />
+                        Add to Cart
+                      </>
+                    )}
                   </button>
                 </div>
               ))}

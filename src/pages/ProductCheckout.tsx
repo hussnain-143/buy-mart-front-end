@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Truck, ShieldCheck, ArrowLeft, Lock, Mail, User } from "lucide-react";
+import { Truck, ArrowLeft, Lock, Mail, User } from "lucide-react";
 import { GetCart } from "../services/cart.service";
 import { CreateProductCheckout } from "../services/stripe.service";
 import Toast from "../components/common/Toast";
@@ -85,10 +85,6 @@ const ProductCheckout = () => {
         <div className="min-h-screen bg-secondary text-white selection:bg-primary/30 py-24 px-6 relative overflow-hidden">
             {toast.show && <Toast type={toast.type} message={toast.message} onClose={() => setToast({ ...toast, show: false })} />}
             
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[150px]"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]"></div>
-            </div>
 
             <div className="relative max-w-7xl mx-auto">
                 <button 
@@ -103,13 +99,13 @@ const ProductCheckout = () => {
                         <div>
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="h-px w-12 bg-primary"></div>
-                                <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.5em]">Secure Checkout</span>
+                                <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.5em]">Secure Settlement</span>
                             </div>
-                            <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tight uppercase leading-none">
-                                Review & <span className="text-primary italic">Pay</span>
+                            <h1 className="text-4xl md:text-5xl font-black mb-6 tracking-tight uppercase leading-none">
+                                Order <span className="text-primary italic">Settlement</span>
                             </h1>
-                            <p className="text-white/40 text-lg font-medium max-w-lg leading-relaxed">
-                                Complete your acquisition with our secure encrypted payment gateway.
+                            <p className="text-white/40 text-lg font-medium max-w-lg leading-relaxed italic">
+                                Finalize your premium selection with our secure encrypted payment protocol.
                             </p>
                         </div>
 
@@ -131,35 +127,26 @@ const ProductCheckout = () => {
 
                         <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[50px] p-12 space-y-10 shadow-2xl transition-all hover:bg-white/10 group">
                             <h2 className="text-2xl font-black flex items-center gap-5 tracking-tight uppercase">
-                                <Truck className="text-primary group-hover:scale-110 transition-transform" size={28} /> 01. Delivery Destination
+                                <Truck className="text-primary group-hover:scale-110 transition-transform" size={24} /> 01. Delivery Destination
                             </h2>
                             <div className="relative">
                                 <textarea
                                     value={shippingAddress}
                                     onChange={(e) => setShippingAddress(e.target.value)}
                                     placeholder="Enter complete shipping address..."
-                                    className="w-full h-44 bg-white/5 text-white border border-white/10 rounded-[35px] p-10 focus:outline-none focus:border-primary/40 focus:ring-8 focus:ring-primary/5 transition-all text-xl font-medium placeholder:text-white/10 shadow-inner"
+                                    className="w-full h-44 bg-white/5 text-white border border-white/10 rounded-[35px] p-10 focus:outline-none focus:border-primary/40 focus:ring-8 focus:ring-primary/5 transition-all text-lg font-medium placeholder:text-white/10 shadow-inner"
                                     required
                                 ></textarea>
                             </div>
                         </div>
 
-                        <div className="bg-primary/5 border border-primary/10 rounded-[40px] p-10 flex items-center gap-8 shadow-2xl">
-                            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-2xl shadow-primary/40">
-                                <ShieldCheck size={40} className="text-secondary" />
-                            </div>
-                            <div>
-                                <h4 className="text-2xl font-black tracking-tight uppercase">Encryption Active</h4>
-                                <p className="text-white/30 text-base font-medium mt-2 italic">Your transaction is protected by military-grade SSL standards.</p>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="lg:col-span-5 lg:sticky lg:top-12">
                         <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[50px] p-12 shadow-2xl overflow-hidden relative">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
 
-                            <h2 className="text-4xl font-black mb-12 border-b border-white/10 pb-8 tracking-tight uppercase">
+                            <h2 className="text-xl font-black mb-12 border-b border-white/10 pb-8 tracking-tight uppercase">
                                 Summary
                             </h2>
 
@@ -177,7 +164,7 @@ const ProductCheckout = () => {
                                             <h4 className="font-black text-white truncate text-lg tracking-tight uppercase group-hover:text-primary transition-colors">{item.product_id.name}</h4>
                                             <div className="flex justify-between items-center">
                                                 <span className="bg-white/10 px-4 py-1.5 rounded-full text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">Qty: {item.quantity}</span>
-                                                <span className="text-primary font-black text-2xl tracking-tighter tabular-nums">${((item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price) * item.quantity).toFixed(2)}</span>
+                                                <span className="text-primary font-black text-xl tracking-tighter tabular-nums">${((item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price) * item.quantity).toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -187,7 +174,7 @@ const ProductCheckout = () => {
                             <div className="space-y-6 pt-10 border-t border-white/10">
                                 <div className="flex justify-between text-white/40 font-black uppercase tracking-[0.4em] text-[10px]">
                                     <span>Subtotal</span>
-                                    <span className="text-white tracking-tighter text-xl">${cart?.total_price.toFixed(2)}</span>
+                                    <span className="text-white tracking-tighter text-lg">${cart?.total_price.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-white/40 font-black uppercase tracking-[0.4em] text-[10px]">
                                     <span>Shipping</span>
@@ -195,7 +182,7 @@ const ProductCheckout = () => {
                                 </div>
                                 <div className="flex justify-between items-end pt-10">
                                     <span className="text-3xl font-black tracking-tight uppercase leading-none">Total Due</span>
-                                    <span className="text-7xl font-black text-primary tracking-tighter tabular-nums drop-shadow-[0_0_40px_rgba(255,111,0,0.3)] leading-none">${cart?.total_price.toFixed(2)}</span>
+                                    <span className="text-4xl font-black text-primary tracking-tighter drop-shadow-[0_0_40px_rgba(255,111,0,0.3)] leading-none">${cart?.total_price.toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -213,9 +200,6 @@ const ProductCheckout = () => {
                                 </button>
                             </form>
 
-                            <p className="text-center mt-8 text-white/20 text-[10px] uppercase font-black tracking-[0.4em] flex items-center justify-center gap-3">
-                                <ShieldCheck size={14} className="text-primary/50" /> Secure Payment Protocol Active
-                            </p>
                         </div>
                     </div>
                 </div>

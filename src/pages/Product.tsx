@@ -160,8 +160,18 @@ const SingleProduct = () => {
           </div>
 
           <div className="flex gap-4 mt-6 flex-wrap">
-            <button onClick={handleAddToCart} className="flex-1 px-8 py-4 rounded-full bg-primary text-white font-black uppercase tracking-[0.25em] hover:scale-105 transition-all duration-500 shadow-lg shadow-primary/30 flex items-center justify-center gap-3">
-              <ShoppingCart size={18} /> Add to Cart
+            <button 
+              onClick={handleAddToCart} 
+              disabled={product.stock_quantity <= 0}
+              className="flex-1 px-8 py-4 rounded-full bg-primary text-white font-black uppercase tracking-[0.25em] hover:scale-105 transition-all duration-500 shadow-lg shadow-primary/30 flex items-center justify-center gap-3 disabled:opacity-50 disabled:grayscale disabled:scale-100"
+            >
+              {product.stock_quantity <= 0 ? (
+                "Out of Stock"
+              ) : (
+                <>
+                  <ShoppingCart size={18} /> Add to Cart
+                </>
+              )}
             </button>
           </div>
 
