@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, Loader, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, ArrowLeft, ShieldCheck } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import Toast from "../components/common/Toast";
 
@@ -46,10 +46,10 @@ const Cart = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0f172a] flex justify-center items-center">
+            <div className="min-h-screen bg-secondary flex justify-center items-center">
                 <div className="flex flex-col items-center gap-4">
-                    <Loader className="animate-spin h-10 w-10 text-primary" />
-                    <p className="text-white/40 font-bold uppercase tracking-widest text-[10px] italic">Syncing Cart Data...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                    <p className="text-white/40 font-black uppercase tracking-widest text-[10px]">Updating Cart...</p>
                 </div>
             </div>
         );
@@ -57,162 +57,170 @@ const Cart = () => {
 
     if (!cart || cart.items.length === 0) {
         return (
-            <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-white px-6 relative overflow-hidden">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]"></div>
+            <div className="min-h-screen bg-secondary flex flex-col justify-center items-center text-white px-6 relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
                 
-                <div className="relative p-12 rounded-[50px] bg-white/[0.02] border border-white/5 backdrop-blur-3xl mb-10 shadow-2xl">
-                    <ShoppingBag size={80} className="text-white/10" />
-                    <div className="absolute inset-0 bg-primary/5 rounded-[50px] animate-pulse"></div>
+                <div className="relative p-16 rounded-[60px] bg-white/5 border border-white/10 backdrop-blur-3xl mb-12 shadow-2xl group transition-all duration-700 hover:border-primary/30">
+                    <ShoppingBag size={80} className="text-white/20 group-hover:text-primary transition-colors duration-500" />
                 </div>
-                <h1 className="text-5xl font-black mb-6 uppercase tracking-tighter italic text-center">Empty <span className="text-primary">Payload</span></h1>
-                <p className="text-white/30 mb-10 text-center max-w-sm font-medium text-lg leading-relaxed">No high-velocity assets detected in your current session.</p>
-                <NavLink to="/shop" className="group relative px-12 py-5 bg-primary text-white font-black uppercase tracking-[0.3em] text-[11px] rounded-full hover:scale-105 transition-all shadow-2xl shadow-primary/40 overflow-hidden">
+                <h1 className="text-5xl md:text-7xl font-black mb-6 uppercase tracking-tight text-center">
+                    Your Cart is <span className="text-primary italic">Empty</span>
+                </h1>
+                <p className="text-white/40 mb-12 text-center max-w-md font-medium text-lg leading-relaxed">
+                    Looks like you haven't added any premium products to your cart yet.
+                </p>
+                <NavLink to="/shop" className="group relative px-14 py-5 bg-primary text-white font-black uppercase tracking-[0.4em] text-[12px] rounded-full hover:scale-105 transition-all duration-500 shadow-2xl shadow-primary/20 overflow-hidden">
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                    <span className="relative">Access Database</span>
+                    <span className="relative">Browse Collection</span>
                 </NavLink>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] text-white selection:bg-primary/30 py-20 px-6 relative overflow-hidden">
+        <div className="min-h-screen bg-secondary text-white selection:bg-primary/30 py-24 px-6 relative overflow-hidden">
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-5%] right-[-5%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[150px]"></div>
-                <div className="absolute bottom-[10%] left-[-10%] w-[30%] h-[30%] bg-blue-600/5 rounded-full blur-[120px]"></div>
+                <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[150px]"></div>
+                <div className="absolute bottom-[0%] left-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]"></div>
             </div>
 
             {refreshing && (
-                <div className="fixed top-24 right-10 z-50 bg-white/10 backdrop-blur-3xl p-3 px-5 rounded-full border border-white/10 animate-pulse flex items-center gap-3">
-                    <Loader size={14} className="text-primary animate-spin" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-primary">Refreshing Node</span>
+                <div className="fixed top-28 right-10 z-50 bg-white/5 backdrop-blur-3xl p-4 px-6 rounded-full border border-white/10 animate-pulse flex items-center gap-3 shadow-2xl">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Updating Cart State</span>
                 </div>
             )}
             
             {toast.show && <Toast type={toast.type} message={toast.message} onClose={() => setToast({ ...toast, show: false })} />}
             
             <div className="max-w-7xl mx-auto relative z-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 animate-fade-in-up">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 animate-fade-in-up">
                     <div>
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-1 bg-primary rounded-full"></div>
-                            <span className="text-white/20 font-black text-[9px] uppercase tracking-[0.4em]">Active Payload Node</span>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-px w-12 bg-primary"></div>
+                            <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.5em]">Your Selection</span>
                         </div>
-                        <h1 className="text-7xl font-black uppercase tracking-tighter italic leading-none">
-                            Your <span className="text-primary">Cart</span>
+                        <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tight leading-none">
+                            Shopping <span className="text-primary italic">Cart</span>
                         </h1>
                     </div>
-                    <button onClick={() => navigate("/shop")} className="group flex items-center gap-3 text-white/30 hover:text-white transition-all font-black uppercase tracking-[0.2em] text-[9px] bg-white/5 px-6 py-3 rounded-full border border-white/5">
-                        <ArrowLeft size={14} className="group-hover:-translate-x-2 transition-transform text-primary" /> Continue Acquisition
+                    <button onClick={() => navigate("/shop")} className="group flex items-center gap-4 text-white/40 hover:text-white transition-all font-black uppercase tracking-[0.3em] text-[10px] bg-white/5 px-8 py-4 rounded-full border border-white/10 hover:border-white/20">
+                        <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform text-primary" /> Continue Shopping
                     </button>
                 </div>
 
-                <div className="grid lg:grid-cols-12 gap-12 items-start">
-                    <div className="lg:col-span-8 space-y-6 animate-fade-in-up delay-100">
+                <div className="grid lg:grid-cols-12 gap-16 items-start">
+                    <div className="lg:col-span-8 space-y-8 animate-fade-in-up delay-100">
                         {cart.items.map((item: any) => (
-                            <div key={item.product_id._id} className="bg-white/[0.02] backdrop-blur-3xl p-6 rounded-[40px] border border-white/5 flex flex-col md:flex-row items-center gap-8 group hover:bg-white/[0.04] transition-all duration-500 hover:scale-[1.01] shadow-2xl relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors"></div>
+                            <div key={item.product_id._id} className="bg-white/5 backdrop-blur-3xl p-8 rounded-[40px] border border-white/10 flex flex-col md:flex-row items-center gap-10 group hover:bg-white/10 transition-all duration-700 hover:-translate-y-1 shadow-2xl relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-primary/10 transition-all duration-700"></div>
                                 
-                                <div className="h-40 w-40 flex-shrink-0 bg-black/40 rounded-[32px] overflow-hidden border border-white/5 p-2 group-hover:border-primary/20 transition-all shadow-xl">
+                                <div className="h-44 w-44 flex-shrink-0 bg-white/5 rounded-[35px] overflow-hidden border border-white/10 p-3 shadow-xl transition-all duration-500 group-hover:border-primary/30">
                                     {item.product_id.images_id?.[0]?.image_url ? (
-                                        <img src={item.product_id.images_id[0].image_url} alt={item.product_id.name} className="h-full w-full object-cover rounded-[24px] group-hover:scale-110 transition-transform duration-700" />
+                                        <img src={item.product_id.images_id[0].image_url} alt={item.product_id.name} className="h-full w-full object-cover rounded-[25px] group-hover:scale-110 transition-transform duration-700" />
                                     ) : (
-                                        <div className="h-full w-full flex items-center justify-center bg-white/5 rounded-[24px]">
-                                            <ShoppingBag size={40} className="text-white/10" />
+                                        <div className="h-full w-full flex items-center justify-center bg-white/5 rounded-[25px]">
+                                            <ShoppingBag size={48} className="text-white/10" />
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="flex-1 flex flex-col gap-3 min-w-0 py-1">
-                                    <div className="space-y-1">
-                                        <span className="text-primary font-black text-[8px] uppercase tracking-[0.3em] block">{item.product_id.sku}</span>
-                                        <h3 className="text-2xl font-black text-white italic tracking-tight uppercase group-hover:text-primary transition-colors truncate">{item.product_id.name}</h3>
+                                <div className="flex-1 flex flex-col gap-4 min-w-0 py-2">
+                                    <div className="space-y-2">
+                                        <span className="text-accent font-black text-[9px] uppercase tracking-[0.4em] block">{item.product_id.sku || 'PREMIUM-ITEM'}</span>
+                                        <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase group-hover:text-primary transition-colors truncate">{item.product_id.name}</h3>
                                     </div>
-                                    <p className="text-3xl font-black text-white tracking-tighter tabular-nums italic">${(item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price).toFixed(2)}</p>
+                                    <div className="flex items-center gap-4">
+                                        <p className="text-3xl font-black text-white tracking-tighter tabular-nums">${(item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price).toFixed(2)}</p>
+                                        {item.product_id.discount_price > 0 && (
+                                            <span className="text-white/20 line-through text-sm font-bold">${item.product_id.price.toFixed(2)}</span>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col md:items-end gap-5 w-full md:w-auto">
-                                    <div className="flex items-center bg-white/5 rounded-2xl border border-white/10 p-1.5 shadow-inner">
+                                <div className="flex flex-col md:items-end gap-6 w-full md:w-auto">
+                                    <div className="flex items-center bg-white/5 rounded-2xl border border-white/10 p-2 shadow-inner">
                                         <button 
                                             onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity - 1)} 
                                             disabled={refreshing || item.quantity <= 1}
-                                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white/30 hover:text-white hover:bg-white/5 transition-all disabled:opacity-20"
+                                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all disabled:opacity-10"
                                         >
-                                            <Minus size={16} />
+                                            <Minus size={20} />
                                         </button>
-                                        <span className="mx-3 text-xl font-black text-white w-10 text-center tabular-nums italic">{item.quantity}</span>
+                                        <span className="mx-4 text-2xl font-black text-white w-10 text-center tabular-nums italic">{item.quantity}</span>
                                         <button 
                                             onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity + 1)} 
                                             disabled={refreshing}
-                                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white/30 hover:text-white hover:bg-white/5 transition-all disabled:opacity-20"
+                                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all disabled:opacity-10"
                                         >
-                                            <Plus size={16} />
+                                            <Plus size={20} />
                                         </button>
                                     </div>
 
                                     <button 
                                         onClick={() => handleRemove(item.product_id._id)} 
                                         disabled={refreshing} 
-                                        className="h-12 px-6 rounded-full bg-red-500/5 text-red-500/40 hover:bg-red-500 hover:text-white transition-all disabled:opacity-20 font-black text-[9px] uppercase tracking-widest border border-red-500/10 hover:border-red-500"
+                                        className="h-14 px-8 rounded-full bg-rose-500/5 text-rose-500/50 hover:bg-rose-500 hover:text-white transition-all duration-500 disabled:opacity-20 font-black text-[10px] uppercase tracking-[0.2em] border border-rose-500/10 hover:border-rose-500 shadow-lg shadow-rose-500/0 hover:shadow-rose-500/20"
                                     >
-                                        Purge Node
+                                        Remove Item
                                     </button>
                                 </div>
                             </div>
                         ))}
 
-                        <div className="flex justify-end pt-6">
-                            <button onClick={handleClear} disabled={refreshing} className="group relative px-8 py-4 bg-white/5 border border-white/5 hover:border-red-500/30 text-white/20 hover:text-red-500 font-black uppercase tracking-[0.3em] text-[9px] rounded-full transition-all disabled:opacity-30 overflow-hidden">
-                                <div className="absolute inset-0 bg-red-500/5 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-                                <span className="relative flex items-center gap-2">
-                                    <Trash2 size={14} /> Purge All
+                        <div className="flex justify-end pt-10">
+                            <button onClick={handleClear} disabled={refreshing} className="group relative px-10 py-5 bg-white/5 border border-white/10 hover:border-rose-500/40 text-white/40 hover:text-rose-500 font-black uppercase tracking-[0.4em] text-[10px] rounded-full transition-all duration-500 disabled:opacity-30 overflow-hidden shadow-xl">
+                                <div className="absolute inset-0 bg-rose-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                                <span className="relative flex items-center gap-3">
+                                    <Trash2 size={16} /> Clear Cart
                                 </span>
                             </button>
                         </div>
                     </div>
 
-                    <div className="lg:col-span-4 lg:sticky lg:top-24 animate-fade-in-up delay-200">
-                        <div className="bg-white/[0.02] backdrop-blur-3xl p-10 rounded-[48px] border border-white/5 shadow-2xl relative overflow-hidden border-t-primary/20">
-                            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-[80px] -mr-24 -mt-24"></div>
+                    <div className="lg:col-span-4 lg:sticky lg:top-32 animate-fade-in-up delay-200">
+                        <div className="bg-white/5 backdrop-blur-3xl p-12 rounded-[50px] border border-white/10 shadow-2xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
                             
-                            <h2 className="text-3xl font-black text-white mb-10 border-b border-white/5 pb-6 uppercase tracking-tighter italic">Ledger</h2>
+                            <h2 className="text-3xl font-black text-white mb-10 border-b border-white/10 pb-8 uppercase tracking-tight italic">Summary</h2>
 
-                            <div className="space-y-4 mb-10">
-                                <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
-                                    <span className="text-white/20 font-black uppercase tracking-[0.2em] text-[9px]">Active Nodes</span>
-                                    <span className="text-lg font-black text-white italic">{cart.items.length} Units</span>
+                            <div className="space-y-6 mb-12">
+                                <div className="flex justify-between items-center bg-white/5 p-6 rounded-2xl border border-white/5 transition-all hover:bg-white/10">
+                                    <span className="text-white/40 font-black uppercase tracking-[0.3em] text-[10px]">Total Items</span>
+                                    <span className="text-xl font-black text-white">{cart.items.length} Units</span>
                                 </div>
                                 
-                                <div className="flex flex-col gap-3 px-2">
-                                    <div className="flex justify-between text-white/30 font-black uppercase tracking-[0.2em] text-[10px]">
+                                <div className="flex flex-col gap-5 px-3">
+                                    <div className="flex justify-between text-white/40 font-black uppercase tracking-[0.3em] text-[11px]">
                                         <span>Subtotal</span>
-                                        <span className="text-white/60 tracking-tighter text-sm">${cart.total_price.toFixed(2)}</span>
+                                        <span className="text-white tracking-tighter text-lg">${cart.total_price.toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between text-white/30 font-black uppercase tracking-[0.2em] text-[10px]">
-                                        <span>Logistics</span>
-                                        <span className="text-primary tracking-tighter text-sm italic">FREE</span>
+                                    <div className="flex justify-between text-white/40 font-black uppercase tracking-[0.3em] text-[11px]">
+                                        <span>Shipping</span>
+                                        <span className="text-accent tracking-widest text-sm italic font-black">COMPLIMENTARY</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="pt-8 border-t border-white/5 flex flex-col gap-1 mb-10">
-                                <span className="text-white/20 font-black uppercase tracking-[0.4em] text-[9px]">Total Payload Value</span>
+                            <div className="pt-10 border-t border-white/10 flex flex-col gap-2 mb-12">
+                                <span className="text-white/30 font-black uppercase tracking-[0.5em] text-[10px]">Estimated Total</span>
                                 <div className="flex justify-between items-end">
-                                    <span className="text-6xl font-black text-primary tracking-tighter italic leading-none shadow-primary/20 drop-shadow-2xl">${cart.total_price.toFixed(2)}</span>
+                                    <span className="text-6xl font-black text-primary tracking-tighter drop-shadow-[0_0_30px_rgba(255,111,0,0.3)]">${cart.total_price.toFixed(2)}</span>
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => navigate("/product-checkout")}
-                                className="group relative w-full py-8 bg-primary text-white font-black uppercase tracking-[0.4em] text-[11px] rounded-[32px] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/50 flex items-center justify-center gap-4 overflow-hidden"
+                                className="group relative w-full py-8 bg-primary text-secondary font-black uppercase tracking-[0.5em] text-[13px] rounded-[35px] hover:scale-[1.03] active:scale-95 transition-all duration-500 shadow-2xl shadow-primary/30 flex items-center justify-center gap-5 overflow-hidden"
                             >
-                                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                                <span className="relative flex items-center gap-4">
-                                    Checkout <ArrowRight size={18} />
+                                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+                                <span className="relative flex items-center gap-5">
+                                    Checkout <ArrowRight size={22} className="group-hover:translate-x-2 transition-transform duration-500" />
                                 </span>
                             </button>
                             
-                            <p className="mt-6 text-center text-white/10 text-[8px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-2">
-                                <ShieldCheck size={12} className="text-primary/40" /> SSL-256 Quantum Shield
+                            <p className="mt-8 text-center text-white/20 text-[9px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3">
+                                <ShieldCheck size={14} className="text-primary/50" /> Secure Premium Transaction
                             </p>
                         </div>
                     </div>
