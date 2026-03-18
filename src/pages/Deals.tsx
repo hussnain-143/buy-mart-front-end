@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Package, ShoppingCart, BadgePercent, Search, Timer } from "lucide-react";
 import { GetAllProducts } from "../services/product.service";
 import { AddToCart } from "../services/cart.service";
@@ -213,10 +213,17 @@ const Deals = () => {
                 {/* Add to Cart */}
                 <button
                   onClick={() => handleAddToCart(product._id)}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-primary text-white font-black uppercase tracking-[0.25em] text-[11px] hover:scale-105 transition-all duration-500 shadow-lg shadow-primary/30"
+                  disabled={product.stock_quantity <= 0}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-primary text-white font-black uppercase tracking-[0.25em] text-[11px] hover:scale-105 transition-all duration-500 shadow-lg shadow-primary/30 disabled:opacity-50 disabled:grayscale disabled:scale-100"
                 >
-                  <ShoppingCart size={18} />
-                  Add to Cart
+                  {product.stock_quantity <= 0 ? (
+                    "Out of Stock"
+                  ) : (
+                    <>
+                      <ShoppingCart size={18} />
+                      Add to Cart
+                    </>
+                  )}
                 </button>
               </div>
             ))}

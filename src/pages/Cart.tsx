@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, ArrowLeft } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import Toast from "../components/common/Toast";
 
@@ -63,7 +63,7 @@ const Cart = () => {
                 <div className="relative p-16 rounded-[60px] bg-white/5 border border-white/10 backdrop-blur-3xl mb-12 shadow-2xl group transition-all duration-700 hover:border-primary/30">
                     <ShoppingBag size={80} className="text-white/20 group-hover:text-primary transition-colors duration-500" />
                 </div>
-                <h1 className="text-5xl md:text-7xl font-black mb-6 uppercase tracking-tight text-center">
+                <h1 className="text-3xl md:text-5xl font-black mb-6 uppercase tracking-tight text-center">
                     Your Cart is <span className="text-primary italic">Empty</span>
                 </h1>
                 <p className="text-white/40 mb-12 text-center max-w-md font-medium text-lg leading-relaxed">
@@ -77,35 +77,21 @@ const Cart = () => {
         );
     }
 
+    const hasOutOfStock = cart.items.some((item: any) => item.product_id.stock_quantity <= 0);
+
     return (
         <div className="min-h-screen bg-secondary text-white selection:bg-primary/30 py-24 px-6 relative overflow-hidden">
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[150px]"></div>
-                <div className="absolute bottom-[0%] left-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]"></div>
-            </div>
-
-            {refreshing && (
-                <div className="fixed top-28 right-10 z-50 bg-white/5 backdrop-blur-3xl p-4 px-6 rounded-full border border-white/10 animate-pulse flex items-center gap-3 shadow-2xl">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Updating Cart State</span>
-                </div>
-            )}
-            
             {toast.show && <Toast type={toast.type} message={toast.message} onClose={() => setToast({ ...toast, show: false })} />}
             
             <div className="max-w-7xl mx-auto relative z-10">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 animate-fade-in-up">
                     <div>
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="h-px w-12 bg-primary"></div>
-                            <span className="text-white/40 font-black text-[10px] uppercase tracking-[0.5em]">Your Selection</span>
-                        </div>
-                        <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tight leading-none">
+                        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
                             Shopping <span className="text-primary italic">Cart</span>
                         </h1>
                     </div>
                     <button onClick={() => navigate("/shop")} className="group flex items-center gap-4 text-white/40 hover:text-white transition-all font-black uppercase tracking-[0.3em] text-[10px] bg-white/5 px-8 py-4 rounded-full border border-white/10 hover:border-white/20">
-                        <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform text-primary" /> Continue Shopping
+                        <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform text-primary" /> Browse Collection
                     </button>
                 </div>
 
@@ -128,10 +114,10 @@ const Cart = () => {
                                 <div className="flex-1 flex flex-col gap-4 min-w-0 py-2">
                                     <div className="space-y-2">
                                         <span className="text-accent font-black text-[9px] uppercase tracking-[0.4em] block">{item.product_id.sku || 'PREMIUM-ITEM'}</span>
-                                        <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase group-hover:text-primary transition-colors truncate">{item.product_id.name}</h3>
+                                        <h3 className="text-lg md:text-xl font-black text-white tracking-tight uppercase group-hover:text-primary transition-colors truncate">{item.product_id.name}</h3>
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <p className="text-3xl font-black text-white tracking-tighter tabular-nums">${(item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price).toFixed(2)}</p>
+                                        <p className="text-xl font-black text-white tracking-tighter tabular-nums">${(item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price).toFixed(2)}</p>
                                         {item.product_id.discount_price > 0 && (
                                             <span className="text-white/20 line-through text-sm font-bold">${item.product_id.price.toFixed(2)}</span>
                                         )}
@@ -140,21 +126,27 @@ const Cart = () => {
 
                                 <div className="flex flex-col md:items-end gap-6 w-full md:w-auto">
                                     <div className="flex items-center bg-white/5 rounded-2xl border border-white/10 p-2 shadow-inner">
-                                        <button 
-                                            onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity - 1)} 
-                                            disabled={refreshing || item.quantity <= 1}
-                                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all disabled:opacity-10"
-                                        >
-                                            <Minus size={20} />
-                                        </button>
-                                        <span className="mx-4 text-2xl font-black text-white w-10 text-center tabular-nums italic">{item.quantity}</span>
-                                        <button 
-                                            onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity + 1)} 
-                                            disabled={refreshing}
-                                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all disabled:opacity-10"
-                                        >
-                                            <Plus size={20} />
-                                        </button>
+                                        {item.product_id.stock_quantity <= 0 ? (
+                                            <span className="px-6 py-2 text-rose-500 font-black text-[10px] uppercase tracking-widest animate-pulse">Out of Stock</span>
+                                        ) : (
+                                            <>
+                                                <button 
+                                                    onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity - 1)} 
+                                                    disabled={refreshing || item.quantity <= 1}
+                                                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all disabled:opacity-10"
+                                                >
+                                                    <Minus size={20} />
+                                                </button>
+                                                <span className="mx-4 text-xl font-black text-white w-10 text-center tabular-nums italic">{item.quantity}</span>
+                                                <button 
+                                                    onClick={() => handleUpdateQuantity(item.product_id._id, item.quantity + 1)} 
+                                                    disabled={refreshing || item.quantity >= item.product_id.stock_quantity}
+                                                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all disabled:opacity-10"
+                                                >
+                                                    <Plus size={20} />
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
 
                                     <button 
@@ -182,12 +174,12 @@ const Cart = () => {
                         <div className="bg-white/5 backdrop-blur-3xl p-12 rounded-[50px] border border-white/10 shadow-2xl relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
                             
-                            <h2 className="text-3xl font-black text-white mb-10 border-b border-white/10 pb-8 uppercase tracking-tight italic">Summary</h2>
+                            <h2 className="text-xl font-black text-white mb-10 border-b border-white/10 pb-8 uppercase tracking-tight italic">Summary</h2>
 
                             <div className="space-y-6 mb-12">
                                 <div className="flex justify-between items-center bg-white/5 p-6 rounded-2xl border border-white/5 transition-all hover:bg-white/10">
                                     <span className="text-white/40 font-black uppercase tracking-[0.3em] text-[10px]">Total Items</span>
-                                    <span className="text-xl font-black text-white">{cart.items.length} Units</span>
+                                    <span className="text-lg font-black text-white">{cart.items.length} Units</span>
                                 </div>
                                 
                                 <div className="flex flex-col gap-5 px-3">
@@ -202,26 +194,21 @@ const Cart = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-10 border-t border-white/10 flex flex-col gap-2 mb-12">
-                                <span className="text-white/30 font-black uppercase tracking-[0.5em] text-[10px]">Estimated Total</span>
-                                <div className="flex justify-between items-end">
-                                    <span className="text-6xl font-black text-primary tracking-tighter drop-shadow-[0_0_30px_rgba(255,111,0,0.3)]">${cart.total_price.toFixed(2)}</span>
-                                </div>
+                            <div className="pt-10 border-t border-white/10 flex justify-between items-end mb-12">
+                                <span className="text-white/30 font-black uppercase tracking-[0.5em] text-[10px]">Total Due</span>
+                                <span className="text-4xl font-black text-primary tracking-tighter drop-shadow-[0_0_30px_rgba(255,111,0,0.3)]">${cart.total_price.toFixed(2)}</span>
                             </div>
 
                             <button
                                 onClick={() => navigate("/product-checkout")}
-                                className="group relative w-full py-8 bg-primary text-secondary font-black uppercase tracking-[0.5em] text-[13px] rounded-[35px] hover:scale-[1.03] active:scale-95 transition-all duration-500 shadow-2xl shadow-primary/30 flex items-center justify-center gap-5 overflow-hidden"
+                                disabled={hasOutOfStock}
+                                className="group relative w-full py-8 bg-primary text-secondary font-black uppercase tracking-[0.5em] text-[13px] rounded-[35px] hover:scale-[1.03] active:scale-95 transition-all duration-500 shadow-2xl shadow-primary/30 flex items-center justify-center gap-5 overflow-hidden disabled:opacity-50 disabled:grayscale disabled:scale-100"
                             >
                                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
-                                <span className="relative flex items-center gap-5">
-                                    Checkout <ArrowRight size={22} className="group-hover:translate-x-2 transition-transform duration-500" />
+                                <span className="relative flex items-center gap-5 uppercase">
+                                    {hasOutOfStock ? "Out of Stock" : "Checkout"} <ArrowRight size={22} className="group-hover:translate-x-2 transition-transform duration-500" />
                                 </span>
                             </button>
-                            
-                            <p className="mt-8 text-center text-white/20 text-[9px] font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3">
-                                <ShieldCheck size={14} className="text-primary/50" /> Secure Premium Transaction
-                            </p>
                         </div>
                     </div>
                 </div>
