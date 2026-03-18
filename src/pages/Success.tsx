@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, NavLink, useNavigate } from "react-router-dom";
-import { CheckCircle2, Package, ArrowRight, Home, ShoppingBag, Loader2, Sparkles, CreditCard } from "lucide-react";
-import { VerifyCheckoutSession } from "../services/stripe.service";
+import { CheckCircle2, ArrowRight, Home, ShoppingBag, Sparkles, CreditCard } from "lucide-react";
+import { verifySession } from "../services/stripe.service";
 import { CreateOrder } from "../services/order.service";
 import { useCart } from "../context/CartContext";
 
@@ -22,7 +22,7 @@ const Success = () => {
             hasExecuted.current = true;
             try {
                 // 1. Verify Session
-                const verifyRes = await VerifyCheckoutSession(sessionId);
+                const verifyRes = await verifySession(sessionId);
                 if (!verifyRes.success) throw new Error("Invalid session verification");
 
                 if (type === "product") {

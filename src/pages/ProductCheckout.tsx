@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { CreateCheckoutSession } from "../services/stripe.service";
+import { CreateProductCheckout } from "../services/stripe.service";
 import { useNavigate } from "react-router-dom";
 import { Lock, ArrowRight, ShieldCheck, CreditCard, ChevronLeft } from "lucide-react";
 import Toast from "../components/common/Toast";
@@ -38,7 +38,7 @@ const ProductCheckout = () => {
 
         setLoading(true);
         try {
-            const res = await CreateCheckoutSession({
+            const res = await CreateProductCheckout({
                 items: cart.items,
                 shipping_address: `${formData.address}, ${formData.city}, ${formData.zip}`,
                 customer_email: formData.email,
