@@ -65,7 +65,7 @@ const SellerOrders: React.FC = () => {
             accessorKey: "vendor_total",
             cell: (row) => (
                 <div className="flex flex-col">
-                    <span className="font-bold text-primary">${row.vendor_total || row.total_amount}</span>
+                    <span className="font-bold text-primary">${(row.vendor_total || row.total_amount || 0).toFixed(2)}</span>
                     <span className="text-[9px] font-black text-secondary/30 uppercase tracking-tighter">{row.payment_method}</span>
                 </div>
             )
