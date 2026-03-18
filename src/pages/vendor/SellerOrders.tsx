@@ -115,11 +115,11 @@ const SellerOrders: React.FC = () => {
                         }}
                         className="px-3 py-2 bg-gray-50 text-secondary/70 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100 outline-none cursor-pointer"
                     >
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
                     </select>
                     <button className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-secondary/70 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary/10 hover:text-primary transition-all border border-gray-100">
                         Details

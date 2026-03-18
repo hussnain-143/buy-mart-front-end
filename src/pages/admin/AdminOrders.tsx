@@ -113,11 +113,11 @@ const AdminOrders = () => {
                             }}
                             className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-transparent border-none outline-none cursor-pointer ${colorClass.split(' ')[1]}`}
                         >
-                            <option value="Pending">Pending</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                     </div>
                 )
