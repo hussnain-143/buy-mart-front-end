@@ -93,101 +93,105 @@ const ProductCheckout = () => {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-600/10 rounded-full blur-[100px]"></div>
             </div>
 
-            <div className="relative max-w-7xl mx-auto px-6 py-12 lg:py-20">
+            <div className="relative max-w-7xl mx-auto px-6 py-12 lg:py-24">
                 <button 
                     onClick={() => navigate("/cart")} 
-                    className="group inline-flex items-center gap-2 text-white/40 hover:text-white transition-all font-black uppercase tracking-[0.2em] text-[10px] mb-12"
+                    className="group inline-flex items-center gap-3 text-white/30 hover:text-white transition-all font-black uppercase tracking-[0.3em] text-[10px] mb-16 bg-white/5 px-6 py-3 rounded-full border border-white/5"
                 >
-                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Cart
+                    <ArrowLeft size={16} className="group-hover:-translate-x-2 transition-transform text-primary" /> Return to Terminal
                 </button>
 
-                <div className="grid lg:grid-cols-12 gap-12 items-start">
+                <div className="grid lg:grid-cols-12 gap-16 items-start animate-fade-in-up">
                     {/* LEFT COLUMN: INFO & ADDRESS */}
-                    <div className="lg:col-span-7 space-y-10">
+                    <div className="lg:col-span-7 space-y-12">
                         <div>
-                            <h1 className="text-6xl font-black mb-4 tracking-tighter">
-                                CHECKOUT
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-12 h-1 bg-primary rounded-full"></div>
+                                <span className="text-white/20 font-black text-[10px] uppercase tracking-[0.4em]">Secure Transaction Node</span>
+                            </div>
+                            <h1 className="text-8xl font-black mb-6 tracking-tighter italic uppercase">
+                                Checkout
                             </h1>
-                            <p className="text-white/40 text-lg font-medium max-w-md">
-                                Secure your order with our encrypted payment gateway.
+                            <p className="text-white/40 text-xl font-medium max-w-lg leading-relaxed">
+                                Authorizing secure payload transfer via Stripe high-velocity gateway.
                             </p>
                         </div>
 
                         {/* User Summary Card */}
-                        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[40px] p-8 flex flex-col md:flex-row gap-8">
+                        <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[48px] p-10 flex flex-col md:flex-row gap-10 shadow-2xl">
                             <div className="flex-1 space-y-4">
-                                <div className="flex items-center gap-3 text-white/40 uppercase font-black text-[10px] tracking-widest">
-                                    <User size={14} className="text-primary" /> Customer Info
+                                <div className="flex items-center gap-3 text-white/20 uppercase font-black text-[10px] tracking-[0.2em]">
+                                    <User size={14} className="text-primary" /> Recipient Identity
                                 </div>
-                                <p className="text-2xl font-bold">{user?.firstName} {user?.lastName}</p>
+                                <p className="text-3xl font-black tracking-tight italic">{user?.firstName} {user?.lastName}</p>
                             </div>
-                            <div className="flex-1 space-y-4 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-white/10 md:pl-8">
-                                <div className="flex items-center gap-3 text-white/40 uppercase font-black text-[10px] tracking-widest">
-                                    <Mail size={14} className="text-primary" /> Contact Email
+                            <div className="flex-1 space-y-4 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-white/5 md:pl-10">
+                                <div className="flex items-center gap-3 text-white/20 uppercase font-black text-[10px] tracking-[0.2em]">
+                                    <Mail size={14} className="text-primary" /> Delivery Comms
                                 </div>
-                                <p className="text-xl font-bold truncate">{user?.email}</p>
+                                <p className="text-xl font-bold text-white/70 truncate">{user?.email}</p>
                             </div>
                         </div>
 
                         {/* Shipping Address */}
-                        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[40px] p-10 space-y-8">
+                        <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[48px] p-12 space-y-10 shadow-2xl">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-2xl font-black flex items-center gap-3 italic">
-                                    <Truck className="text-primary" /> 01. SHIPPING ADDRESS
+                                <h2 className="text-3xl font-black flex items-center gap-4 italic tracking-tight">
+                                    <Truck className="text-primary" size={32} /> 01. DESTINATION
                                 </h2>
                             </div>
                             <div className="relative group">
                                 <textarea
                                     value={shippingAddress}
                                     onChange={(e) => setShippingAddress(e.target.value)}
-                                    placeholder="Enter your complete delivery address here..."
-                                    className="w-full h-40 bg-white/5 text-white border border-white/10 rounded-[30px] p-8 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-lg font-medium placeholder:text-white/10"
+                                    placeholder="Enter full geolocation coordinates (Physical Address)..."
+                                    className="w-full h-48 bg-white/[0.03] text-white border border-white/10 rounded-[40px] p-10 focus:outline-none focus:border-primary/40 focus:ring-8 focus:ring-primary/5 transition-all text-xl font-medium placeholder:text-white/5"
                                     required
                                 ></textarea>
-                                <div className="absolute right-6 bottom-6 text-[10px] font-black text-white/20 uppercase tracking-widest pointer-events-none group-focus-within:text-primary/40 transition-colors">
-                                    Required
+                                <div className="absolute right-10 bottom-10 text-[10px] font-black text-white/10 uppercase tracking-widest pointer-events-none group-focus-within:text-primary transition-colors">
+                                    Primary Vector Required
                                 </div>
                             </div>
                         </div>
 
                         {/* Payment Info Banner */}
-                        <div className="bg-primary/10 border border-primary/20 rounded-[40px] p-8 flex items-center gap-6">
-                            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-                                <ShieldCheck size={32} className="text-white" />
+                        <div className="bg-primary/5 border border-primary/10 rounded-[48px] p-10 flex items-center gap-8 shadow-2xl">
+                            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-2xl shadow-primary/40">
+                                <ShieldCheck size={40} className="text-white" />
                             </div>
                             <div>
-                                <h4 className="text-xl font-black italic">STRIPE SECURED</h4>
-                                <p className="text-white/50 text-sm font-medium">Your payment is processed through Stripe's high-security infrastructure.</p>
+                                <h4 className="text-2xl font-black italic tracking-tight uppercase">Stripe Infrastructure Secured</h4>
+                                <p className="text-white/30 text-base font-medium mt-1">End-to-end encrypted protocol active. No sensitive data stored on-site.</p>
                             </div>
                         </div>
                     </div>
 
                     {/* RIGHT COLUMN: SUMMARY */}
                     <div className="lg:col-span-5 lg:sticky lg:top-12">
-                        <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[50px] p-10 shadow-2xl overflow-hidden relative">
+                        <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[56px] p-12 shadow-2xl overflow-hidden relative border-t-primary/20">
                             {/* Decorative Edge */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-[80px] -mr-24 -mt-24"></div>
 
-                            <h2 className="text-3xl font-black mb-10 border-b border-white/10 pb-6 italic tracking-tight uppercase">
-                                SUMMARY
+                            <h2 className="text-4xl font-black mb-12 border-b border-white/5 pb-8 italic tracking-tighter uppercase">
+                                Payload Summary
                             </h2>
 
                             {/* Item List */}
-                            <div className="space-y-4 mb-10 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-6 mb-12 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
                                 {cart?.items.map((item: any) => (
-                                    <div key={item.product_id._id} className="flex gap-4 p-4 rounded-[25px] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-colors group">
-                                        <div className="w-16 h-16 rounded-2xl bg-white/5 overflow-hidden flex-shrink-0 border border-white/10">
+                                    <div key={item.product_id._id} className="flex gap-6 p-6 rounded-[32px] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all group hover:scale-[1.02]">
+                                        <div className="w-24 h-24 rounded-[24px] bg-black/40 overflow-hidden flex-shrink-0 border border-white/5 p-2">
                                             {item.product_id.images_id?.[0]?.image_url ? (
-                                                <img src={item.product_id.images_id[0].image_url} alt={item.product_id.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={item.product_id.images_id[0].image_url} alt={item.product_id.name} className="w-full h-full object-cover rounded-[18px] group-hover:scale-125 transition-transform duration-700" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-white/10 font-black">?</div>
+                                                <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-2xl">?</div>
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                            <h4 className="font-bold text-white truncate text-base">{item.product_id.name}</h4>
-                                            <div className="flex justify-between items-center mt-1">
-                                                <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">Qty: {item.quantity}</span>
-                                                <span className="text-primary font-black text-sm">${((item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price) * item.quantity).toFixed(2)}</span>
+                                            <h4 className="font-black text-white truncate text-lg tracking-tight italic uppercase">{item.product_id.name}</h4>
+                                            <div className="flex justify-between items-center mt-3">
+                                                <span className="bg-white/5 px-4 py-1.5 rounded-full text-white/40 text-[9px] font-black uppercase tracking-[0.2em] border border-white/5">Nodes: {item.quantity}</span>
+                                                <span className="text-primary font-black text-xl tracking-tighter">${((item.product_id.discount_price > 0 ? item.product_id.discount_price : item.product_id.price) * item.quantity).toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -195,18 +199,18 @@ const ProductCheckout = () => {
                             </div>
 
                             {/* Totals */}
-                            <div className="space-y-4 pt-6 border-t border-white/10">
-                                <div className="flex justify-between text-white/40 font-bold uppercase tracking-widest text-xs">
-                                    <span>Subtotal</span>
-                                    <span>${cart?.total_price.toFixed(2)}</span>
+                            <div className="space-y-6 pt-10 border-t border-white/5">
+                                <div className="flex justify-between text-white/20 font-black uppercase tracking-[0.3em] text-[10px]">
+                                    <span>Base Subtotal</span>
+                                    <span className="text-white/60">${cart?.total_price.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-white/40 font-bold uppercase tracking-widest text-xs">
-                                    <span>Shipping</span>
-                                    <span className="text-green-400 font-black">FREE</span>
+                                <div className="flex justify-between text-white/20 font-black uppercase tracking-[0.3em] text-[10px]">
+                                    <span>Logistics (Express)</span>
+                                    <span className="text-green-400">ALLOCATED FREE</span>
                                 </div>
-                                <div className="flex justify-between items-end pt-4">
-                                    <span className="text-2xl font-black italic tracking-tighter">TOTAL</span>
-                                    <span className="text-5xl font-black text-primary tracking-tighter tabular-nums">${cart?.total_price.toFixed(2)}</span>
+                                <div className="flex justify-between items-end pt-6">
+                                    <span className="text-3xl font-black italic tracking-tighter uppercase">Grand Total</span>
+                                    <span className="text-7xl font-black text-primary tracking-tighter tabular-nums shadow-primary/20 drop-shadow-2xl">${cart?.total_price.toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -214,17 +218,17 @@ const ProductCheckout = () => {
                             <button
                                 onClick={handlePlaceOrder}
                                 disabled={isProcessing}
-                                className="w-full mt-10 py-7 bg-primary text-white font-black uppercase tracking-[0.4em] text-xs rounded-[30px] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/40 flex items-center justify-center gap-4 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden relative group"
+                                className="w-full mt-12 py-9 bg-primary text-white font-black uppercase tracking-[0.5em] text-[11px] rounded-[40px] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/50 flex items-center justify-center gap-6 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden relative group"
                             >
                                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                                <span className="relative flex items-center gap-4">
-                                    {isProcessing ? "SECURELY PROCESSING..." : "PAY WITH STRIPE"} 
-                                    {isProcessing ? <Loader className="animate-spin" size={18} /> : <Lock size={18} />}
+                                <span className="relative flex items-center gap-6">
+                                    {isProcessing ? "ENCRYPTING..." : "INITIALIZE PAYMENT"} 
+                                    {isProcessing ? <Loader className="animate-spin" size={20} /> : <Lock size={20} />}
                                 </span>
                             </button>
 
-                            <p className="text-center mt-6 text-white/20 text-[10px] uppercase font-black tracking-widest flex items-center justify-center gap-2">
-                                <ShieldCheck size={12} /> Encrypted Zero-Knowledge Payment
+                            <p className="text-center mt-8 text-white/10 text-[9px] uppercase font-black tracking-[0.4em] flex items-center justify-center gap-3">
+                                <ShieldCheck size={14} className="text-primary/40" /> SECURE QUANTUM PAYLOAD ENCRYPTION ACTIVE
                             </p>
                         </div>
                     </div>
