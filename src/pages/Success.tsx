@@ -3,6 +3,7 @@ import { useSearchParams, NavLink } from "react-router-dom";
 import { verifySession } from "../services/stripe.service";
 import { CreateOrder } from "../services/order.service";
 import { CheckCircle, ArrowRight, Loader, ShoppingBag, ShieldCheck, Home } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
 const Success = () => {
     const [searchParams] = useSearchParams();
@@ -10,6 +11,7 @@ const Success = () => {
     const type = searchParams.get("type"); // 'product' or null (subscription)
     const [status, setStatus] = useState("loading"); // loading, success, error, finalizing
     const [orderId, setOrderId] = useState<string | null>(null);
+    const { fetchCart } = useCart();
 
     useEffect(() => {
         if (!sessionId) {
@@ -36,6 +38,8 @@ const Success = () => {
                             setOrderId(orderRes.data._id);
                             setStatus("success");
                             sessionStorage.removeItem("pending_shipping_address");
+                            // Refresh cart to clear it locally (backend already cleared it)
+                            fetchCart();
                         } else {
                             setStatus("error");
                         }
